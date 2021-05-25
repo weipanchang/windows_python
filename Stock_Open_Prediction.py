@@ -27,9 +27,6 @@ def main():
     print('\n'*1,data)
     
     df = data["Close"].pct_change() * 100
-    
-    #print(df)
-#    data.drop(data.index[0:-253 * 15], inplace=True)
 
     df = df.rename("Today_Change_%")
     df = df.reset_index()
