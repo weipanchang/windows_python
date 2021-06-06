@@ -55,7 +55,6 @@ def main():
     model = sm.Logit(y,X)
     
     result =  model.fit()
-    
     print(result.summary())
     
     prediction = result.predict(X)
@@ -150,7 +149,7 @@ def main():
     print ("[ %s ] will go up! <=========" %stock.upper()) if now_up_down > cutoff else print ("[ %s ] will go down! <=========" %stock.upper()) 
     
     
-#df1.to_csv('fb.csv', index = False)
+    #df1.to_csv('fb.csv', index = False)
 
 if __name__ == "__main__":
     main()
