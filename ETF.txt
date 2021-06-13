@@ -1,21 +1,54 @@
 Facebook, Inc. (FB)
 
-Box, Inc. (BOX)
-
 Adobe Inc. (ADBE)
 
 QUALCOMM Incorporated (QCOM)
 
 Apple Inc. (AAPL)
 
-Advanced Micro Devices, Inc. (AMD)
-
 Financial Select Sector SPDR Fund (XLF)
 
 Industrial Select Sector SPDR Fund (XLI)
 
-Energy Select Sector SPDR Fund (XLE)
+Ares Capital Corporation (ARCC)
 
+Microsoft Corporation (MSFT)
+
+IEC Electronics Corp. (IEC)
+
+Upland Software, Inc. (UPLD)
+
+Tennant Company (TNC)
+
+United Parcel Service, Inc. (UPS)
+
+Bank of America Corporation (BAC)
+
+Intel Corporation (INTC)
+
+JPMorgan Chase & Co. (JPM)
+
+Magellan Midstream Partners, L.P. (MMP)
+
+Plug Power Inc. (PLUG)
+
+Kratos Defense & Security Solutions, Inc. (KTOS)
+
+Deckers Outdoor Corporation (DECK)
+
+FormFactor, Inc. (FORM)
+
+Limelight Networks, Inc. (LLNW)
+
+Opera Limited (OPRA)
+
+Repay Holdings Corporation (RPAY)
+
+Zoom Video Communications Inc. (ZM)
+
+Fifth Third Bancorp ( FITB)
+
+Gap Inc. ( GPS)
 
 Vanguard Total Stock Market ETF (VTI)
 
@@ -53,5 +86,3 @@ Vanguard Total Bond Market Index Fund Admiral Shares (VBTLX)
 Vanguard High-Yield Corporate Fund Investor Shares (VWEHX)
 
 Fidelity Advisor Emerging Asia Fund Class I (FERIX)
-
-Etsy, Inc. (ETSY)

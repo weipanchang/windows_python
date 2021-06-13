@@ -32,7 +32,7 @@ def main():
 
     for stock in stock_fund_names:
         print("\n\n[************************************************]")
-        print ("      Stock Ticket = %s" %stock, end=' ')
+        print ("      Stock Ticket = %s" %stock.upper(), end=' ')
         data =  yf.download(stock, start=start)
 
 #        print (data)
