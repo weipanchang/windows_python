@@ -28,10 +28,10 @@ def main():
 
     with open("STOCK.txt","r") as stock_input_file:
         stock_fund_names = stock_input_file.readlines()
-    print(stock_fund_names)
+ #   print(stock_fund_names)
 
     for stock in stock_fund_names:
-        print("\n\n[************************************************]")
+        print("\n\n [************************************************]")
         print ("      Stock Ticket = %s" %stock.upper(), end=' ')
         data =  yf.download(stock, start=start)
 

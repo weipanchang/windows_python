@@ -1,6 +1,7 @@
 fb
 arcc
 adbe
+hpq
 msft
 pypl
 iec

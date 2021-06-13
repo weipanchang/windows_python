@@ -1,0 +1,714 @@
+===========================================
+Processing Facebook, Inc. (FB) history data
+===========================================
+(FB)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   331.26
+Undervalued
+Beta (5Y Monthly) 1.30
+1y Target Est 386.26
+Bearish
+
+
+
+
+=========================================
+Processing Adobe Inc. (ADBE) history data
+=========================================
+(ADBE)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   541.26
+Near Fair Value
+Beta (5Y Monthly) 0.95
+1y Target Est 570.53
+Bullish
+
+
+
+
+====================================================
+Processing QUALCOMM Incorporated (QCOM) history data
+====================================================
+(QCOM)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   134.62
+Undervalued
+Beta (5Y Monthly) 1.34
+1y Target Est 171.30
+Bullish
+
+
+
+
+=========================================
+Processing Apple Inc. (AAPL) history data
+=========================================
+(AAPL)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   127.35
+Overvalued
+Beta (5Y Monthly) 1.21
+1y Target Est 159.85
+Bullish
+
+
+
+
+===============================================================
+Processing Financial Select Sector SPDR Fund (XLF) history data
+===============================================================
+(XLF)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   37.56
+Beta (5Y Monthly) 1.25
+
+
+
+
+================================================================
+Processing Industrial Select Sector SPDR Fund (XLI) history data
+================================================================
+(XLI)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   103.51
+Beta (5Y Monthly) 1.24
+
+
+
+
+=======================================================
+Processing Ares Capital Corporation (ARCC) history data
+=======================================================
+(ARCC)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   19.96
+Near Fair Value
+Beta (5Y Monthly) 1.24
+1y Target Est 20.22
+Neutral
+
+
+
+
+====================================================
+Processing Microsoft Corporation (MSFT) history data
+====================================================
+(MSFT)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   257.89
+Overvalued
+Beta (5Y Monthly) 0.79
+1y Target Est 293.37
+Bearish
+
+
+
+
+===================================================
+Processing IEC Electronics Corp. (IEC) history data
+===================================================
+(IEC)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   10.89
+Beta (5Y Monthly) 1.08
+1y Target Est 16.75
+Neutral
+
+
+
+
+====================================================
+Processing Upland Software, Inc. (UPLD) history data
+====================================================
+(UPLD)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   42.01
+Beta (5Y Monthly) 0.93
+1y Target Est 58.43
+Neutral
+
+
+
+
+=============================================
+Processing Tennant Company (TNC) history data
+=============================================
+(TNC)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   81.73
+Beta (5Y Monthly) 1.18
+1y Target Est 90.33
+Neutral
+
+
+
+
+=========================================================
+Processing United Parcel Service, Inc. (UPS) history data
+=========================================================
+(UPS)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Yahoo slow, will reloop!
+Yahoo slow, will reloop!
+Current Price:   203.20
+Beta (5Y Monthly) 1.00
+1y Target Est 215.39
+Neutral
+
+
+
+
+=========================================================
+Processing Bank of America Corporation (BAC) history data
+=========================================================
+(BAC)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   41.86
+Beta (5Y Monthly) 1.57
+1y Target Est 43.45
+Neutral
+
+
+
+
+================================================
+Processing Intel Corporation (INTC) history data
+================================================
+(INTC)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   57.85
+Beta (5Y Monthly) 0.66
+1y Target Est 64.87
+Neutral
+
+
+
+
+==================================================
+Processing JPMorgan Chase & Co. (JPM) history data
+==================================================
+(JPM)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   160.29
+Beta (5Y Monthly) 1.21
+1y Target Est 166.63
+Neutral
+
+
+
+
+===============================================================
+Processing Magellan Midstream Partners, L.P. (MMP) history data
+===============================================================
+(MMP)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   53.15
+Beta (5Y Monthly) 1.07
+1y Target Est 51.11
+Neutral
+
+
+
+
+==============================================
+Processing Plug Power Inc. (PLUG) history data
+==============================================
+(PLUG)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   31.85
+Beta (5Y Monthly) 1.54
+1y Target Est 46.97
+Neutral
+
+
+
+
+========================================================================
+Processing Kratos Defense & Security Solutions, Inc. (KTOS) history data
+========================================================================
+(KTOS)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   26.20
+Beta (5Y Monthly) 0.76
+1y Target Est 28.67
+Neutral
+
+
+
+
+==========================================================
+Processing Deckers Outdoor Corporation (DECK) history data
+==========================================================
+(DECK)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   334.45
+Beta (5Y Monthly) 0.80
+1y Target Est 419.31
+Neutral
+
+
+
+
+===============================================
+Processing FormFactor, Inc. (FORM) history data
+===============================================
+(FORM)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   33.82
+Beta (5Y Monthly) 1.45
+1y Target Est 53.43
+Neutral
+
+
+
+
+=======================================================
+Processing Limelight Networks, Inc. (LLNW) history data
+=======================================================
+(LLNW)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   3.1900
+Beta (5Y Monthly) 0.58
+1y Target Est 3.93
+Neutral
+
+
+
+
+============================================
+Processing Opera Limited (OPRA) history data
+============================================
+(OPRA)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   10.70
+Beta (5Y Monthly) 1.13
+1y Target Est 16.23
+Neutral
+
+
+
+
+=========================================================
+Processing Repay Holdings Corporation (RPAY) history data
+=========================================================
+(RPAY)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Yahoo slow, will reloop!
+Yahoo slow, will reloop!
+Current Price:   24.01
+Beta (5Y Monthly) N/A
+1y Target Est 29.80
+Neutral
+
+
+
+
+===========================================================
+Processing Zoom Video Communications Inc. (ZM) history data
+===========================================================
+(ZM)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   366.40
+Beta (5Y Monthly) -1.48
+1y Target Est 416.78
+Neutral
+
+
+
+
+==================================================
+Processing Fifth Third Bancorp (FITB) history data
+==================================================
+(FITB)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   40.57
+Beta (5Y Monthly) 1.59
+1y Target Est 43.69
+Neutral
+
+
+
+
+======================================
+Processing Gap Inc. (GPS) history data
+======================================
+(GPS)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   32.31
+Beta (5Y Monthly) 1.67
+1y Target Est 36.39
+Neutral
+
+
+
+
+=============================================================
+Processing Vanguard Total Stock Market ETF (VTI) history data
+=============================================================
+(VTI)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   221.02
+Beta (5Y Monthly) 1.04
+NAV   217.99
+
+
+
+
+===========================================================================
+Processing Fidelity Advisor Emerging Asia Fund Class I (FERIX) history data
+===========================================================================
+(FERIX)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Yahoo slow, will reloop!
+Yahoo slow, will reloop!
+Yahoo slow, will reloop!
+Current Price:   70.00
+Beta (5Y Monthly) 0.93
+
+
+
+
+================================================================
+Processing Vanguard Dividend Appreciation ETF (VIG) history data
+================================================================
+(VIG)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   155.26
+Beta (5Y Monthly) 0.85
+NAV   155.62
+
+
+
+
+==============================================================
+Processing Vanguard High Dividend Yield ETF (VYM) history data
+==============================================================
+(VYM)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   107.33
+Beta (5Y Monthly) 0.92
+NAV   106.76
+
+
+
+
+============================================================
+Processing Schwab US Dividend Equity ETF (SCHD) history data
+============================================================
+(SCHD)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   77.33
+Beta (5Y Monthly) 0.97
+NAV   76.89
+
+
+
+
+===========================================================
+Processing Vanguard Total World Stock ETF (VT) history data
+===========================================================
+(VT)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   104.33
+Beta (5Y Monthly) 1.01
+NAV   100.63
+
+
+
+
+=====================================================================================
+Processing Vanguard Total Stock Market Index Fund Admiral Shares (VTSAX) history data
+=====================================================================================
+(VTSAX)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   107.57
+Beta (5Y Monthly) 1.04
+
+
+
+
+=====================================================================
+Processing Fidelity ZERO Total Market Index Fund (FZROX) history data
+=====================================================================
+(FZROX)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   15.36
+Beta (5Y Monthly) N/A
+
+
+
+
+===============================================================================
+Processing Vanguard Growth and Income Fund Investor Shares (VQNPX) history data
+===============================================================================
+(VQNPX)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   65.91
+Beta (5Y Monthly) 1.02
+
+
+
+
+==================================================================
+Processing Fidelity ZERO Large Cap Index Fund (FNILX) history data
+==================================================================
+(FNILX)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   15.15
+Beta (5Y Monthly) N/A
+
+
+
+
+=========================================================================
+Processing Vanguard Index Funds - Vanguard S&P 500 ETF (VOO) history data
+=========================================================================
+(VOO)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   390.09
+Beta (5Y Monthly) 1.00
+
+
+
+
+======================================================
+Processing iShares Core S&P 500 ETF (IVV) history data
+======================================================
+(IVV)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   424.74
+Beta (5Y Monthly) 1.00
+NAV   423.93
+
+
+
+
+===================================================
+Processing SPDR S&P Dividend ETF (SDY) history data
+===================================================
+(SDY)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   126.79
+Beta (5Y Monthly) 0.92
+NAV   125.37
+
+
+
+
+=========================================================
+Processing iShares Select Dividend ETF (DVY) history data
+=========================================================
+(DVY)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   120.86
+Beta (5Y Monthly) 0.97
+NAV   115.62
+
+
+
+
+====================================================================================
+Processing Vanguard Total Bond Market Index Fund Admiral Shares (VBTLX) history data
+====================================================================================
+(VBTLX)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   11.31
+Beta (5Y Monthly) 1.03
+
+
+
+
+==================================================================================
+Processing Vanguard High-Yield Corporate Fund Investor Shares (VWEHX) history data
+==================================================================================
+(VWEHX)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   5.98
+Beta (5Y Monthly) 0.65
+
+
+
+
+===========================================================================
+Processing Fidelity Advisor Emerging Asia Fund Class I (FERIX) history data
+===========================================================================
+(FERIX)
+
+Yahoo finance Page is loaded
+
+
+Display Summary Page
+Current Price:   70.00
+Beta (5Y Monthly) 0.93
+
+
+
+

@@ -2,8 +2,6 @@ Facebook, Inc. (FB)
 
 Adobe Inc. (ADBE)
 
-HP Inc. (HPQ)
-
 QUALCOMM Incorporated (QCOM)
 
 Apple Inc. (AAPL)
@@ -76,12 +74,16 @@ Vanguard Index Funds - Vanguard S&P 500 ETF (VOO)
 
 iShares Core S&P 500 ETF (IVV)
 
+
 SPDR S&P Dividend ETF (SDY)
 
 iShares Select Dividend ETF (DVY)
 
 Vanguard Total Bond Market Index Fund Admiral Shares (VBTLX)
 
+
+
 Vanguard High-Yield Corporate Fund Investor Shares (VWEHX)
 
 Fidelity Advisor Emerging Asia Fund Class I (FERIX)
+

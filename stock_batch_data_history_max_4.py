@@ -92,37 +92,37 @@ class get_historical_data():
             except:
                  print ("Yahoo page slow, will reloop!")
 
-
-        print ("Display Historical Data Page")
-        try:
-            elm = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Historical Data')]"))).click()
-        except TimeoutException:
-            pass
-
-        time.sleep(delay + 1)
-
-        input_elm = driver.find_element_by_xpath("//span[@class='C($linkColor) Fz(14px)']")
-        print ("click at input button")
-        input_elm.click()
-        time.sleep(delay + 1)
-
-        elm = driver.find_element_by_xpath("//li[4]/button[@data-value='MAX']")
-        print ("click at max")
-        elm.click()
-        time.sleep(delay + 1)
-
-        print ("clikc at Apply")
-        try:
-            elm = wait.until(EC.element_to_be_clickable((By.XPATH, '//span[text()="Apply"]'))).click()
-        except TimeoutException:
-            pass
-
-        time.sleep(delay + 3)
-
-        a_elm = driver.find_element_by_xpath("//a[@class = 'Fl(end) Mt(3px) Cur(p)']")
-        print ("click at download link")
-        a_elm.click()
-        time.sleep(delay + 3)
+        # 
+        # print ("Display Historical Data Page")
+        # try:
+        #     elm = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Historical Data')]"))).click()
+        # except TimeoutException:
+        #     pass
+        # 
+        # time.sleep(delay + 1)
+        # 
+        # input_elm = driver.find_element_by_xpath("//span[@class='C($linkColor) Fz(14px)']")
+        # print ("click at input button")
+        # input_elm.click()
+        # time.sleep(delay + 1)
+        # 
+        # elm = driver.find_element_by_xpath("//li[4]/button[@data-value='MAX']")
+        # print ("click at max")
+        # elm.click()
+        # time.sleep(delay + 1)
+        # 
+        # print ("clikc at Apply")
+        # try:
+        #     elm = wait.until(EC.element_to_be_clickable((By.XPATH, '//span[text()="Apply"]'))).click()
+        # except TimeoutException:
+        #     pass
+        # 
+        # time.sleep(delay + 3)
+        # 
+        # a_elm = driver.find_element_by_xpath("//a[@class = 'Fl(end) Mt(3px) Cur(p)']")
+        # print ("click at download link")
+        # a_elm.click()
+        # time.sleep(delay + 3)
         print ('\n')
 
         print ("Display Summary Page")
@@ -148,10 +148,10 @@ class get_historical_data():
         if self.stock_or_fund == 'stock':
             try:
                 elm = driver.find_element_by_xpath("//div[@class= 'Fw(b) Fl(end)--m Fz(s) C($primaryColor']").text
-
+                print (elm, end = '\n')
             except Exception:
                 pass
-            print (elm, end = '\n')
+
 
 
             table_elm = driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody')
@@ -224,7 +224,7 @@ def main():
                     stock_or_fund = 'ELF'
             else:
                 stock_or_fund ='stock'
-            # print stock.group()
+            print (stock.group())
             # time.sleep(10000)
             get_stock_data = get_historical_data(stock.group().rstrip().rstrip(')').lstrip('('),  downloadPath, stock_or_fund)
 
