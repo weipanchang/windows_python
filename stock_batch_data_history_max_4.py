@@ -219,7 +219,7 @@ def main():
 #            print is_stock
             if is_stock:
                 if 'Fund' in stock_fund_name:
-                    stock_or_fund =  'Fund'
+                    stock_or_fund =  'Fund' 
                 else:
                     stock_or_fund = 'ELF'
             else:
