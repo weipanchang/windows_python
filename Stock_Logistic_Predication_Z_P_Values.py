@@ -5,12 +5,34 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 import datetime
+import re
 from dateutil.relativedelta import relativedelta
 from datetime import date
-
+import time
+from datetime import date
+import sys
 from cachetools import cached
 
 @cached(cache = {})
+
+class Logger(object):
+    def __init__(self):
+        today = date.today()
+        downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
+        d1 = today.strftime("%m%d%Y")
+        self.terminal = sys.stdout
+        self.log = open(downloadPath +"\\Z_P_Report_"+ d1 + "txt" , "a")
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)  
+
+    def flush(self):
+        #this flush method is needed for python 3 compatibility.
+        #this handles the flush command by doing nothing.
+        #you might want to specify some extra behavior here.
+        pass    
+
 def main():
 #    stock = input("Enter the stock symbol:  ")
 
@@ -20,6 +42,9 @@ def main():
     invest = 100
     years_of_data_to_process = 25
     
+    downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
+    sys.stdout = Logger()
+    
     currentDateTime = datetime.datetime.now()
     date = currentDateTime.date()
     year = date.strftime("%Y")
@@ -28,14 +53,23 @@ def main():
 
     with open("STOCK.txt","r") as stock_input_file:
         stock_fund_names = stock_input_file.readlines()
- #   print(stock_fund_names)
-
-    for stock in stock_fund_names:
-        print("\n\n [************************************************]")
-        print ("      Stock Ticket = %s" %stock.upper(), end=' ')
+ 
+    for stock_fund_name in stock_fund_names:
+        if len(stock_fund_name) < 2:
+            continue
+        
+#    for stock in stock_fund_names:
+        
+        # print (("=") * len("Processing " + stock_fund_name.rstrip() +" history data"))
+        # print ("Processing " + stock_fund_name.rstrip() +" history data")
+        # print (("=") * len("Processing " + stock_fund_name.rstrip() +" history data"))
+        stock = re.search(('\(\w+\)'), stock_fund_name)
+        stock = stock.group().rstrip().rstrip(')').lstrip('(')
+        print("\n\n ***********************************************************")
+        print ("  Stock Name = %s" %stock_fund_name, end=' ')
         data =  yf.download(stock, start=start)
 
-#        print (data)
+        print ("\n")
         df = data["Close"].pct_change() * 100
         
         df = df.rename("Today_Change_%")
@@ -172,11 +206,11 @@ def main():
         # print ("\n=========> Current trend = %.4f,  " %now_up_down, end=' ')
         # print ("[ %s ] will go up! <=========" %stock.upper()) if now_up_down > cutoff else print ("[ %s ] will go down! <=========" %stock.upper()) 
         # 
-        # print ("\n ============> %s Days over %s Days Moving Average Indicator<=============" %(short_moving_average_span, long_moving_average_span))
-        # if df1.iloc[-1,19] * df1.iloc[-2,19] < 0:
-        #     print ("\n ============> Warning, It Is the Time to Sell [ %s ]! <=========" %stock.upper()) if df1.iloc[-1,19] < 0 else print ("\n ============> It Is the Time to Buy [ %s ] ! <=========" %stock.upper())
-        # else:
-        #     print ("\n ============> No Trading Waring at this time! <=============")
+        print ("\n ============> %s Days over %s Days Moving Average Indicator<=============" %(short_moving_average_span, long_moving_average_span))
+        if df1.iloc[-1,19] * df1.iloc[-2,19] < 0:
+            print ("\n ============> Warning, It Is the Time to Sell [ %s ]! <=========" %stock.upper()) if df1.iloc[-1,19] < 0 else print ("\n ============> It Is the Time to Buy [ %s ] ! <=========" %stock.upper())
+        else:
+            print ("\n ============> No Trading Waring at this time! <=============")
         # 
         #df1.to_csv('fb.csv', index = False)
         

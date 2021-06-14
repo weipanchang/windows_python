@@ -2,6 +2,7 @@
 # coding: utf-8
 import yfinance as yf
 import numpy as np
+import sys
 import pandas as pd
 import statsmodels.api as sm
 import datetime
@@ -67,7 +68,10 @@ def main():
     X = df1[['const','Trend_Lag','Short_MV_Avg_Span-Long_MV_Avg_Span_Lag','Close-Open_Lag','High-Low_Lag','Volume_Lag']]
     y = df1["Up_Down"].values
     
-    model = sm.Logit(y,X)
+    try:
+        model = sm.Logit(y,X)
+    except:
+        sys.exit("Logitfit Failed")
     result =  model.fit()
     
     result.summary()

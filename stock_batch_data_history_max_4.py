@@ -18,8 +18,29 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import *
 from selenium.webdriver.firefox.options import Options
 import time
+from datetime import date
+import sys
 # from bs4 import BeautifulSoup as bs
 from selenium import webdriver
+
+class Logger(object):
+    def __init__(self):
+        today = date.today()
+        downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
+        d1 = today.strftime("%m%d%Y")
+        self.terminal = sys.stdout
+        self.log = open(downloadPath +"\\Summary_Report_"+ d1 + "txt" , "a")
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)  
+
+    def flush(self):
+        #this flush method is needed for python 3 compatibility.
+        #this handles the flush command by doing nothing.
+        #you might want to specify some extra behavior here.
+        pass    
+
 
 class get_historical_data():
 
@@ -27,7 +48,7 @@ class get_historical_data():
     def __init__(self, stock_name, downloadPath, stock_or_fund):
         self.stock_name = stock_name
         print ("")
-#        print ("Processing " + self.stock_name.upper() +" stock history data")
+#        print ("Processing " + self.stock_name.upper() +" stock data")
         self.downloadPath = downloadPath
         self.stock_or_fund = stock_or_fund
         delay = 0
@@ -183,7 +204,7 @@ class get_historical_data():
 
                 if 'Beta' in elm.text:
                    print (elm.text)
-            if stock_or_fund == 'ELF':
+            if stock_or_fund == 'ETF':
                 print (driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[1]/span').text, end ='   ')
                 print (driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[2]/span').text)
 
@@ -192,9 +213,9 @@ class get_historical_data():
         driver.quit()
 
 def main():
-
-    downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
     
+    downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
+    sys.stdout = Logger()
     # get_stock_data = get_historical_data("VTI",  downloadPath)
     # get_stock_data = get_historical_data("VIG",  downloadPath)
     # get_stock_data = get_historical_data("VYM",  downloadPath)
@@ -207,26 +228,26 @@ def main():
         stock_fund_names = stock_input_file.readlines()
 #        print stock_fund_names
 
-        for stock_fund_name in stock_fund_names:
-            if len(stock_fund_name) < 2:
-                continue
+    for stock_fund_name in stock_fund_names:
+        if len(stock_fund_name) < 2:
+            continue
 
-            print (("=") * len("Processing " + stock_fund_name.rstrip() +" history data"))
-            print ("Processing " + stock_fund_name.rstrip() +" history data")
-            print (("=") * len("Processing " + stock_fund_name.rstrip() +" history data"))
-            stock = re.search(('\(\w+\)'), stock_fund_name)
-            is_stock =  re.search("ETF|Fund",stock_fund_name)
+        print (("=") * len("Processing " + stock_fund_name.rstrip() +" data"))
+        print ("Processing " + stock_fund_name.rstrip() +" data")
+        print (("=") * len("Processing " + stock_fund_name.rstrip() +" data"))
+        stock = re.search(('\(\w+\)'), stock_fund_name)
+               
 #            print is_stock
-            if is_stock:
-                if 'Fund' in stock_fund_name:
-                    stock_or_fund =  'Fund' 
-                else:
-                    stock_or_fund = 'ELF'
+        if is_stock:
+            if 'Fund' in stock_fund_name:
+                stock_or_fund =  'Fund' 
             else:
-                stock_or_fund ='stock'
-            print (stock.group())
-            # time.sleep(10000)
-            get_stock_data = get_historical_data(stock.group().rstrip().rstrip(')').lstrip('('),  downloadPath, stock_or_fund)
+                stock_or_fund = 'ETF'
+        else:
+            stock_or_fund ='stock'
+#        print (stock.group())
+        # time.sleep(10000)
+        get_stock_data = get_historical_data(stock.group().rstrip().rstrip(')').lstrip('('),  downloadPath, stock_or_fund)
 
 
 if __name__ == "__main__":
