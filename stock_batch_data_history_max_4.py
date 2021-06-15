@@ -29,7 +29,7 @@ class Logger(object):
         downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
         d1 = today.strftime("%m%d%Y")
         self.terminal = sys.stdout
-        self.log = open(downloadPath +"\\Summary_Report_"+ d1 + "txt" , "a")
+        self.log = open(downloadPath +"\\Summary_Report_"+ d1 + ".txt" , "a+")
 
     def write(self, message):
         self.terminal.write(message)
@@ -236,7 +236,7 @@ def main():
         print ("Processing " + stock_fund_name.rstrip() +" data")
         print (("=") * len("Processing " + stock_fund_name.rstrip() +" data"))
         stock = re.search(('\(\w+\)'), stock_fund_name)
-               
+        is_stock =  re.search("ETF|Fund",stock_fund_name)       
 #            print is_stock
         if is_stock:
             if 'Fund' in stock_fund_name:

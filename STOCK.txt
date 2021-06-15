@@ -1,21 +1,81 @@
-fb
-arcc
-adbe
-hpq
-msft
-pypl
-iec
-upld
-tnc
-ups
-bac
-intc
-jpm
-mmp
-plug
-ktos
-deck
-form
-llnw
-opra
-rpay
+Facebook, Inc. (FB)
+
+Adobe Inc. (ADBE)
+
+HP Inc. (HPQ)
+
+QUALCOMM Incorporated (QCOM)
+
+Apple Inc. (AAPL)
+
+Financial Select Sector SPDR Fund (XLF)
+
+Industrial Select Sector SPDR Fund (XLI)
+
+Energy Select Sector SPDR Fund (XLE)
+
+Ares Capital Corporation (ARCC)
+
+PayPal Holdings, Inc. (PYPL)
+
+Vale S.A. (VALE)
+
+MGE Energy, Inc. (MGEE)
+
+Microsoft Corporation (MSFT)
+
+IEC Electronics Corp. (IEC)
+
+Upland Software, Inc. (UPLD)
+
+Tennant Company (TNC)
+
+United Parcel Service, Inc. (UPS)
+
+Bank of America Corporation (BAC)
+
+Intel Corporation (INTC)
+
+JPMorgan Chase & Co. (JPM)
+
+Magellan Midstream Partners, L.P. (MMP)
+
+Plug Power Inc. (PLUG)
+
+Kratos Defense & Security Solutions, Inc. (KTOS)
+
+Deckers Outdoor Corporation (DECK)
+
+FormFactor, Inc. (FORM)
+
+Limelight Networks, Inc. (LLNW)
+
+Opera Limited (OPRA)
+
+Repay Holdings Corporation (RPAY)
+
+Zoom Video Communications Inc. (ZM)
+
+Fifth Third Bancorp (FITB)
+
+Gap Inc. (GPS)
+
+Vanguard Total Stock Market ETF (VTI)
+
+
+Vanguard Dividend Appreciation ETF (VIG)
+
+Vanguard High Dividend Yield ETF (VYM)
+
+Schwab US Dividend Equity ETF (SCHD)
+
+Vanguard Total World Stock ETF (VT)
+
+
+Vanguard Index Funds - Vanguard S&P 500 ETF (VOO)
+
+iShares Core S&P 500 ETF (IVV)
+
+SPDR S&P Dividend ETF (SDY)
+
+iShares Select Dividend ETF (DVY)

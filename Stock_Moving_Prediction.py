@@ -11,9 +11,30 @@ from datetime import date
 
 from cachetools import cached
 
+class Logger(object):
+    def __init__(self):
+        today = date.today()
+        downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
+        d1 = today.strftime("%m%d%Y")
+        self.terminal = sys.stdout
+        self.log = open(downloadPath +"\\Individual_Stock_Report_"+ d1 + ".txt" , "a+")
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)  
+
+    def flush(self):
+        #this flush method is needed for python 3 compatibility.
+        #this handles the flush command by doing nothing.
+        #you might want to specify some extra behavior here.
+        pass    
+
 @cached(cache = {})
 def main():
     stock = input("Enter the stock symbol:  ")
+    
+    downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
+    sys.stdout = Logger()
 
     short_moving_average_span = 20
     long_moving_average_span = 50

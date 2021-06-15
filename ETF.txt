@@ -14,6 +14,8 @@ Industrial Select Sector SPDR Fund (XLI)
 
 Ares Capital Corporation (ARCC)
 
+PayPal Holdings, Inc. (PYPL)
+
 Microsoft Corporation (MSFT)
 
 IEC Electronics Corp. (IEC)
@@ -85,3 +87,5 @@ Vanguard Total Bond Market Index Fund Admiral Shares (VBTLX)
 Vanguard High-Yield Corporate Fund Investor Shares (VWEHX)
 
 Fidelity Advisor Emerging Asia Fund Class I (FERIX)
+
+American Funds American Balanced Fund Class F-2 (AMBFX)

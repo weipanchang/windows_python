@@ -21,7 +21,7 @@ class Logger(object):
         downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
         d1 = today.strftime("%m%d%Y")
         self.terminal = sys.stdout
-        self.log = open(downloadPath +"\\Z_P_Report_"+ d1 + "txt" , "a")
+        self.log = open(downloadPath +"\\Z_P_Report_"+ d1 + ".txt" , "a+")
 
     def write(self, message):
         self.terminal.write(message)
@@ -40,7 +40,7 @@ def main():
     long_moving_average_span = 50
     cutoff=0.50
     invest = 100
-    years_of_data_to_process = 25
+    years_of_data_to_process = 30
     
     downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
     sys.stdout = Logger()
