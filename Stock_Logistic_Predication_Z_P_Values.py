@@ -9,7 +9,7 @@ import re
 from dateutil.relativedelta import relativedelta
 from datetime import date
 import time
-from datetime import date
+import datetime
 import sys
 from cachetools import cached
 
@@ -44,7 +44,7 @@ def main():
     
     downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
     sys.stdout = Logger()
-    
+    print("Time:", time)
     currentDateTime = datetime.datetime.now()
     date = currentDateTime.date()
     year = date.strftime("%Y")
@@ -202,11 +202,11 @@ def main():
         #     print ("\n=========> Predication effectiveness is not avairable <=========\n" )
         # 
         prediction = result.predict(x_test)
-        # now_up_down  = result.predict([1.0, df1.iloc[-1, 10], df1.iloc[-1, 19], df1.iloc[-1, 12], df1.iloc[-1, 14], df1.iloc[-1, 7]])
-        # print ("\n=========> Current trend = %.4f,  " %now_up_down, end=' ')
-        # print ("[ %s ] will go up! <=========" %stock.upper()) if now_up_down > cutoff else print ("[ %s ] will go down! <=========" %stock.upper()) 
-        # 
-        print ("\n ============> %s Days over %s Days Moving Average Indicator<=============" %(short_moving_average_span, long_moving_average_span))
+        now_up_down  = result.predict([1.0, df1.iloc[-1, 10], df1.iloc[-1, 19], df1.iloc[-1, 12], df1.iloc[-1, 14], df1.iloc[-1, 7]])
+        print ("\n=========> Current trend = %.4f,  " %now_up_down, end=' ')
+        print ("[ %s ] will go up! <=========" %stock.upper()) if now_up_down > cutoff else print ("[ %s ] will go down! <=========" %stock.upper()) 
+        
+        print ("\n ============> %s Days over %s Days Moving Average Indicator \n ============> %.4f....%.4f....%.4f....%.4f....%.4f....<=============" %(short_moving_average_span, long_moving_average_span, df1.iloc[-5,19], df1.iloc[-4,19], df1.iloc[-3,19], df1.iloc[-2,19],df1.iloc[-1,19]))
         if df1.iloc[-1,19] * df1.iloc[-2,19] < 0:
             print ("\n ============> Warning, It Is the Time to Sell [ %s ]! <=========" %stock.upper()) if df1.iloc[-1,19] < 0 else print ("\n ============> It Is the Time to Buy [ %s ] ! <=========" %stock.upper())
         else:

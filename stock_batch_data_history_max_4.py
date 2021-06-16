@@ -18,6 +18,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import *
 from selenium.webdriver.firefox.options import Options
 import time
+import datetime
 from datetime import date
 import sys
 # from bs4 import BeautifulSoup as bs
@@ -216,6 +217,7 @@ def main():
     
     downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
     sys.stdout = Logger()
+    print("Time:", time)
     # get_stock_data = get_historical_data("VTI",  downloadPath)
     # get_stock_data = get_historical_data("VIG",  downloadPath)
     # get_stock_data = get_historical_data("VYM",  downloadPath)

@@ -8,7 +8,6 @@ import statsmodels.api as sm
 import datetime
 from dateutil.relativedelta import relativedelta
 from datetime import date
-
 from cachetools import cached
 
 class Logger(object):
@@ -34,8 +33,13 @@ def main():
     stock = input("Enter the stock symbol:  ")
     
     downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
+    
     sys.stdout = Logger()
+    time = datetime.datetime.now().time()
 
+    
+    print("\n\n***************************************************")
+    print("             Stock Ticket: = %s" %stock.upper())
     short_moving_average_span = 20
     long_moving_average_span = 50
     cutoff=0.50
@@ -49,6 +53,7 @@ def main():
     start = datetime.datetime(start_year, 1, 1)
     
     data =  yf.download(stock, start=start)
+    print("\nTime:", time)
     print (data)
     df = data["Close"].pct_change() * 100
     
@@ -155,7 +160,7 @@ def main():
     df1_summary=df1[['Date', 'Up_Down','Prediction_indicator']].copy()
     df1_summary['Stock Market Performance'] = df1_summary['Up_Down'].apply(lambda x: 'Up' if x > 0 else 'Down')
     df1_summary['Scribe Predection'] = df1_summary['Prediction_indicator'].apply(lambda x: 'Up' if x > 0 else 'Down')
-    print (df1_summary[['Date','Stock Market Performance','Scribe Predection']].tail(15))
+    print (df1_summary[['Date','Stock Market Performance','Scribe Predection']].tail(10))
     
     print ("\nToday [ %s ] actually went up," %stock.upper(), end = ' ') if (df1.iloc[-1,16] == 1) else print ("\nToday [ %s ] actually went down," %stock.upper(), end = " ")
     print ("--- base on yesterday\'s data, ", end = '')
@@ -166,7 +171,7 @@ def main():
     y_train=df1[df1.Date.dt.year < 2021]["Up_Down"]
     x_test= df1[df1.Date.dt.year >= 2021][['const','Trend_Lag','Short_MV_Avg_Span-Long_MV_Avg_Span_Lag','Close-Open_Lag','High-Low_Lag','Volume_Lag']]
     y_test= df1[df1.Date.dt.year >= 2021]["Up_Down"]
-    print("\n" *3)
+    print("\n" *1)
     model = sm.Logit(y_train,x_tran)
     result=model.fit()
     
@@ -178,16 +183,16 @@ def main():
     z = confusion_matrix(y_test,prediction)
     
     try:
-        print ("\n=========> Prediction Accuracy Rate: %.4f <=========\n"  %((z.loc['Down','Down'] + z.loc['Up','Up']) / len(x_test)))
+        print ("\n =========> Prediction Accuracy Rate: %.4f <=========\n"  %((z.loc['Down','Down'] + z.loc['Up','Up']) / len(x_test)))
     except:
-        print ("\n=========> Predication effectiveness is not avairable <=========\n" )
+        print ("\n =========> Predication effectiveness is not avairable <=========\n" )
     
     prediction = result.predict(x_test)
     now_up_down  = result.predict([1.0, df1.iloc[-1, 10], df1.iloc[-1, 19], df1.iloc[-1, 12], df1.iloc[-1, 14], df1.iloc[-1, 7]])
-    print ("\n=========> Current trend = %.4f,  " %now_up_down, end=' ')
+    print ("\n =========> Current trend = %.4f,  " %now_up_down, end=' ')
     print ("[ %s ] will go up! <=========" %stock.upper()) if now_up_down > cutoff else print ("[ %s ] will go down! <=========" %stock.upper()) 
     
-    print ("\n ============> %s Days over %s Days Moving Average Indicator<=============" %(short_moving_average_span, long_moving_average_span))
+    print ("\n ============> %s Days over %s Days Moving Average Indicator \n ============> %.4f....%.4f....%.4f....%.4f....%.4f....<=============" %(short_moving_average_span, long_moving_average_span, df1.iloc[-5,19], df1.iloc[-4,19], df1.iloc[-3,19], df1.iloc[-2,19],df1.iloc[-1,19]))
     if df1.iloc[-1,19] * df1.iloc[-2,19] < 0:
         print ("\n ============> Warning, It Is the Time to Sell [ %s ]! <=========" %stock.upper()) if df1.iloc[-1,19] < 0 else print ("\n ============> It Is the Time to Buy [ %s ] ! <=========" %stock.upper())
     else:
