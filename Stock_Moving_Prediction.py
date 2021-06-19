@@ -54,7 +54,7 @@ def main():
     
     data =  yf.download(stock, start=start)
     print("\nTime:", time)
-    print (data)
+#   print (data)
     df = data["Close"].pct_change() * 100
     
     df = df.rename("Today_Change_%")

@@ -44,6 +44,7 @@ def main():
     
     downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
     sys.stdout = Logger()
+    time = datetime.datetime.now().time()
     print("Time:", time)
     currentDateTime = datetime.datetime.now()
     date = currentDateTime.date()
@@ -55,7 +56,7 @@ def main():
         stock_fund_names = stock_input_file.readlines()
  
     for stock_fund_name in stock_fund_names:
-        if len(stock_fund_name) < 2:
+        if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
             continue
         
 #    for stock in stock_fund_names:

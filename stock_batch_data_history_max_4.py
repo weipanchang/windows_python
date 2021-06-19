@@ -217,6 +217,7 @@ def main():
     
     downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
     sys.stdout = Logger()
+    time = datetime.datetime.now().time()
     print("Time:", time)
     # get_stock_data = get_historical_data("VTI",  downloadPath)
     # get_stock_data = get_historical_data("VIG",  downloadPath)
