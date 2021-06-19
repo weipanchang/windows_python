@@ -4,6 +4,10 @@ Adobe Inc. (ADBE)
 
 HP Inc. (HPQ)
 
+Oracle Corporation (ORCL)
+
+PayPal Holdings, Inc. (PYPL)
+
 QUALCOMM Incorporated (QCOM)
 
 Apple Inc. (AAPL)
@@ -14,21 +18,9 @@ Industrial Select Sector SPDR Fund (XLI)
 
 Energy Select Sector SPDR Fund (XLE)
 
-Ares Capital Corporation (ARCC)
-
 PayPal Holdings, Inc. (PYPL)
 
-Vale S.A. (VALE)
-
-MGE Energy, Inc. (MGEE)
-
 Microsoft Corporation (MSFT)
-
-IEC Electronics Corp. (IEC)
-
-Upland Software, Inc. (UPLD)
-
-Tennant Company (TNC)
 
 United Parcel Service, Inc. (UPS)
 
@@ -36,46 +28,57 @@ Bank of America Corporation (BAC)
 
 Intel Corporation (INTC)
 
-JPMorgan Chase & Co. (JPM)
+IGNOR JPMorgan Chase & Co. (JPM)
 
-Magellan Midstream Partners, L.P. (MMP)
+IGNOR Vanguard Total Stock Market ETF (VTI)
 
-Plug Power Inc. (PLUG)
+IGNOR Vanguard Dividend Appreciation ETF (VIG)
 
-Kratos Defense & Security Solutions, Inc. (KTOS)
+IGNOR Vanguard High Dividend Yield ETF (VYM)
 
-Deckers Outdoor Corporation (DECK)
+IGNOR Schwab US Dividend Equity ETF (SCHD)
 
-FormFactor, Inc. (FORM)
+IGNOR Vanguard Total World Stock ETF (VT)
 
-Limelight Networks, Inc. (LLNW)
-
-Opera Limited (OPRA)
-
-Repay Holdings Corporation (RPAY)
-
-Zoom Video Communications Inc. (ZM)
-
-Fifth Third Bancorp (FITB)
-
-Gap Inc. (GPS)
-
-Vanguard Total Stock Market ETF (VTI)
-
-
-Vanguard Dividend Appreciation ETF (VIG)
-
-Vanguard High Dividend Yield ETF (VYM)
-
-Schwab US Dividend Equity ETF (SCHD)
-
-Vanguard Total World Stock ETF (VT)
-
-
-Vanguard Index Funds - Vanguard S&P 500 ETF (VOO)
+IGNOR Vanguard Index Funds - Vanguard S&P 500 ETF (VOO)
 
 iShares Core S&P 500 ETF (IVV)
 
 SPDR S&P Dividend ETF (SDY)
 
 iShares Select Dividend ETF (DVY)
+
+IGNOR Vale S.A. (VALE)
+
+IGNOR MGE Energy, Inc. (MGEE)
+
+IGNOR Magellan Midstream Partners, L.P. (MMP)
+
+IGNOR Plug Power Inc. (PLUG)
+
+IGNOR Kratos Defense & Security Solutions, Inc. (KTOS)
+
+IGNOR Deckers Outdoor Corporation (DECK)
+
+IGNOR IEC Electronics Corp. (IEC)
+
+IGNOR Upland Software, Inc. (UPLD)
+
+IGNOR Tennant Company (TNC)
+
+IGNOR Ares Capital Corporation (ARCC)
+
+IGNOR Limelight Networks, Inc. (LLNW)
+
+IGNOR Opera Limited (OPRA)
+
+IGNOR Repay Holdings Corporation (RPAY)
+
+IGNOR Zoom Video Communications Inc. (ZM)
+
+IGNOR Fifth Third Bancorp (FITB)
+
+IGNOR Gap Inc. (GPS)
+
+IGNOR FormFactor, Inc. (FORM)
+

@@ -4,6 +4,8 @@ Adobe Inc. (ADBE)
 
 HP Inc. (HPQ)
 
+Oracle Corporation (ORCL)
+
 QUALCOMM Incorporated (QCOM)
 
 Apple Inc. (AAPL)
