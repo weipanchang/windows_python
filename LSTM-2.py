@@ -101,10 +101,11 @@ def main():
     model.add(Dense(25))
     model.add(Dense(1))
         
-    model.compile(optimizer = 'adam', loss = 'mean_squared_error')
+    model.compile(optimizer = 'adam', loss = 'mean_squared_error', metrics=['accuracy'])
     
 #    model.fit(x_train, y_train, batch_size=128, epochs=200)
-    model.fit(x_train, y_train, batch_size=128, epochs=200)
+    model.fit(x_train, y_train, batch_size=128, epochs=200, verbose=2)
+#    model.fit(x_train, y_train, batch_size=128, epochs=200, verbose=2)
     
     test_data = scaled_data[training_data_len - 60:, :]
     x_test = []
