@@ -14,7 +14,6 @@ from datetime import date
 from cachetools import cached
 pd.set_option('mode.use_inf_as_na', True)
 downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
-delay = 0
 stock = ""
 
 class Logger(object):
@@ -104,17 +103,27 @@ def main():
     df1.dropna(inplace= True)
     df1.tail(10)
     
-    df1['Close'][-150:].plot(figsize=(16,6))
-    df1['Short_MV_Avg_Span'][-150:].plot(figsize=(16,6))
-    df1['Long_MV_Avg_Span'][-150:].plot(figsize=(16,6))
-    plt.xlim([len(df1)-100, len(df1)])
-    plt.xlabel('Index', fontsize=18)
-    plt.ylabel('Close Price USD ($)', fontsize =18)
-    plt.legend(['Close', str(short_moving_average_span) + ' Days Moving Average', str(long_moving_average_span) + ' days Moving Average'], loc = 'lower left')
-    plt.title("Moving Average for " + stock.upper(), fontsize = 16)
+    fig, ax1 = plt.subplots()
+    ax2 =  ax1.twinx()
+    df1['Close'][-200:].plot(x = 'Index', color='tab:blue', figsize=(16,6), label = 'Close Price USA ($)', fontsize = 12, ax = ax1)
+    df1['Short_MV_Avg_Span'][-200:].plot(x = 'Index', color='tab:red', figsize=(16,6), label = str(short_moving_average_span) + ' Days Moving Average', fontsize = 12, ax = ax1)
+    df1['Long_MV_Avg_Span'][-200:].plot(x = 'Index', color='tab:green', figsize=(16,6), label = str(long_moving_average_span) + ' days Moving Average', fontsize = 12, ax = ax1)
+    df1['Short_MV_Avg_Span-Long_MV_Avg_Span_Lag'][-200:].plot(x = 'Index', color='tab:brown', figsize=(16,6), label = 'Signal_line', fontsize = 12, ax = ax2)
+    #df1['RSI'][-170:].plot(x = 'Index', color='tab:red', figsize=(16,6), label = 'Relative Strength Index', fontsize = 12,ax = ax1)
+    #df1['Close'][-150:].plot(x = 'Index',color = 'tab:blue', figsize=(16,6),  label = 'Close Price',fontsize = 12,ax = ax2)
+    #df1['Close'][-100:].plot(figsize=(16,6))
+    plt.xlim([len(df1)-170, len(df1)])
+    ax1.set_ylabel('Close Price USD ($)')
+    ax2.set_ylabel('Signal_line')
+    #df1.xlabel('Index', fontsize=18)
+    #df1.ylabel('Relative Strength Index', fontsize =18)
+    ax1.grid()
+    ax1.set_title("Moving Average & Signal Line for " + stock.upper(), fontsize = 16)
+    ax1.legend(loc=3, fontsize = 10)
+    ax2.legend(loc=4,fontsize = 10)
 #    plt.show
     today = date.today()
-    plt.savefig(downloadPath + '\\Individual_Stock__Moving_Average_Report_' +stock.upper()+ '_' +today.strftime("%m%d%Y") +'.png')
+    plt.savefig(downloadPath + '\\Individual_Stock__MV_Average_ &_Signal_Line_Report_' +stock.upper()+ '_' +today.strftime("%m%d%Y") +'.png')
     plt.close
     
     df1['Signal_Line'] = df1['Short_MV_Avg_Span-Long_MV_Avg_Span_Lag'].ewm(span = period, adjust=False ).mean()
