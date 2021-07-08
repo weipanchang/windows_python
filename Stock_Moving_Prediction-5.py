@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 import numpy as np
 import sys
+import shutil
+import os
 import re
 import pandas as pd
 import time
@@ -54,6 +56,11 @@ def main():
     invest = 100
     years_of_data_to_process = 25
     period = 15
+    try:
+        shutil.rmtree(downloadPath + '\\' + stock.upper())
+    except:
+        pass
+    os.mkdir(downloadPath + '\\' + stock.upper())
     
     currentDateTime = datetime.datetime.now()
     date = currentDateTime.date()
@@ -63,6 +70,7 @@ def main():
     start = datetime.datetime(start_year, 1, 1)
     
     data =  yf.download(stock, start=start)
+    print("\n", data.tail())
     
     df = data["Close"].pct_change() * 100
     
@@ -116,13 +124,14 @@ def main():
     ax2.set_ylabel('Signal_line')
     #df1.xlabel('Index', fontsize=18)
     #df1.ylabel('Relative Strength Index', fontsize =18)
-    ax1.grid()
+    ax2.grid(color='tab:brown')
     ax1.set_title("Moving Average & Signal Line for " + stock.upper(), fontsize = 16)
     ax1.legend(loc=3, fontsize = 10)
     ax2.legend(loc=4,fontsize = 10)
 #    plt.show
+
     today = date.today()
-    plt.savefig(downloadPath + '\\Individual_Stock__MV_Average_ &_Signal_Line_Report_' +stock.upper()+ '_' +today.strftime("%m%d%Y") +'.png')
+    plt.savefig(downloadPath + '\\' + stock.upper() +'\\Individual_Stock__MV_Average_ &_Signal_Line_Report_' +stock.upper()+ '_' +today.strftime("%m%d%Y") +'.png')
     plt.close
     
     df1['Signal_Line'] = df1['Short_MV_Avg_Span-Long_MV_Avg_Span_Lag'].ewm(span = period, adjust=False ).mean()
@@ -219,37 +228,39 @@ def main():
     
     fig, ax1 = plt.subplots()
     ax2 =  ax1.twinx()
-    df1['RSI'][-150:].plot(x = 'Index', color='tab:red', figsize=(16,6), label = 'Relative Strength Index', fontsize = 12,ax = ax1)
-    df1['Close'][-150:].plot(x = 'Index',color = 'tab:blue', figsize=(16,6),  label = 'Close Price',fontsize = 12,ax = ax2)
-
-    ax1.set_ylabel('Relative Strength Index', fontsize = 18)
-    ax2.set_ylabel('Close Price USD ($)', fontsize = 18)
+    df1['RSI'][-170:].plot(x = 'Index', color='tab:red', figsize=(16,6), label = 'Relative Strength Index', fontsize = 12,ax = ax2)
+    df1['Close'][-150:].plot(x = 'Index',color = 'tab:blue', figsize=(16,6),  label = 'Close Price',fontsize = 12,ax = ax1)
+    #df1['Close'][-100:].plot(figsize=(16,6))
     plt.xlim([len(df1)-100, len(df1)])
-    ax1.grid()
+    ax2.set_ylabel('Relative Strength Index', fontsize = 18)
+    ax1.set_ylabel('Close Price USD ($)', fontsize = 18)
+    #df1.xlabel('Index', fontsize=18)
+    #df1.ylabel('Relative Strength Index', fontsize =18)
+    ax2.grid(color='tab:red')
     ax1.set_title("Relative Strength Index for " + stock.upper(), fontsize = 16)
-    ax1.legend(loc=2, fontsize = 16)
-    ax2.legend(loc=3,fontsize = 16)
+    ax2.legend(loc=3, fontsize = 16)
+    ax1.legend(loc=2,fontsize = 16)
     #plt.show
     today = date.today()
-    plt.savefig(downloadPath + '\\Individual_Stock__RSI_Report_' +stock.upper()+ '_' +today.strftime("%m%d%Y") +'.png')
+    plt.savefig(downloadPath + '\\' + stock.upper() + '\\Individual_Stock__RSI_Report_' +stock.upper()+ '_' +today.strftime("%m%d%Y") +'.png')
     
     plt.close
     
     fig, ax1 = plt.subplots()
     ax2 =  ax1.twinx()
-    df1['Trend_Lag'][-150:].ewm(span = period *2, adjust=False ).mean().plot(x = 'Index', color='tab:red', figsize=(16,6), label = 'Buying Trend', fontsize = 12,ax = ax1)
-    df1['Close'][-150:].plot(x = 'Index',color = 'tab:blue', figsize=(16,6),  label = 'Close Price',fontsize = 12,ax = ax2)
+    df1['Trend_Lag'][-150:].ewm(span = period, adjust=False ).mean().plot(x = 'Index', color='tab:red', figsize=(16,6), label = 'Buying Trend', fontsize = 12,ax = ax2)
+    df1['Close'][-150:].plot(x = 'Index',color = 'tab:blue', figsize=(16,6),  label = 'Close Price',fontsize = 12,ax = ax1)
 
-    ax1.set_ylabel('Buying Trend', fontsize = 18)
-    ax2.set_ylabel('Close Price USD ($)', fontsize = 18)
+    ax2.set_ylabel('Buying Trend', fontsize = 18)
+    ax1.set_ylabel('Close Price USD ($)', fontsize = 18)
     plt.xlim([len(df1)-100, len(df1)])
-    ax1.grid()
+    ax2.grid(color='tab:red')
     ax1.set_title("Buying Trend for " + stock.upper(), fontsize = 16)
-    ax1.legend(loc=2, fontsize = 16)
-    ax2.legend(loc=3,fontsize = 16)
+    ax2.legend(loc=3, fontsize = 16)
+    ax1.legend(loc=2,fontsize = 16)
 #    plt.show
     today = date.today()
-    plt.savefig(downloadPath + '\\Individual_Stock__Buying_Trend_Report_' +stock.upper()+ '_' + today.strftime("%m%d%Y") +'.png') 
+    plt.savefig(downloadPath + '\\' + stock.upper() + '\\Individual_Stock__Buying_Trend_Report_' +stock.upper()+ '_' + today.strftime("%m%d%Y") +'.png') 
     
     plt.close
     
@@ -321,8 +332,12 @@ if __name__ == "__main__":
 #        print ("Enter the stock symbol: (blank for batch process from Stock.txt)  ")
         stock = input("Enter the stock symbol: (blank for batch process from Stock.txt)  ")
         sys.stdout = Logger()
-        if stock != "":
-            main()
+        if len(stock) > 0 :
+            if stock[0] != " ":
+                main()
+            else:
+                print("\nNo Stock Ticket Input. Abort!\n")
+
         else:
             with open("STOCK.txt","r") as stock_input_file:
                 stock_fund_names = stock_input_file.readlines()
