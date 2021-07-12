@@ -49,17 +49,18 @@ class Logger(object):
 class get_historical_data():
 
     #def __init__(self, stock_name, startDate, endDate, downloadPath):
-    def __init__(self, stock_name, downloadPath, stock_or_fund):
-        self.stock_name = stock_name
+    def __init__(self, stock_or_fund):
+        global downloadPath
+        global stock
+#        stock_name = stock
         print ("")
 #        print ("Processing " + self.stock_name.upper() +" stock data")
-        self.downloadPath = downloadPath
         self.stock_or_fund = stock_or_fund
         delay = 0
         profile = webdriver.FirefoxProfile()
         profile.set_preference("browser.download.folderList", 2)
         profile.set_preference("browser.download.manager.showWhenStarting", False)
-        profile.set_preference("browser.download.dir", self.downloadPath)
+        profile.set_preference("browser.download.dir", downloadPath)
         profile.set_preference("browser.helperApps.neverAsk.openFile", "text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml")
         profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml")
         profile.set_preference("browser.helperApps.alwaysAsk.force", False)
@@ -75,7 +76,7 @@ class get_historical_data():
         desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
         desiredCapabilities['firefox_profile'] = profile.encoded
         options = Options()
-        options.add_argument("--headless")
+#        options.add_argument("--headless")
 
         driver = webdriver.Firefox(capabilities=desiredCapabilities, options=options)
 
@@ -96,7 +97,7 @@ class get_historical_data():
             except TimeoutException:
                 pass
 
-        url_stock = "https://finance.yahoo.com/quote/"+stock_name.upper()+"?p="+stock_name.upper()
+        url_stock = "https://finance.yahoo.com/quote/"+stock.upper()+"?p="+stock.upper()
         time.sleep(delay + 1)
 
 #        time.sleep(delay + 1)
@@ -108,10 +109,10 @@ class get_historical_data():
                 driver.implicitly_wait(10)
                 # stock_elm = driver.find_element_by_id('yfin-usr-qry')
                 # time.sleep(delay + 1)
-#                stock_elm.send_keys((self.stock_name.upper()) + (Keys.ENTER))
+    #                stock_elm.send_keys((self.stock_name.upper()) + (Keys.ENTER))
                 time.sleep(delay + 1)
-#                print (self.stock_name.upper(), str(driver.current_url))
-                if self.stock_name.upper() in str(driver.current_url):
+    #            print (stock_name.upper(), str(driver.current_url))
+                if stock.upper() in str(driver.current_url):
                     break
 
             except:
@@ -159,7 +160,7 @@ class get_historical_data():
                 driver.implicitly_wait(10)
                 time.sleep(delay + 1)
 #                print (self.stock_name.upper(), str(driver.current_url))
-                if self.stock_name.upper() in str(driver.current_url):
+                if stock.upper() in str(driver.current_url):
                     break
 
             except:
@@ -219,6 +220,11 @@ class get_historical_data():
 def main():
     global downloadPath
     global stock
+    try:
+        shutil.rmtree(downloadPath + '\\' + data)
+    except:
+        pass
+    os.mkdir(downloadPath + '\\' + data)
     sys.stdout = Logger()
     time = datetime.datetime.now().time()
     print("Time:", time)
@@ -242,6 +248,7 @@ def main():
         print ("Processing " + stock_fund_name.rstrip() +" data")
         print (("=") * len("Processing " + stock_fund_name.rstrip() +" data"))
         stock = re.search(('\(\w+\)'), stock_fund_name)
+#        print (type(stock.group()))
         is_stock =  re.search("ETF|Fund",stock_fund_name)       
 #            print is_stock
         if is_stock:
@@ -253,8 +260,9 @@ def main():
             stock_or_fund ='stock'
 #        print (stock.group())
         # time.sleep(10000)
-        
-        get_stock_data = get_historical_data(stock.group().rstrip().rstrip(')').lstrip('('),  downloadPath, stock_or_fund)
+        stock = stock.group().rstrip().rstrip(')').lstrip('(')
+#        get_stock_data = get_historical_data(stock.group().rstrip().rstrip(')').lstrip('('),  downloadPath, stock_or_fund)
+        get_stock_data = get_historical_data(stock_or_fund)
 
 
 if __name__ == "__main__":

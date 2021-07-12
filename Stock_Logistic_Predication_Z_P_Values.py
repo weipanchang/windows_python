@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
+#from numba import jit
 import yfinance as yf
 import numpy as np
 import pandas as pd
@@ -33,6 +34,7 @@ class Logger(object):
         #you might want to specify some extra behavior here.
         pass    
 
+#@jit(nopython=True)
 def main():
 #    stock = input("Enter the stock symbol:  ")
 

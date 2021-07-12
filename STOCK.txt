@@ -4,7 +4,11 @@ Adobe Inc. (ADBE)
 
 HP Inc. (HPQ)
 
+Amazon.com, Inc. (AMZN)
+
 Oracle Corporation (ORCL)
+
+NVIDIA Corporation (NVDA)
 
 PayPal Holdings, Inc. (PYPL)
 
@@ -12,15 +16,15 @@ QUALCOMM Incorporated (QCOM)
 
 Apple Inc. (AAPL)
 
-Financial Select Sector SPDR Fund (XLF)
+IGNOR Financial Select Sector SPDR Fund (XLF)
 
-Industrial Select Sector SPDR Fund (XLI)
+IGNOR Industrial Select Sector SPDR Fund (XLI)
 
-Energy Select Sector SPDR Fund (XLE)
-
-PayPal Holdings, Inc. (PYPL)
+IGNOR Energy Select Sector SPDR Fund (XLE)
 
 Microsoft Corporation (MSFT)
+
+Square, Inc. (SQ)
 
 United Parcel Service, Inc. (UPS)
 
