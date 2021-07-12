@@ -6,6 +6,8 @@ Firefox version: 73.0 (64-bit)
 #import urllib2
 import requests, urllib3, sys
 import re
+import os
+import shutil
 # from bs4 import BeautifulSoup
 # import unittest
 from selenium import webdriver
@@ -76,7 +78,7 @@ class get_historical_data():
         desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
         desiredCapabilities['firefox_profile'] = profile.encoded
         options = Options()
-#        options.add_argument("--headless")
+        options.add_argument("--headless")
 
         driver = webdriver.Firefox(capabilities=desiredCapabilities, options=options)
 
@@ -221,10 +223,10 @@ def main():
     global downloadPath
     global stock
     try:
-        shutil.rmtree(downloadPath + '\\' + data)
+        shutil.rmtree(downloadPath)
     except:
-        pass
-    os.mkdir(downloadPath + '\\' + data)
+         pass
+    os.mkdir(downloadPath)
     sys.stdout = Logger()
     time = datetime.datetime.now().time()
     print("Time:", time)
