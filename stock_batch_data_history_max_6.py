@@ -57,11 +57,13 @@ class get_historical_data():
         global downloadPath
         global stock
 #        stock_name = stock
-
         print ("")
 #        print ("Processing " + self.stock_name.upper() +" stock data")
         self.stock_or_fund = stock_or_fund
         delay = 0
+        currentDateTime = datetime.datetime.now()
+        date = currentDateTime.date()
+        
         profile = webdriver.FirefoxProfile()
         profile.set_preference("browser.download.folderList", 2)
         profile.set_preference("browser.download.manager.showWhenStarting", False)
@@ -125,14 +127,13 @@ class get_historical_data():
 
         #
         print ("Retrieving Historical Data ")
-        currentDateTime = datetime.datetime.now()
-        date = currentDateTime.date()
-        element = datetime.datetime.strptime(str(date),"%Y-%m-%d")
-  
-        tuple = element.timetuple()
-        timestamp = str(int(time.mktime(tuple)))
-#        print (timestamp)
-        #print (date)
+
+        ts = datetime.datetime.strptime(str(date),"%Y-%m-%d")
+
+#        tuple = element.timetuple()
+        timestamp = str(int(time.mktime(ts.timetuple())))
+        # print (timestamp)
+        # print (date)
         url_history = "https://finance.yahoo.com/quote/" + stock + "/history?period1=00&period2=" + timestamp +"&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
 #        url_history = "https://finance.yahoo.com/quote/" + stock + "/history?period1=00&period2=1626480000&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
         while True:
@@ -140,7 +141,7 @@ class get_historical_data():
             try:
                 time.sleep(delay + 1)
                 driver.get(url_history)
-                driver.implicitly_wait(10)
+                driver.implicitly_wait(5)
                 if stock.upper() in str(driver.current_url):
                     break
             except:
@@ -181,19 +182,15 @@ class get_historical_data():
 
             print ("Display Summary Page")
             while True:
-    #            time.sleep(delay + 1)
                 try:
-                    time.sleep(delay + 1)
                     driver.get(url_stock)
-                    driver.implicitly_wait(10)
+                    driver.implicitly_wait(5)
                     time.sleep(delay + 1)
-    #                print (self.stock_name.upper(), str(driver.current_url))
+
                     if stock.upper() in str(driver.current_url):
                         break
 
                 except:
-    #                driver.get(url)
-    #                driver.delete_all_cookies()
                     print ("Yahoo slow, will reloop!")
                     pass
 
@@ -206,34 +203,46 @@ class get_historical_data():
                 except Exception:
                     pass
 
-                Current_price = driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text    
+                Current_price = driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text
 
-                Open_elm = driver.find_element_by_xpath('//*[@id="quote-summary"]/div[1]/table/tbody/tr[2]/td[2]/span').text
-                print("Open =  %.2f" %float(Open_elm))
-                
+                Open = driver.find_element_by_xpath('//*[@id="quote-summary"]/div[1]/table/tbody/tr[2]/td[2]/span').text
+                print("Open =  %.2f" %float(Open))
+
                 Range_elm = driver.find_element_by_xpath('//*[@id="quote-summary"]/div[1]/table/tbody/tr[5]/td[2]').text
                 Low, High  = Range_elm.split(' - ')[0], Range_elm.split(' - ')[1]
                 print ("LOW = %s, HIGH = %s" %(Low, High))
-                
+
                 Volume_elm = driver.find_element_by_xpath('//*[@id="quote-summary"]/div[1]/table/tbody/tr[7]/td[2]/span').text
-                Volume_elm = Volume_elm.replace(',', '') 
+                Volume_elm = Volume_elm.replace(',', '')
                 print("Volume =  %d" %int(Volume_elm))
-                
+
                 weekno = datetime.datetime.today().weekday()
                 north_america = holidays.US()
-                date = currentDateTime.date()
-#                print(date)
-                Date_today = date.strftime("%m-%d-%Y")
-#                print(Date_today)
-                if weekno < 5 and ( Date_today not in north_america):
-                    with open(downloadPath +"\\" + stock.upper() + '.csv', 'a') as file:
-                        writer = csv.writer(file)
-                        last_row = ['\n',str(element)[:10], ',', Open_elm, ',', High, ',' , Low, ',', Current_price, ',', Current_price, ',', Volume_elm]
-    #                    print (last_row)
-                    file.writelines(last_row)
-                # else:  # 5 Sat, 6 Sun
-                #     pass
+#                date = currentDateTime.date()
 
+                Day_of_today = date.strftime("%m-%d-%Y")
+#                print(Date_today)
+                if weekno < 5 and (Day_of_today not in north_america):
+                    current_time = datetime.datetime.now()
+                    open_time = current_time.replace(hour=9, minute=15, second=0, microsecond=0)
+#                    current_time = datetime.datetime.now().time()
+                    # print(current_time)
+                    if (current_time > open_time):
+#                    if (int(str(current_time.hour)) > 8):
+                    # with open(downloadPath +"\\" + stock.upper() + '.csv', 'r') as f:
+                    #     for line in f:
+                    #         pass
+                    #     last_line = line
+                    # last_date = last_line.split(',')
+                    # if last_date != str(ts)[:10]:
+                        
+                    
+                        with open(downloadPath +"\\" + stock.upper() + '.csv', 'a') as file:
+    #                       writer = csv.writer(file)
+                            last_row = ['\n',str(ts)[:10], ',', Open, ',', High, ',' , Low, ',', Current_price, ',', Current_price, ',', Volume_elm]
+                            file.writelines(last_row)
+
+#               Search Beta Value
                 table_elm = driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody')
                 list_elm = table_elm.find_elements_by_xpath('//*/tr[2]')
 
@@ -241,34 +250,40 @@ class get_historical_data():
                     if 'Beta (5Y Monthly)' in elm.text:
                         print( elm.text)
 
+#               Search One year Target Estimate Value
                 list_elm = table_elm.find_elements_by_xpath('//*/tr[8]')
 
                 for elm in list_elm:
                     if '1y Target Est' in elm.text:
                         print (elm.text)
                 print (driver.find_element_by_xpath('//*[@id="chrt-evts-mod"]/div[2]/div[1]/span[1]/span').text)
-    #                    //*[@id="quote-summary"]/div[2]/table/tbody/tr[8]/td[1]/span
+                
+                EPS =  driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody/tr[4]/td[2]/span').text
+                print ("EPS ( > 1 is better ) = %s" %EPS)
+                
+                PE_Rato = driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody/tr[3]/td[2]/span').text
+                print ("PE_Rato ( Smaller is better ) = %s" %PE_Rato)
             else:
 
                 table_elm = driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody')
                 list_elm = table_elm.find_elements_by_xpath('//*/tr[6]')
 
                 for elm in list_elm:
-
                     if 'Beta' in elm.text:
                        print (elm.text)
+
                 table_elm = driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody')
                 list_elm = table_elm.find_elements_by_xpath('//*/tr[2]')
                 for elm in list_elm:
 
                     if 'Beta' in elm.text:
                        print (elm.text)
+
                 if stock_or_fund == 'ETF':
                     print (driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[1]/span').text, end ='   ')
                     print (driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[2]/span').text)
 
             print ('\n' *3)
-
         driver.quit()
 
 def main():
@@ -305,7 +320,6 @@ def main():
         stock = re.search(r'(\(\^\w+\))', stock_fund_name)
         if stock is None:
             stock = re.search('\(\w+\)', stock_fund_name)
-#        print (type(stock.group()))
         is_stock =  re.search("ETF|Fund",stock_fund_name)
 #            print is_stock
         if is_stock:
@@ -316,11 +330,9 @@ def main():
         else:
             stock_or_fund ='stock'
 #        print (stock.group())
-        # time.sleep(10000)
         stock = stock.group().rstrip().rstrip(')').lstrip('(')
 #        get_stock_data = get_historical_data(stock.group().rstrip().rstrip(')').lstrip('('),  downloadPath, stock_or_fund)
         get_stock_data = get_historical_data(stock_or_fund)
-
 
 if __name__ == "__main__":
     main()
