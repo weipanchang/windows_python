@@ -325,7 +325,6 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         for stock in sys.argv[1:]:
             sys.stdout = Logger()
-#            print (stock)
             main()
     else:
 #        print ("Enter the stock symbol: (blank for batch process from Stock.txt)  ")
