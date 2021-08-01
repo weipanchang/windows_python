@@ -12,17 +12,18 @@ from datetime import date
 import time
 import datetime
 import sys
-from cachetools import cached
+import os
 
-@cached(cache = {})
+downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\data"
 
 class Logger(object):
     def __init__(self):
+
+        # global downloadPath
         today = date.today()
-        downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
-        d1 = today.strftime("%m%d%Y")
+        # d1 = today.strftime("%m%d%Y")
         self.terminal = sys.stdout
-        self.log = open(downloadPath +"\\Z_P_Report_"+ d1 + ".txt" , "a+")
+        self.log = open(downloadPath +"\\Z_P_Report_"+ today.strftime("%m%d%Y") + ".txt" , "a+")
 
     def write(self, message):
         self.terminal.write(message)
@@ -44,7 +45,7 @@ def main():
     invest = 100
     years_of_data_to_process = 30
     
-    downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
+    # global downloadPath
     sys.stdout = Logger()
     time = datetime.datetime.now().time()
     print("Time:", time)
@@ -54,9 +55,9 @@ def main():
     start_year =  int(year) - years_of_data_to_process
     start = datetime.datetime(start_year, 1, 1)
 
-    with open("STOCK.txt","r") as stock_input_file:
-        stock_fund_names = stock_input_file.readlines()
- 
+    # with open("STOCK.txt","r") as stock_input_file:
+    #     stock_fund_names = stock_input_file.readlines()
+    stock_fund_names =  [line for line in open("STOCK.txt", "r")]
     for stock_fund_name in stock_fund_names:
         if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
             continue

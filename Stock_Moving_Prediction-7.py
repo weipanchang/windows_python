@@ -11,6 +11,7 @@ import pandas as pd
 import time
 import statsmodels.api as sm
 import datetime
+import shutil
 
 from dateutil.relativedelta import relativedelta
 from datetime import date
@@ -18,23 +19,27 @@ from datetime import date
 
 pd.set_option('mode.use_inf_as_na', True)
 
-downloadPath = "C:\\Users\\William Chang\\Documents\\Python Scripts\\data"
+downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Prediction"
 stock = ""
 
 class Logger(object):
     def __init__(self):
-        global downloadPath
-        global stock
+        # global downloadPath
+        # global stock
         today = date.today()
 
 #        d1 = today.strftime("%m%d%Y")
         try:
-            os.mkdir(downloadPath + '\\' + stock.upper())
+            shutil.rmtree(downloadPath)
+        except:
+            pass
+        try:
+            os.mkdir(downloadPath)
         except:
             pass
 
         self.terminal = sys.stdout
-        self.log = open(downloadPath +"\\Individual_Stock_Report_"+ stock.upper() + '_' + today.strftime("%m%d%Y") + ".txt" , "a+")
+        self.log = open(downloadPath + "\\Individual_Stock_Report_" + stock.upper() + '_' + today.strftime("%m%d%Y") + ".txt" , "a+")
 
     def write(self, message):
         self.terminal.write(message)
@@ -48,8 +53,8 @@ class Logger(object):
 
 def main():
 
-    global downloadPath
-    global stock
+    # global downloadPath
+    # global stock
 
     short_moving_average_span = 20
     long_moving_average_span = 50
@@ -60,21 +65,21 @@ def main():
 
     time = datetime.datetime.now().time()
     date = datetime.datetime.now().date()
-#    date = currentDateTime.date()
 
+    # try:
+    #     shutil.rmtree(downloadPath + '\\Individual_Stock_Report_' + stock.upper())
+    # 
+    # except:
+    #     pass
     try:
-        shutil.rmtree(downloadPath + '\\' + stock.upper())
+        os.mkdir(downloadPath + '\\' + stock.upper())
     except:
         pass
-
-    os.mkdir(downloadPath + '\\' + stock.upper())
-
-
     year = date.strftime("%Y")
     start_year =  int(year) - years_of_data_to_process
     start = datetime.datetime(start_year, 1, 1)
 
-    print("\n\n***************************************************")
+    print("\n\n**********************************************")
     print("             Stock Ticket: = %s" %stock.upper())
     data =  yf.download(stock, start=start)
     print("\n", data.tail())
@@ -236,7 +241,7 @@ def main():
     ax1.legend(loc=2,fontsize = 16)
     # plt.show
     # plt.close
-#    today = date.today()
+
     plt.savefig(downloadPath + '\\' + stock.upper() + '\\Individual_Stock__RSI_Report_' +stock.upper()+ '_' +today.strftime("%m%d%Y") +'.png')
     plt.close
 
@@ -257,7 +262,7 @@ def main():
     ax3.legend(loc=4, fontsize = 16)
     ax1.legend(loc=2,fontsize = 16)
 #    plt.show
-#    today = date.today()
+
     plt.savefig(downloadPath + '\\' + stock.upper() + '\\Individual_Stock__Buying_Trend_Report_' +stock.upper()+ '_' + today.strftime("%m%d%Y") +'.png')
     plt.close
 
@@ -337,8 +342,9 @@ if __name__ == "__main__":
                 print("\nNo Stock Ticket Input. Abort!\n")
 
         else:
-            with open("STOCK.txt","r") as stock_input_file:
-                stock_fund_names = stock_input_file.readlines()
+            # with open("STOCK.txt","r") as stock_input_file:
+            #     stock_fund_names = stock_input_file.readlines()
+            stock_fund_names =  [line for line in open("STOCK.txt", "r")]
 
             for stock_fund_name in stock_fund_names:
                 if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :

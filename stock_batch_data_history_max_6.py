@@ -9,6 +9,7 @@ import re
 import os
 import holidays
 import shutil
+
 # from bs4 import BeautifulSoup
 # import unittest
 from selenium import webdriver
@@ -26,9 +27,10 @@ from datetime import date
 import sys
 # from bs4 import BeautifulSoup as bs
 from selenium import webdriver
-downloadPath = "C:\\Users\\William Chang\\Documents\\Python Scripts\\data"
+downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\data"
 #short_cut_url = "https://finance.yahoo.com/quote/AVGO/history?period1=1249516800&period2=1626307200&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
 stock = ""
+#home_dir = os.path.expanduser( '~' )
 
 class Logger(object):
 
@@ -256,8 +258,14 @@ class get_historical_data():
                 for elm in list_elm:
                     if '1y Target Est' in elm.text:
                         print (elm.text)
-                print (driver.find_element_by_xpath('//*[@id="chrt-evts-mod"]/div[2]/div[1]/span[1]/span').text)
-                
+                        
+#                Print bullish or bearish
+                try:
+
+                     print ("bullish or bearish: ==> %s" %(driver.find_element_by_xpath('//html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[1]/div/div[3]/div[2]/div[1]/span[1]/span').text))
+                except:
+                    print("bullish or bearish not found")
+                    
                 EPS =  driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody/tr[4]/td[2]/span').text
                 print ("EPS ( > 1 is better ) = %s" %EPS)
                 
@@ -293,20 +301,17 @@ def main():
         shutil.rmtree(downloadPath)
     except:
          pass
-    os.mkdir(downloadPath)
-    sys.stdout = Logger()
-    time = datetime.datetime.now().time()
-    print("Time:", time)
-    # get_stock_data = get_historical_data("VTI",  downloadPath)
-    # get_stock_data = get_historical_data("VIG",  downloadPath)
-    # get_stock_data = get_historical_data("VYM",  downloadPath)
-    # get_stock_data = get_historical_data("SCHD",  downloadPath)
-    # get_stock_data = get_historical_data("vt",  downloadPath)
-    # get_stock_data = get_historical_data("sdy",  downloadPath)
-    # get_stock_data = get_historical_data("dvy",  downloadPath)
 
-    with open("STOCK.txt","r") as stock_input_file:
-        stock_fund_names = stock_input_file.readlines()
+    os.mkdir(downloadPath)
+
+    sys.stdout = Logger()
+
+    time = datetime.datetime.now().time()
+    print("\nTime: ", time, "\n")
+
+    # with open("STOCK.txt","r") as stock_input_file:
+    #     stock_fund_names = stock_input_file.readlines()
+    stock_fund_names =  [line for line in open("STOCK.txt", "r")]
 #        print stock_fund_names
 
     for stock_fund_name in stock_fund_names:
@@ -335,4 +340,5 @@ def main():
         get_stock_data = get_historical_data(stock_or_fund)
 
 if __name__ == "__main__":
+
     main()
