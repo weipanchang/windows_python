@@ -101,7 +101,7 @@ class get_data:
                 self.driver.delete_all_cookies()
                 self.driver.implicitly_wait(10) # seconds
                 time.sleep(self.delay + 1)
-                print ("Yahoo finance Page is loaded")
+#                print ("Yahoo finance Page is loaded")
                 if 'finance' in str(self.driver.current_url):
                     break
             except TimeoutException:
@@ -116,8 +116,7 @@ class get_data:
 
 #        tuple = element.timetuple()
         self.timestamp = str(int(time.mktime(self.ts.timetuple())))
-        # print (timestamp)
-        # print (date)
+
         self.url_history = "https://finance.yahoo.com/quote/" + stock.upper() + "/history?period1=00&period2=" + self.timestamp +"&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
 #        url_history = "https://finance.yahoo.com/quote/" + stock + "/history?period1=00&period2=1626480000&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
         while True:
@@ -147,16 +146,14 @@ class get_data:
         
         weekno = datetime.datetime.today().weekday()
         north_america = holidays.US()
-#                date = currentDateTime.date()
 
         Day_of_today = self.date.strftime("%m-%d-%Y")
-#                print(Date_today)
+
         if weekno < 5 and (Day_of_today not in north_america):
             print("Saving current stock price.")
             current_time = datetime.datetime.now()
             open_time = current_time.replace(hour=9, minute=15, second=0, microsecond=0)
-#                    current_time = datetime.datetime.now().time()
-            # print(current_time)
+
             if (current_time > open_time):
                 with open(downloadPath +"\\" + stock.upper() + '.csv', 'a') as file:
 #                       writer = csv.writer(file)
@@ -165,9 +162,8 @@ class get_data:
 
  #        if stock[1:] not in ['XAX', 'IXIC', 'DJI', 'GSPC', 'NYA']:
     def get_Summary_data(self): 
-        print ("Display Summary Page")
-#        print(stock.upper(), str(driver.current_url))
-#        time.sleep(10000000)
+        print ("Display Summary Page... \n\n")
+
         while True:
             try:
                 self.driver.get(self.url_stock)
@@ -220,7 +216,6 @@ class get_data:
                     
 #                Print bullish or bearish
             try:
-
                  print ("bullish or bearish: ==> %s" %(self.driver.find_element_by_xpath('//html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[1]/div/div[3]/div[2]/div[1]/span[1]/span').text))
             except:
                 print("bullish or bearish not found")
@@ -261,10 +256,51 @@ def main():
          pass
     time.sleep(2)
     os.mkdir(downloadPath)
-    sys.stdout = Logger()
+
     now_time = datetime.datetime.now().time()
     print("\nTime: ", now_time, "\n")
+    menu_options = { \
+    1: 'Download Historical Data', \
+    2: 'Get Summary Data', \
+    3: 'Download Historycal Data And Summary Date', \
+    4: 'Exit', \
+    }
 
+    def print_menu():
+        print("Enter your choice: \n\n")
+        for key in menu_options.keys():
+            print (key, '--', menu_options[key] )
+        print ("\n")
+        return(int(input()))
+#        print("\n")
+    
+    def option1():
+#        sys.stdout = Logger()
+#        get_history_data = get_data(stock_or_fund)
+        get_history_data.get_historical_data()
+#        get_history_data.quit_driver()
+    
+    def option2():
+#        sys.stdout = Logger()        
+#        get_history_data = get_data(stock_or_fund)
+        get_history_data.get_Summary_data()
+#        get_history_data.quit_driver()        
+    
+    def option3():
+#        sys.stdout = Logger()        
+#        get_history_data = get_data(stock_or_fund)
+        get_history_data.get_historical_data()
+        get_history_data.get_Summary_data()
+#        get_history_data.quit_driver()        
+        
+    while(True):
+#        print_menu()
+        option = ''
+        try:
+            option = print_menu()
+            break
+        except:
+            print('Wrong input. Please enter a number ...')
     # with open("STOCK.txt","r") as stock_input_file:
     #     stock_fund_names = stock_input_file.readlines()
     stock_fund_names =  [line for line in open("STOCK.txt", "r")]
@@ -273,33 +309,51 @@ def main():
     for stock_fund_name in stock_fund_names:
         if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
             continue
-
-        print (("=") * len("Processing " + stock_fund_name.rstrip() +" data"))
-        print ("Processing " + stock_fund_name.rstrip() +" data")
-        print (("=") * len("Processing " + stock_fund_name.rstrip() +" data"))
-#        stock = re.search('\(\w+\)', stock_fund_name)
-        stock = re.search(r'(\(\^\w+\))', stock_fund_name)
-        if stock is None:
-            stock = re.search('\(\w+\)', stock_fund_name)
-        is_stock =  re.search("ETF|Fund",stock_fund_name)
+        if option != 4:
+            sys.stdout = Logger()
+            print("\n")
+            print (("=") * len("Processing " + stock_fund_name.rstrip() +" data"))
+            print ("Processing " + stock_fund_name.rstrip() +" data")
+            print (("=") * len("Processing " + stock_fund_name.rstrip() +" data"))
+#           stock = re.search('\(\w+\)', stock_fund_name)
+            stock = re.search(r'(\(\^\w+\))', stock_fund_name)
+            if stock is None:
+                stock = re.search('\(\w+\)', stock_fund_name)
+            is_stock =  re.search("ETF|Fund",stock_fund_name)
 #            print is_stock
-        if is_stock:
-            if 'Fund' in stock_fund_name:
-                stock_or_fund =  'Fund'
+            if is_stock:
+                if 'Fund' in stock_fund_name:
+                    stock_or_fund =  'Fund'
+                else:
+                    stock_or_fund = 'ETF'
             else:
-                stock_or_fund = 'ETF'
+                stock_or_fund ='stock'
+
+            stock = stock.group().rstrip().rstrip(')').lstrip('(')
+            get_history_data = get_data(stock_or_fund)
+        
+        #Check what choice was entered and act accordingly
+        if option == 1:
+            option1()
+
+        elif option == 2:
+            option2()
+
+        elif option == 3:
+            option3()
+ 
+        elif option == 4:
+            print('Program Terminated')
+            break
         else:
-            stock_or_fund ='stock'
-#        print (stock.group())
-        stock = stock.group().rstrip().rstrip(')').lstrip('(')
-#        get_stock_data = get_historical_data(stock.group().rstrip().rstrip(')').lstrip('('),  downloadPath, stock_or_fund)
-        get_history_data = get_data(stock_or_fund)
+            print('Invalid option. Please enter a number between 1 and 4.')
 
 #        get_history_data.get_historical_data()
 
-        get_history_data.get_Summary_data()
-
-        get_history_data.quit_driver()
+        # get_history_data.get_Summary_data()
+        #
+        if option != 4:        
+            get_history_data.quit_driver()
 if __name__ == "__main__":
 
     main()
