@@ -364,7 +364,6 @@ if __name__ == "__main__":
             sys.stdout = Logger()
             main()
     else:
-#        print ("Enter the stock symbol: (blank for batch process from Stock.txt)  ")
         stocks = input("Enter the stock symbol: (Blank for batch process from Stock.txt)  ")
         sys.stdout = Logger()
         if len(stocks) > 0 :
