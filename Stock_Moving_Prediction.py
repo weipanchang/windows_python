@@ -360,8 +360,8 @@ def main():
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
+        sys.stdout = Logger()
         for stock in sys.argv[1:]:
-            sys.stdout = Logger()
             main()
     else:
         stocks = input("Enter the stock symbol: (Blank for batch process from Stock.txt)  ")
