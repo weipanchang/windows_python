@@ -42,7 +42,7 @@ class Logger(object):
             # os.mkdir(downloadPath_pickle)
         except:
             pass
-        # time.sleep(2)    
+        # time.sleep(2)
         self.terminal = sys.stdout
         i =0
         delay = 0
@@ -57,7 +57,7 @@ class Logger(object):
         else:
             print ("Log file permission denied, aborted!")
             sys.exit()
-        
+
     def write(self, message):
         self.terminal.write(message)
         self.log.write(message)
@@ -82,7 +82,7 @@ def main():
 
     # try:
     #     shutil.rmtree(downloadPath + '\\Individual_Stock_Report_' + stock.upper())
-    # 
+    #
     # except:
     #     pass
     try:
@@ -328,16 +328,16 @@ def main():
     print(df1[['Date','Open','Close','High','Low','Trend']].tail(15))
     print ('\n' *2 )
     print (df1_summary[['Date','Stock Market Performance','Scribe Predection']].tail(15))
-    
+
     # fig, ax1 = plt.subplots()
     # ax2 =  ax1.twinx()
     # df1['Close'][-150:].plot(x = 'Index', color='tab:blue', figsize=(16,6), label = 'Close Price USA ($)', fontsize = 12, ax = ax1)
     # df1['Trend'][-150:].plot(x = 'Index', color='tab:red', figsize=(16,6), label = 'Prediction Trend', fontsize = 12, ax = ax2)
-    # 
+    #
     # plt.xlim([len(df1)-120, len(df1)])
     # ax1.set_ylabel('Close Price USD ($)', fontsize = 18)
     # ax2.set_ylabel('Prediction Trend', fontsize = 18)
-    # 
+    #
     # ax2.grid(color='tab:brown')
     # ax1.set_title('Prediction Trend ' + stock.upper(), fontsize = 16)
     # ax1.legend(loc=2, fontsize = 16)
@@ -375,8 +375,6 @@ if __name__ == "__main__":
                 print("\nNo Stock Ticket Input. Abort!\n")
 
         else:
-            # with open("STOCK.txt","r") as stock_input_file:
-            #     stock_fund_names = stock_input_file.readlines()
             stock_fund_names =  [line for line in open("STOCK.txt", "r")]
 
             for stock_fund_name in stock_fund_names:
