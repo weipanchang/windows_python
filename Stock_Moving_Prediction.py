@@ -12,6 +12,7 @@ import time
 import statsmodels.api as sm
 import datetime
 import shutil
+import string
 # import pickle
 
 from dateutil.relativedelta import relativedelta
@@ -96,8 +97,9 @@ def main():
     print("\n\n**********************************************")
     print("             Stock Ticket: = %s" %stock.upper())
     data =  yf.download(stock, start=start)
+    if data.empty:
+        return
     print("\n", data.tail())
-
     df = data["Close"].pct_change() * 100
 
     df = df.rename("Today_Change_%")
@@ -364,16 +366,17 @@ if __name__ == "__main__":
         for stock in sys.argv[1:]:
             main()
     else:
-        stocks = input("Enter the stock symbol: (Blank for batch process from Stock.txt)  ")
+        try:
+            stocks = input("Enter the stock symbol: (Ctr-C to Exit, Blank for batch process from Stock.txt)  ")
+        except:
+            print("\nNo Stock Ticket Input. Abort!\n")
+            sys.exit()            
         sys.stdout = Logger()
         if len(stocks) > 0 :
-            if stocks[0] != " ":
-                stock_list = stocks.split(" ")
-                for stock in stock_list:
-                    main()
-            else:
-                print("\nNo Stock Ticket Input. Abort!\n")
-
+#            if stocks[0] != " ":
+            stock_list = stocks.split(" ")
+            for stock in stock_list:
+                main()
         else:
             stock_fund_names =  [line for line in open("STOCK.txt", "r")]
 
