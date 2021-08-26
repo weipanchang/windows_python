@@ -13,6 +13,7 @@ import statsmodels.api as sm
 import datetime
 import shutil
 import string
+import logging
 # import pickle
 
 from dateutil.relativedelta import relativedelta
@@ -20,6 +21,9 @@ from datetime import date
 #from cachetools import cached
 
 pd.set_option('mode.use_inf_as_na', True)
+
+logging.basicConfig(level=logging.INFO)
+
 
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Prediction"
 # downloadPath_pickle = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Pickle"
@@ -94,7 +98,7 @@ def main():
     start_year =  int(year) - years_of_data_to_process
     start = datetime.datetime(start_year, 1, 1)
 
-    print("\n\n**********************************************")
+    print("\n\n*************************************************")
     print("             Stock Ticket: = %s" %stock.upper())
     data =  yf.download(stock, start=start)
     if data.empty:
@@ -149,11 +153,11 @@ def main():
     ax1.legend(loc=2, fontsize = 16)
     ax2.legend(loc=4,fontsize = 16)
     # plt.show
-    # plt.close
+    # plt.close()
 
     today = date.today()
     plt.savefig(downloadPath + '\\' + stock.upper() +'\\Individual_Stock__MV_Average_ &_Signal_Line_Report_' +stock.upper()+ '_' +today.strftime("%m%d%Y") +'.png')
-    plt.close
+    plt.close()
 
     df1['Signal_Line'] = df1['Short_MV_Avg_Span-Long_MV_Avg_Span_Lag'].ewm(span = period, adjust=False ).mean()
     df1['Signal_Line_Lag'] =  df1['Signal_Line'].shift(1)
@@ -256,10 +260,10 @@ def main():
     ax2.legend(loc=3, fontsize = 16)
     ax1.legend(loc=2,fontsize = 16)
     # plt.show
-    # plt.close
+    # plt.close()
 
     plt.savefig(downloadPath + '\\' + stock.upper() + '\\Individual_Stock__RSI_Report_' +stock.upper()+ '_' +today.strftime("%m%d%Y") +'.png')
-    plt.close
+    plt.close()
 
     fig, ax1 = plt.subplots()
     ax2 =  ax1.twinx()
@@ -280,7 +284,7 @@ def main():
 #    plt.show
 
     plt.savefig(downloadPath + '\\' + stock.upper() + '\\Individual_Stock__Buying_Trend_Report_' +stock.upper()+ '_' + today.strftime("%m%d%Y") +'.png')
-    plt.close
+    plt.close()
 
     df1.dropna(inplace= True)
     X = df1[['const','Trend_Lag', 'RSI_Lag', 'Signal_Line_Lag','Volume_Lag']]
@@ -346,7 +350,7 @@ def main():
     # ax2.legend(loc=4,fontsize = 16)
     # # plt.show
     # plt.savefig(downloadPath + '\\' + stock.upper() + '\\Prediction Trend ' +stock.upper()+ '_' + today.strftime("%m%d%Y") +'.png')
-    # plt.close
+    # plt.close()
 
 #    prediction = result.predict(x_test)
     now_up_down  = result.predict([1.0, df1.iloc[-1, 10], High_Low, df1.iloc[-1, 26] ,df1.iloc[-1, 22], df1.iloc[-1, 7]])
@@ -363,6 +367,7 @@ def main():
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         sys.stdout = Logger()
+        logging.log(logging.INFO, "In Line Variable")
         for stock in sys.argv[1:]:
             main()
     else:
@@ -370,7 +375,8 @@ if __name__ == "__main__":
             stocks = input("Enter the stock symbol: (Ctr-C to Exit, Blank for batch process from Stock.txt)  ")
         except:
             print("\nNo Stock Ticket Input. Abort!\n")
-            sys.exit()            
+            sys.exit()
+        logging.log(logging.INFO, "Manual Input  Variable")
         sys.stdout = Logger()
         if len(stocks) > 0 :
 #            if stocks[0] != " ":
@@ -378,6 +384,7 @@ if __name__ == "__main__":
             for stock in stock_list:
                 main()
         else:
+            logging.log(logging.INFO, "Batch Process")
             stock_fund_names =  [line for line in open("STOCK.txt", "r")]
 
             for stock_fund_name in stock_fund_names:
