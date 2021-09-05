@@ -369,6 +369,7 @@ if __name__ == "__main__":
         sys.stdout = Logger()
         logging.log(logging.INFO, "In Line Variable")
         for stock in sys.argv[1:]:
+#            logging.log(logging.INFO, "stock = %s" %stock)
             main()
     else:
         try:
@@ -403,4 +404,5 @@ if __name__ == "__main__":
                     continue
                 stock = re.search(('\(\w+\)'), stock_fund_name)
                 stock = stock.group().rstrip().rstrip(')').lstrip('(')
+
                 main()
