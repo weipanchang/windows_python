@@ -74,6 +74,25 @@ class Logger(object):
         #you might want to specify some extra behavior here.
         pass
 
+def rsi(df1):
+    
+    for i in range(len(df1)):
+        if df1.iloc[i,9] <= 0:
+            df1.iloc[i,24] = 0
+            df1.iloc[i,25] = df1.iloc[i,9]
+        else:
+            df1.iloc[i,25] = 0
+            df1.iloc[i,24] = df1.iloc[i,9]
+
+    AVG_Gain = df1.Up.ewm(span=period, adjust=False).mean()
+    AVG_Loss = df1.Down.ewm(span=period, adjust=False).mean().abs()
+
+
+    RS = AVG_Gain /AVG_Loss
+    RSI = 100.0 - (100.0 / (1.0 + RS))
+    df1['RSI'] = RSI
+    df1['RSI_Lag'] = df1['RSI'].shift(1)
+
 def confusion_matrix(act,pred, cutoff):
     predtrans = ['Up' if i > cutoff else 'Down' for i in pred]
     actuals = ['Up' if i > 0 else 'Down' for i in act]
@@ -249,22 +268,7 @@ def main():
 
     df1 = df1.assign(Up=np.nan,Down=np.nan)
 
-    for i in range(len(df1)):
-        if df1.iloc[i,9] <= 0:
-            df1.iloc[i,24] = 0
-            df1.iloc[i,25] = df1.iloc[i,9]
-        else:
-            df1.iloc[i,25] = 0
-            df1.iloc[i,24] = df1.iloc[i,9]
-
-    AVG_Gain = df1.Up.ewm(span=period, adjust=False).mean()
-    AVG_Loss = df1.Down.ewm(span=period, adjust=False).mean().abs()
-
-
-    RS = AVG_Gain /AVG_Loss
-    RSI = 100.0 - (100.0 / (1.0 + RS))
-    df1['RSI'] = RSI
-    df1['RSI_Lag'] = df1['RSI'].shift(1)
+    rsi(df1)
 
     fig, ax1 = plt.subplots()
     ax2 =  ax1.twinx()

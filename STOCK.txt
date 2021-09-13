@@ -1,20 +1,38 @@
-Facebook, Inc. (FB)
+Apple Inc. (AAPL)
+Target Corporation (TGT)
 
+Crocs, Inc. (CROX)
+
+Broadcom Inc. (AVGO)
 Adobe Inc. (ADBE)
 
-HP Inc. (HPQ)
+Facebook, Inc. (FB)
+Seagate Technology Holdings plc (STX)
 
-Amazon.com, Inc. (AMZN)
 
-Oracle Corporation (ORCL)
-
-NVIDIA Corporation (NVDA)
+United Parcel Service, Inc. (UPS)
 
 PayPal Holdings, Inc. (PYPL)
 
-QUALCOMM Incorporated (QCOM)
+Oracle Corporation (ORCL)
 
-Apple Inc. (AAPL)
+Microsoft Corporation (MSFT)
+Best Buy Co., Inc. (BBY)
+Applied Materials, Inc. (AMAT)
+
+IGNOR QUALCOMM Incorporated (QCOM)
+
+IGNOR Lucid Group, Inc. (LCID)
+IGNOR Twitter, Inc. (TWTR)
+
+IGNOR NVIDIA Corporation (NVDA)
+IGNOR Square, Inc. (SQ)
+
+IGNOR HP Inc. (HPQ)
+
+IGNOR Amazon.com, Inc. (AMZN)
+
+
 
 IGNOR Financial Select Sector SPDR Fund (XLF)
 
@@ -22,15 +40,10 @@ IGNOR Industrial Select Sector SPDR Fund (XLI)
 
 IGNOR Energy Select Sector SPDR Fund (XLE)
 
-Microsoft Corporation (MSFT)
 
-Square, Inc. (SQ)
+IGNOR Bank of America Corporation (BAC)
 
-United Parcel Service, Inc. (UPS)
-
-Bank of America Corporation (BAC)
-
-Intel Corporation (INTC)
+IGNOR Intel Corporation (INTC)
 
 IGNOR JPMorgan Chase & Co. (JPM)
 
@@ -46,11 +59,11 @@ IGNOR Vanguard Total World Stock ETF (VT)
 
 IGNOR Vanguard Index Funds - Vanguard S&P 500 ETF (VOO)
 
-iShares Core S&P 500 ETF (IVV)
+IGNOR iShares Core S&P 500 ETF (IVV)
 
-SPDR S&P Dividend ETF (SDY)
+IGNOR SPDR S&P Dividend ETF (SDY)
 
-iShares Select Dividend ETF (DVY)
+IGNOR iShares Select Dividend ETF (DVY)
 
 IGNOR Vale S.A. (VALE)
 
