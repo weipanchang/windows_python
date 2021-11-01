@@ -14,6 +14,7 @@ import datetime
 import shutil
 import string
 import logging
+import argparse
 # import pickle
 
 from dateutil.relativedelta import relativedelta
@@ -23,7 +24,6 @@ from datetime import date
 pd.set_option('mode.use_inf_as_na', True)
 
 logging.basicConfig(level=logging.INFO)
-
 
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Prediction"
 # downloadPath_pickle = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Pickle"
@@ -62,6 +62,7 @@ class Logger(object):
         else:
             print ("Log file permission denied, aborted!")
             sys.exit()
+            
 
     def write(self, message):
         self.terminal.write(message)
@@ -73,11 +74,68 @@ class Logger(object):
         #you might want to specify some extra behavior here.
         pass
 
+def rsi(df1, period):
+    
+    for i in range(len(df1)):
+        if df1.iloc[i,9] <= 0:
+            df1.iloc[i,24] = 0
+            df1.iloc[i,25] = df1.iloc[i,9]
+        else:
+            df1.iloc[i,25] = 0
+            df1.iloc[i,24] = df1.iloc[i,9]
+
+    AVG_Gain = df1.Up.ewm(span=period, adjust=False).mean()
+    AVG_Loss = df1.Down.ewm(span=period, adjust=False).mean().abs()
+
+
+    RS = AVG_Gain /AVG_Loss
+    RSI = 100.0 - (100.0 / (1.0 + RS))
+    df1['RSI'] = RSI
+    df1['RSI_Lag'] = df1['RSI'].shift(1)
+
+def confusion_matrix(act,pred, cutoff):
+    predtrans = ['Up' if i > cutoff else 'Down' for i in pred]
+    actuals = ['Up' if i > 0 else 'Down' for i in act]
+    confusion_matrix = pd.crosstab(pd.Series(actuals),
+                                   pd.Series(predtrans),
+                                   rownames = ["Actual"],
+                                   colnames = ["Predict"]
+                                  )
+    return confusion_matrix
+
+
+def buy_sell(open_price, sell_price,prediction, money, share):
+    if prediction == 1 and money != 0:
+        share =  money / open_price
+        money = 0
+    elif prediction == 0 and share != 0:
+        money = share * sell_price
+        share = 0
+    else: pass
+    return [money, share]
+
+
+def read_in_line():
+#    stocks = input("Enter the stock symbol: (Ctr-C to Exit, RETURN for batch process from Stock.txt)  ")
+    parser = argparse.ArgumentParser(description='Process Stock Price Predication')
+
+    parser.add_argument(
+        '-l ',   # either of this switches
+        nargs='*',       # one or more parameters to this switch
+        type=str,        # /parameters/ are str
+        dest='stock_lst',      # store in 'lst'.
+        default=None,      # since we're not specifying required.
+        help='Manual Input Stock Symbol List, or RETURN for batch process from Stock.txt'
+    )
+#    args = parser.parse_args()
+
+    return parser.parse_args()
+
 def main():
 
     short_moving_average_span = 20
     long_moving_average_span = 50
-    cutoff=0.50
+    cutoff=0.51
     invest = 100
     years_of_data_to_process = 25
     period = 5
@@ -179,18 +237,9 @@ def main():
 
     y = df1["Up_Down"].values
 
-    def confusion_matrix(act,pred):
-        predtrans = ['Up' if i > cutoff else 'Down' for i in pred]
-        actuals = ['Up' if i > 0 else 'Down' for i in act]
-        confusion_matrix = pd.crosstab(pd.Series(actuals),
-                                       pd.Series(predtrans),
-                                       rownames = ["Actual"],
-                                       colnames = ["Predict"]
-                                      )
-        return confusion_matrix
-
-    confusion_matrix(y,prediction)
-    z = confusion_matrix(y,prediction)
+    confusion_matrix(y, prediction, cutoff)
+    
+#    z = confusion_matrix(y,prediction)
 
     # try:
     #     print((z.loc['Down','Down'] + z.loc['Up','Up']) / len(df1))
@@ -209,16 +258,6 @@ def main():
     df1['Signal_Line_Lag'] = df1['Signal_Line'].shift(1)
     df1=df1[['const', 'Date', 'Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Volume_Lag', 'Today_Change_%', 'Trend', 'Trend_Lag', 'High-Low_Change_%', 'Up_Down', 'Short_MV_Avg_Span', 'Long_MV_Avg_Span', 'Short_MV_Avg_Span-Long_MV_Avg_Span', 'Short_MV_Avg_Span-Long_MV_Avg_Span_Lag', 'Prediction_Caculated', 'Prediction_indicator', 'share', 'money', 'Signal_Line', 'Signal_Line_Lag']]
 
-    def buy_sell(open_price, sell_price,prediction, money, share):
-        if prediction == 1 and money != 0:
-            share =  money / open_price
-            money = 0
-        elif prediction == 0 and share != 0:
-            money = share * sell_price
-            share = 0
-        else: pass
-        return [money, share]
-
     money = invest
     share = 0
 
@@ -229,26 +268,11 @@ def main():
 
     df1 = df1.assign(Up=np.nan,Down=np.nan)
 
-    for i in range(len(df1)):
-        if df1.iloc[i,9] <= 0:
-            df1.iloc[i,24] = 0
-            df1.iloc[i,25] = df1.iloc[i,9]
-        else:
-            df1.iloc[i,25] = 0
-            df1.iloc[i,24] = df1.iloc[i,9]
-
-    AVG_Gain = df1.Up.ewm(span=period, adjust=False).mean()
-    AVG_Loss = df1.Down.ewm(span=period, adjust=False).mean().abs()
-
-
-    RS = AVG_Gain /AVG_Loss
-    RSI = 100.0 - (100.0 / (1.0 + RS))
-    df1['RSI'] = RSI
-    df1['RSI_Lag'] = df1['RSI'].shift(1)
+    rsi(df1, period)
 
     fig, ax1 = plt.subplots()
     ax2 =  ax1.twinx()
-    df1['RSI'][-170:].plot(x = 'Index', color='tab:red', figsize=(16,6), label = 'Relative Strength Index', fontsize = 12,ax = ax2)
+    df1['RSI'][-150:].plot(x = 'Index', color='tab:red', figsize=(16,6), label = 'Relative Strength Index', fontsize = 12,ax = ax2)
     df1['Close'][-150:].plot(x = 'Index',color = 'tab:blue', figsize=(16,6),  label = 'Close Price',fontsize = 12,ax = ax1)
     plt.xlim([len(df1)-100, len(df1)])
     ax2.set_ylabel('Relative Strength Index', fontsize = 18)
@@ -299,7 +323,7 @@ def main():
 
     df1_summary=df1[['Date', 'Up_Down','Prediction_indicator']].copy()
     df1_summary['Stock Market Performance'] = df1_summary['Up_Down'].apply(lambda x: 'Up' if x > 0 else 'Down')
-    df1_summary['Scribe Predection'] = df1_summary['Prediction_indicator'].apply(lambda x: 'Up' if x > 0 else 'Down')
+    df1_summary['Predection'] = df1_summary['Prediction_indicator'].apply(lambda x: 'Up' if x > 0 else 'Down')
 
 
     print ("\nToday [ %s ] actually went up," %stock.upper(), end = ' ') if (df1.iloc[-1,13] == 1) else print ("\nToday [ %s ] actually went down," %stock.upper(), end = " ")
@@ -320,9 +344,9 @@ def main():
     print("\n",result.summary())
 
     prediction = result.predict(x_test)
-    confusion_matrix(y_test, prediction)
+#    confusion_matrix(y_test, prediction, cutoff)
 
-    z = confusion_matrix(y_test,prediction)
+    z = confusion_matrix(y_test,prediction, cutoff)
 
     try:
         print ("\n=========> Prediction Accuracy Rate: %.4f <=========\n"  %((z.loc['Down','Down'] + z.loc['Up','Up']) / len(x_test)))
@@ -333,7 +357,7 @@ def main():
 #    print(df1.info())
     print(df1[['Date','Open','Close','High','Low','Trend']].tail(15))
     print ('\n' *2 )
-    print (df1_summary[['Date','Stock Market Performance','Scribe Predection']].tail(15))
+    print (df1_summary[['Date','Stock Market Performance','Predection']].tail(15))
 
     # fig, ax1 = plt.subplots()
     # ax2 =  ax1.twinx()
@@ -362,34 +386,30 @@ def main():
         print ("\n ============> Warning, It Is the Time to Sell [ %s ] <=========" %stock.upper()) if df1.iloc[-1,16] < 0 else print ("\n ============> It Is the Time to Buy [ %s ] ! <=========" %stock.upper())
     else:
         print ("\n ============> No Trading Waring at this time! <=============")
+        
+    print('\n' * 3)
     return
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
+
+    stocks = read_in_line().stock_lst
+
+    if stocks != None:
         sys.stdout = Logger()
         logging.log(logging.INFO, "In Line Variable")
-        for stock in sys.argv[1:]:
+        for stock in stocks:
+            # logging.log(logging.INFO, "stock = %s" %stock)
             main()
-    else:
-        try:
-            stocks = input("Enter the stock symbol: (Ctr-C to Exit, Blank for batch process from Stock.txt)  ")
-        except:
-            print("\nNo Stock Ticket Input. Abort!\n")
-            sys.exit()
-        logging.log(logging.INFO, "Manual Input  Variable")
-        sys.stdout = Logger()
-        if len(stocks) > 0 :
-#            if stocks[0] != " ":
-            stock_list = stocks.split(" ")
-            for stock in stock_list:
-                main()
-        else:
-            logging.log(logging.INFO, "Batch Process")
-            stock_fund_names =  [line for line in open("STOCK.txt", "r")]
 
-            for stock_fund_name in stock_fund_names:
-                if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
-                    continue
-                stock = re.search(('\(\w+\)'), stock_fund_name)
-                stock = stock.group().rstrip().rstrip(')').lstrip('(')
-                main()
+    else:
+        logging.log(logging.INFO, "Batch Process")
+        sys.stdout = Logger()
+        stock_fund_names =  [line for line in open("STOCK.txt", "r")]
+        for stock_fund_name in stock_fund_names:
+            if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
+                # logging.log(logging.INFO, "stock_fund_name = %s" %stock_fund_name)
+                continue
+            logging.log(logging.INFO, "stock_fund_name = %s" %stock_fund_name)
+            stock = re.search(('\(\w+\)'), stock_fund_name)
+            stock = stock.group().rstrip().rstrip(')').lstrip('(')
+            main()
