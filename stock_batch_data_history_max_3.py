@@ -25,10 +25,11 @@ from selenium.webdriver.firefox.options import Options
 import time
 import datetime
 from datetime import date
-import sys
+# import sys
 # from bs4 import BeautifulSoup as bs
 from selenium import webdriver
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\data"
+eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock.xlsx"
 #short_cut_url = "https://finance.yahoo.com/quote/AVGO/history?period1=1249516800&period2=1626307200&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
 stock = ""
 #home_dir = os.path.expanduser( '~' )
@@ -36,7 +37,7 @@ stock = ""
 class Logger(object):
 
     def __init__(self):
-        global downloadPath
+#        global downloadPath
         global stock
         today = date.today()
         #d1 = today.strftime("%m%d%Y")
@@ -57,7 +58,7 @@ class get_data:
 
     #def __init__(self, stock_name, startDate, endDate, downloadPath):
     def __init__(self, stock_or_fund):
-        global downloadPath
+#        global downloadPath
         global stock
 #        stock_name = stock
         print ("")
@@ -128,7 +129,7 @@ class get_data:
                 if stock.upper() in str(self.driver.current_url):
                     break
             except:
-                 print ("Yahoo page slow, will reloop!")
+                 print ("Yahoo page slow, will reloop!", end=" ")
 
 #        print ("click at Apply")
         try:
@@ -205,7 +206,7 @@ class get_data:
                 if stock.upper() in str(self.driver.current_url):
                     break
             except:
-                print ("Yahoo slow, will reloop!")
+                print ("Yahoo page slow, will reloop!", end=" ")
                 pass
 
         print ('Current Price:   %s' % (self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text))
@@ -220,7 +221,7 @@ class get_data:
             Current_price = self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text
 
             Open = self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[1]/table/tbody/tr[2]/td[2]/span').text
-            print("Open =  %.2f" %float(Open))
+            print("Open =  %.2f" %float(Open.replace(',','')))
 
             Range_elm = self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[1]/table/tbody/tr[5]/td[2]').text
             Low, High  = Range_elm.split(' - ')[0], Range_elm.split(' - ')[1]
@@ -272,7 +273,12 @@ class get_data:
                 if 'Beta' in elm.text:
                    print (elm.text)
 
-            if stock_or_fund == 'ETF':
+            if self.stock_or_fund == 'ETF':
+#                Current_price = self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text
+                Open = self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[1]/table/tbody/tr[2]/td[2]/span').text
+                print("Open =  %.2f" %float(Open.replace(',','')))
+                PE_Rato = self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody/tr[3]/td[2]/span').text
+                print ("PE_Rato ( Smaller is better ) = %s" %PE_Rato)
                 print (self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[1]/span').text, end ='   ')
                 print (self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[2]/span').text)
 
@@ -280,27 +286,18 @@ class get_data:
         
     def update_Excel_Table(self): 
         print ("Retrieve Current Stock Price... \n\n")
-        # wb = load_workbook('Stock.xlsx')
-        # try:
-        #     wb.save('Stock.xlsx')
-        #     pass
-        # except:
-        #     print('Please close the Spreadsheet file, Process Aborted!')
-        #     self.quit_driver()
-        #     sys.exit()
-
-        wb = load_workbook('Stock.xlsx')
+        wb = load_workbook(eXCEL_File)
         ws =  wb.active
         i = 3
         while ws['B' + str(i)].value is not None:
             print(ws['A' + str(i)].value, end="   ")
-            stock = ws['B' + str(i)].value
+            stock = ws['B' + str(i)].value.rstrip()
             # print(ws['F' + str(i)].value)
             ws['F'+ str(i)] = self.get_Current_Stock_Price(stock)
             print(ws['F'+ str(i)].value)
             i += 1
 
-        wb.save('Stock.xlsx')
+        wb.save(eXCEL_File)
         self.quit_driver()
 
     def get_Current_Stock_Price(self, stock):
@@ -310,17 +307,18 @@ class get_data:
                 self.driver.get(self.url_stock)
                 self.driver.implicitly_wait(5)
                 time.sleep(self.delay + 1)
+                # print(stock, str(self.driver.current_url))
 
                 if stock.upper() in str(self.driver.current_url):
                     break
             except:
-                print ("Yahoo slow, will reloop!")
+                print ("Yahoo page slow, will reloop!", end=" ")
                 pass
 
         return float((self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text))
 
 def main():
-    global downloadPath
+#    global downloadPath
     global stock
     try:
         shutil.rmtree(downloadPath)
@@ -355,12 +353,6 @@ def main():
             if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
                 continue
 
-#            sys.stdout = Logger()
-            # print("\n")
-            # print (("=") * len("Processing " + stock_fund_name.rstrip() +" data"))
-            # print ("Processing " + stock_fund_name.rstrip() +" data")
-            # print (("=") * len("Processing " + stock_fund_name.rstrip() +" data"))
-#           stock = re.search('\(\w+\)', stock_fund_name)
             stock = re.search(r'(\(\^\w+\))', stock_fund_name)
             if stock is None:
                 stock = re.search('\(\w+\)', stock_fund_name)
@@ -368,18 +360,18 @@ def main():
             is_stock =  re.search("ETF|Fund",stock_fund_name)
 #            print is_stock
             if is_stock:
-                if 'Fund' in stock_fund_name:
-                    stock_or_fund =  'Fund'
+                if 'ETF' in stock_fund_name:
+                    stock_or_fund =  'ETF'
                 else:
-                    stock_or_fund = 'ETF'
+                    stock_or_fund = 'Fund'
             else:
                 stock_or_fund ='STOCK'
+            # print(stock_or_fund)
             stock = stock.group().rstrip().rstrip(')').lstrip('(')
             stock_Dictionary[stock] = [stock_fund_name.rstrip()]
             stock_Dictionary[stock].append(stock_or_fund)
+            # print (stock_Dictionary)
 
-        
-    
     def option1():
         get_history_data.get_historical_data()
     
@@ -387,10 +379,11 @@ def main():
         get_history_data.get_Summary_data()
     
     def option3():
+        get_history_data.get_historical_data()
         get_history_data.get_Summary_data()
 
     def option4():
-        get_history_data = get_data('stock')
+        get_history_data = get_data('STOCK')
         get_history_data.update_Excel_Table()
         
     while(True):
@@ -403,47 +396,27 @@ def main():
             print('Wrong input. Please enter a number ...')
 
     if option == 4:
-        wb = load_workbook('Stock.xlsx')
+        wb = load_workbook(eXCEL_File)
         try:
-            wb.save('Stock.xlsx')
+            wb.save(eXCEL_File)
             pass
         except:
             print('Please close the Spreadsheet file, Process Aborted!')
-            self.quit_driver()
+            # self.quit_driver()
             sys.exit()
         option4()
 
     elif option < 4:
-        # with open("STOCK.txt","r") as stock_input_file:
-         #stock_fund_names = stock_input_file.readlines()
-#        stock_Dictionary = {}
+
         fetch_Stock_Name(stock_Dictionary:={})
-#        stock_fund_names =  [line for line in open("STOCK.txt", "r")]
-#        print (stock_Dictionary)
-#        sys.exit()
         for stock in stock_Dictionary.keys():
-        #     if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
-        #         continue
+
             sys.stdout = Logger()
             print("\n")
             print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
             print ("Processing " + stock_Dictionary[stock][0] +" data")
             print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
-    # #           stock = re.search('\(\w+\)', stock_fund_name)
-    #         stock = re.search(r'(\(\^\w+\))', stock_fund_name)
-    #         if stock is None:
-    #             stock = re.search('\(\w+\)', stock_fund_name)
-    #         is_stock =  re.search("ETF|Fund",stock_fund_name)
-    # #            print is_stock
-    #         if is_stock:
-    #             if 'Fund' in stock_fund_name:
-    #                 stock_or_fund =  'Fund'
-    #             else:
-    #                 stock_or_fund = 'ETF'
-    #         else:
-    #             stock_or_fund ='stock'
-    
-    #         stock = stock.group().rstrip().rstrip(')').lstrip('(')
+
             get_history_data = get_data(stock_Dictionary[stock][1])
     
             if option == 1:
