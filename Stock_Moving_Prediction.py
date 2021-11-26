@@ -5,6 +5,7 @@ import yfinance as yf
 import numpy as np
 import sys
 import shutil
+from path import Path
 import os
 import re
 import pandas as pd
@@ -24,11 +25,12 @@ from datetime import date
 pd.set_option('mode.use_inf_as_na', True)
 
 logging.basicConfig(level=logging.INFO)
+Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Prediction"
 # downloadPath_pickle = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Pickle"
 stock = ""
-
+cutoff =0.519
 class Logger(object):
 
     def __init__(self):
@@ -135,7 +137,8 @@ def main():
 
     short_moving_average_span = 20
     long_moving_average_span = 50
-    cutoff=0.51
+    global cutoff
+#    cutoff=0.51
     invest = 100
     years_of_data_to_process = 25
     period = 5
@@ -391,7 +394,8 @@ def main():
     return
 
 if __name__ == "__main__":
-
+#    global cutoff
+    print ("\nCutoff is set as %f" %cutoff)
     stocks = read_in_line().stock_lst
 
     if stocks != None:
