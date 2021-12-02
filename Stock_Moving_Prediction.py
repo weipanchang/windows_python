@@ -30,7 +30,7 @@ Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Prediction"
 # downloadPath_pickle = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Pickle"
 stock = ""
-cutoff =0.519
+cutoff =0.515
 class Logger(object):
 
     def __init__(self):
