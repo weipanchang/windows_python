@@ -10,6 +10,8 @@ from path import Path
 import os
 import holidays
 import shutil
+from yahoo_fin import stock_info as si
+import yfinance as yf
 from openpyxl import load_workbook, Workbook
 
 # from bs4 import BeautifulSoup
@@ -31,7 +33,8 @@ from datetime import date
 from selenium import webdriver
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\data"
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
-eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock.xlsx"
+#eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_2.xlsx"
+eXCEL_File = "G:\My Drive\MyFle\Stock_2.xlsx"
 #short_cut_url = "https://finance.yahoo.com/quote/AVGO/history?period1=1249516800&period2=1626307200&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
 stock = ""
 #home_dir = os.path.expanduser( '~' )
@@ -42,7 +45,6 @@ class Logger(object):
 #        global downloadPath
         global stock
         today = date.today()
-        #d1 = today.strftime("%m%d%Y")
         self.terminal = sys.stdout
         self.log = open(downloadPath +"\\Summary_Report_"+ today.strftime("%m%d%Y") + ".txt" , "a+")
 
@@ -64,7 +66,6 @@ class get_data:
         global stock
 #        stock_name = stock
         print ("")
-#        print ("Processing " + self.stock_name.upper() +" stock data")
         self.stock_or_fund = stock_or_fund
         self.delay = 0
         self.currentDateTime = datetime.datetime.now()
@@ -93,19 +94,30 @@ class get_data:
 
         self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
 
-        self.driver.set_page_load_timeout(10)
-        self.wait = WebDriverWait(self.driver, 100, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
+        self.driver.set_page_load_timeout(50)
+        self.wait = WebDriverWait(self.driver, 200, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
 #        url = "https://finance.yahoo.com/quote/" + self.stock_name + "?p=" + self.stock_name + "&.tsrc=fin-srch"
 
         self.url = "https://finance.yahoo.com"
         self.url_stock = "https://finance.yahoo.com/quote/"+stock.upper()+"?p="+stock.upper()
+        i = 0
+        
+        timeout = 5
+        try:
+            request = requests.get(self.url, timeout=timeout)
+            print("Connected to the Internet")
+        except (requests.ConnectionError, requests.Timeout) as exception:
+            print("No internet connection.\n\n")
+            time.sleep(self.delay + 3)
+            self.quit_driver()
+            sys.exit()
+            
         while True:
             try:
                 self.driver.get(self.url)
                 self.driver.delete_all_cookies()
                 self.driver.implicitly_wait(10) # seconds
                 time.sleep(self.delay + 1)
-#                print ("Yahoo finance Page is loaded")
                 if 'finance' in str(self.driver.current_url):
                     break
             except TimeoutException:
@@ -177,22 +189,28 @@ class get_data:
                 except Exception:
                     pass
 
-                Current_price = self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text
+#                Current_price = self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text
+                Current_price = (self.driver.find_element_by_xpath("//*[@class='Fw(b) Fz(36px) Mb(-4px) D(ib)']").get_attribute('value').replace(',', ''))  
 
-                Open = self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[1]/table/tbody/tr[2]/td[2]/span').text
-#                print("Open =  %.2f" %float(Open))
+                Open = self.driver.find_element_by_xpath("//*[@class='Ta(end) Fw(600) Lh(14px)']").text.replace(',', '')
+
+ #               print (Open)
+ #               print("Open =  %.2f" %float(Open.replace(',', '')))
 
                 Range_elm = self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[1]/table/tbody/tr[5]/td[2]').text
                 Low, High  = Range_elm.split(' - ')[0], Range_elm.split(' - ')[1]
-#                print ("LOW = %s, HIGH = %s" %(Low, High))
+  #              print ("LOW = %s, HIGH = %s" %(Low, High))
 
-                Volume_elm = self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[1]/table/tbody/tr[7]/td[2]/span').text
+                Volume_elm = self.driver.find_element_by_xpath('//*[@data-field="regularMarketVolume"]').get_attribute('value')
                 Volume_elm = Volume_elm.replace(',', '')
+
+#                print(Volume_elm)
 #                print("Volume =  %d" %int(Volume_elm))
  
                 with open(downloadPath +"\\" + stock.upper() + '.csv', 'a') as file:
 #                       writer = csv.writer(file)
-                    last_row = ['\n',str(self.ts)[:10], ',', Open, ',', High, ',' , Low, ',', Current_price, ',', Current_price, ',', Volume_elm]
+                    last_row = ['\n',str(self.ts)[:10], ',', Open, ',', High.replace(',', ''), ',' , Low.replace(',', ''), ',', Current_price, ',', Current_price, ',', Volume_elm]
+#                    print (last_row)
                     file.writelines(last_row)
 
  #        if stock[1:] not in ['XAX', 'IXIC', 'DJI', 'GSPC', 'NYA']:
@@ -224,7 +242,6 @@ class get_data:
                 pass
 
 #            Current_price = self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text
-
 #            Open = self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[1]/table/tbody/tr[2]/td[2]/span').text
             Open = self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[1]/table/tbody/tr[2]/td[2]').text
             print("Open =  %.2f" %float(Open.replace(',','')))
@@ -268,7 +285,6 @@ class get_data:
             PE_Rato = self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody/tr[3]/td[2]').text
             print ("PE_Rato ( Smaller is better ) = %s" %PE_Rato)
         else:
-
             table_elm = self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody')
             list_elm = table_elm.find_elements_by_xpath('//*/tr[6]')
 
@@ -305,39 +321,44 @@ class get_data:
         print ('\n' *3)
         
     def update_Excel_Table(self): 
-        print ("Retrieve Current Stock Price... \n\n")
+        print ("Updating Spreadsheet Data... \n\n")
         wb = load_workbook(eXCEL_File)
         ws =  wb.active
         i = 3
         while ws['B' + str(i)].value is not None:
             print(ws['A' + str(i)].value, end="   ")
-            stock = ws['B' + str(i)].value.rstrip()
+            stock = ws['C' + str(i)].value.rstrip()
+            Stock_Fund = ws['B' + str(i)].value.rstrip()
             # print(ws['F' + str(i)].value)
-            ws['F'+ str(i)] = self.get_Current_Stock_Price(stock)
-            print(ws['F'+ str(i)].value)
+            ws['G'+ str(i)] = self.get_Current_Stock_Price(stock, Stock_Fund)
+            print(ws['G'+ str(i)].value)
             i += 1
 
         wb.save(eXCEL_File)
         self.quit_driver()
 
-    def get_Current_Stock_Price(self, stock):
-        self.url_stock = "https://finance.yahoo.com/quote/"+stock.upper()+"?p="+stock.upper()
-        while True:
-            try:
-                self.driver.get(self.url_stock)
-                self.driver.implicitly_wait(5)
-                time.sleep(self.delay + 1)
-                # print(stock, str(self.driver.current_url))
-
-                if stock.upper() in str(self.driver.current_url):
-                    break
-            except:
-                print ("Yahoo page slow, will reloop!", end=" ")
-                pass
-#        print((self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text))
-#        //*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]
-#        return float((self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text))
-        return (float(self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]').text))
+    def get_Current_Stock_Price(self, stock, Stock_Fund):
+        if Stock_Fund != 'Fund':
+            return(float(si.get_live_price(stock)))
+        else:
+            ticket = yf.Ticker(stock)
+            return ticket.info['regularMarketPrice']
+    #         self.url_stock = "https://finance.yahoo.com/quote/"+stock.upper()+"?p="+stock.upper()
+    #         while True:
+    #             try:
+    #                 self.driver.get(self.url_stock)
+    #                 self.driver.implicitly_wait(10)
+    #                 time.sleep(self.delay + 1)
+    #                 # print(stock, str(self.driver.current_url))
+    #                 if stock.upper() in str(self.driver.current_url):
+    #                     break
+    #             except:
+    #                 print ("Yahoo page slow, will reloop!", end=" ")
+    #                 pass
+    # #        print((self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text))
+    # #        //*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]
+    # #        return float((self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text))
+    #         return (float(self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]').text))
 
 def main():
 #    global downloadPath
