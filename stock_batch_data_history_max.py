@@ -56,6 +56,7 @@ class Logger(object):
         #this flush method is needed for python 3 compatibility.
         #this handles the flush command by doing nothing.
         #you might want to specify some extra behavior here.
+#        self.log.write("")
         pass
 
 class get_data:
@@ -228,7 +229,7 @@ class get_data:
             except:
                 print ("Yahoo page slow, will reloop!", end=" ")
                 pass
-
+        sys.stdout = Logger()
         try:
             print ('Current Price:   %s' % (self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]').text))
         except:
@@ -299,7 +300,7 @@ class get_data:
                 if 'Beta' in elm.text:
                    print (elm.text)
 
-            if self.stock_or_fund == 'ETF':
+            if self.stock_or_fund == 'ETF' or self.stock_or_fund == 'Fund':
                 try:
                     print ('Current Price:   %s' % (self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]').text))
                 except:
@@ -315,10 +316,11 @@ class get_data:
                     PE_Rato = self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody/tr[3]/td[2]').text
                 print ("PE_Rato ( Smaller is better ) = %s" %PE_Rato)
 
-                print (self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[1]').text, end ='   ')
+                print (self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[1]').text, end =' =   ')
                 print (self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[2]').text)
-
         print ('\n' *3)
+#        sys.stdout.flush()
+       
         
     def update_Excel_Table(self): 
         print ("Updating Spreadsheet Data... \n\n")
@@ -455,14 +457,13 @@ def main():
         fetch_Stock_Name(stock_Dictionary:={})
         for stock in stock_Dictionary.keys():
 
-            sys.stdout = Logger()
             print("\n")
             print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
             print ("Processing " + stock_Dictionary[stock][0] +" data")
             print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
 
             get_history_data = get_data(stock_Dictionary[stock][1])
-    
+
             if option == 1:
                 option1()
             elif option == 2:
