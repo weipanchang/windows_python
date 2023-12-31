@@ -1,101 +1,25 @@
-Apple Inc. (AAPL)
-Target Corporation (TGT)
-
-Crocs, Inc. (CROX)
-
-Broadcom Inc. (AVGO)
+Microsoft Corp. (MSFT)
+NVIDIA Corporation (NVDA)
 Adobe Inc. (ADBE)
+Apple Inc. (AAPL)
+Alphabet Class C. (GOOG)
+Meta Platforms Inc. (META)
+Cadence Design Systems Inc. (CDNS)
+Tesla, Inc. (TSLA)
+Amazon.com, Inc. (AMZN)
+Palo Alto Networks, Inc. (PANW)
+IGNOR  Box, Inc. (BOX)
+Advanced Micro Devices, Inc. (AMD)
+Cloudflare, Inc. (NET)
+IGNOR PDD Holdings Inc. (PDD)
+Snowflake Inc. (SNOW)
+ServiceNow, Inc. (NOW)
+Autodesk, Inc. (ADSK)
 
-Facebook, Inc. (FB)
-Seagate Technology Holdings plc (STX)
-
-
-United Parcel Service, Inc. (UPS)
-
-PayPal Holdings, Inc. (PYPL)
-
-Oracle Corporation (ORCL)
-
-Microsoft Corporation (MSFT)
-Best Buy Co., Inc. (BBY)
-Applied Materials, Inc. (AMAT)
-
-IGNOR QUALCOMM Incorporated (QCOM)
 
 IGNOR Lucid Group, Inc. (LCID)
-IGNOR Twitter, Inc. (TWTR)
-
-IGNOR NVIDIA Corporation (NVDA)
-IGNOR Square, Inc. (SQ)
-
-IGNOR HP Inc. (HPQ)
-
-IGNOR Amazon.com, Inc. (AMZN)
-
-
-
+IGNOR Netflix, Inc. (NFLX)
 IGNOR Financial Select Sector SPDR Fund (XLF)
-
-IGNOR Industrial Select Sector SPDR Fund (XLI)
-
-IGNOR Energy Select Sector SPDR Fund (XLE)
-
-
-IGNOR Bank of America Corporation (BAC)
-
-IGNOR Intel Corporation (INTC)
-
-IGNOR JPMorgan Chase & Co. (JPM)
-
-IGNOR Vanguard Total Stock Market ETF (VTI)
-
-IGNOR Vanguard Dividend Appreciation ETF (VIG)
-
-IGNOR Vanguard High Dividend Yield ETF (VYM)
-
-IGNOR Schwab US Dividend Equity ETF (SCHD)
-
-IGNOR Vanguard Total World Stock ETF (VT)
-
-IGNOR Vanguard Index Funds - Vanguard S&P 500 ETF (VOO)
-
-IGNOR iShares Core S&P 500 ETF (IVV)
-
-IGNOR SPDR S&P Dividend ETF (SDY)
-
-IGNOR iShares Select Dividend ETF (DVY)
-
-IGNOR Vale S.A. (VALE)
-
-IGNOR MGE Energy, Inc. (MGEE)
-
-IGNOR Magellan Midstream Partners, L.P. (MMP)
-
-IGNOR Plug Power Inc. (PLUG)
-
-IGNOR Kratos Defense & Security Solutions, Inc. (KTOS)
-
-IGNOR Deckers Outdoor Corporation (DECK)
-
-IGNOR IEC Electronics Corp. (IEC)
-
-IGNOR Upland Software, Inc. (UPLD)
-
-IGNOR Tennant Company (TNC)
-
-IGNOR Ares Capital Corporation (ARCC)
-
-IGNOR Limelight Networks, Inc. (LLNW)
-
-IGNOR Opera Limited (OPRA)
-
-IGNOR Repay Holdings Corporation (RPAY)
-
-IGNOR Zoom Video Communications Inc. (ZM)
-
-IGNOR Fifth Third Bancorp (FITB)
-
-IGNOR Gap Inc. (GPS)
-
-IGNOR FormFactor, Inc. (FORM)
-
+IGNOR The Real Estate Select Sector SPDR Fund (XLRE)
+IGNOR Seagate Technology Holdings plc (STX)
+IGNOR Crocs, Inc. (CROX)

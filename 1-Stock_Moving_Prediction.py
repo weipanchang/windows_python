@@ -176,7 +176,9 @@ def main():
     df1.Volume = df1.Volume.pct_change()
     df1['Volume_Lag'] = df1.Volume.shift(1).values
 
+#    df1["Trend"] =  ((df1["Close"] - df1["Low"])/ (df1["High"] - df1["Low"])-0.2)
     df1["Trend"] =  (df1["Close"] - df1["Low"])/ ((df1["High"] - df1["Low"]))
+#    df1["Trend"] =  (df1["Close"] - df1["Low"])/ ((df1["High"] - df1["Low"])) *.9
     df1["Trend_Lag"] = df1["Trend"].shift(1)
 
     df1['High-Low_Change_%'] = (df1['High'].pct_change() + df1['Low'].pct_change()).shift(1)

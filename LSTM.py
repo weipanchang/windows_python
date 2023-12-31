@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-
+from numba import jit
 import math
 import sys
 # import yfinance as yf
@@ -10,7 +10,7 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
 from keras.layers import Dense, LSTM
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import datetime
 from cachetools import cached
 from datetime import date
@@ -34,7 +34,8 @@ class Logger(object):
         #you might want to specify some extra behavior here.
         pass   
 
-@cached(cache = {})
+#@cached(cache = {})
+@jit
 def main():
     stock = input("Enter the stock symbol:  ")
     
@@ -42,7 +43,7 @@ def main():
     
     time = datetime.datetime.now().time()
 
-#   plt.style.use('fivethirtyeight')
+    plt.style.use('fivethirtyeight')
 
     years_of_data_to_process = 25
     
@@ -132,17 +133,17 @@ def main():
     train = data[:training_data_len]
     valid = data[training_data_len:]
     valid['Predictions'] = predictions
-    # plt.figure(figsize=(16,8))
-    # plt.title(stock.upper())
-    # plt.xlabel('Data', fontsize = 18)
-    # plt.ylabel('Close Price USD ($)', fontsize = 18)
-    # plt.plot()
-    # plt.plot(train['Close'])
-    # plt.plot(valid[['Close', 'Predictions']])
-    # plt.legend(['Train', 'Val', 'Predictions'], loc = 'lower right')
-    # plt.show
+    plt.figure(figsize=(16,8))
+    plt.title(stock.upper())
+    plt.xlabel('Data Index', fontsize = 18)
+    plt.ylabel('Close Price USD ($)', fontsize = 18)
+    plt.plot()
+    plt.plot(train['Close'])
+    plt.plot(valid[['Close', 'Predictions']])
+    plt.legend(['Train', 'Val', 'Predictions'], loc = 'lower right')
+    plt.show()
     
-    print("\n", valid)
+    print("\n", valid.tail(20))
     
     stock_quote = web.DataReader(stock, data_source =  'yahoo', start = start , end = date)
 #    stock_quote = yf.download(stock, start=start)
@@ -155,8 +156,8 @@ def main():
     X_test = np.reshape(X_test,(X_test.shape[0], X_test.shape[1],1))
     pred_price = model.predict(X_test)
     pred_price = scaler.inverse_transform(pred_price)
-    print("Preditiction Price =  %f.4" %pred_price)
-    print ("\n ============> Close Price over Predicate Price \n ============> %.4f....%.4f....%.4f....%.4f....%.4f....<=============" %((valid.iloc[-5,0] - valid.iloc[-5,1]), (valid.iloc[-4,0] - valid.iloc[-4,1]),(valid.iloc[-3,0] - valid.iloc[-3,1]),(valid.iloc[-2,0] - valid.iloc[-2,1]),(valid.iloc[-1,0] - valid.iloc[-1,1])))
+    print("\nPreditiction Price for Tomorrow =  %f.4" %pred_price)
+    print ("\n ============> Close Price differs from Predicate Price \n ============> %.4f....%.4f....%.4f....%.4f....%.4f....<=============" %((valid.iloc[-5,0] - valid.iloc[-5,1]), (valid.iloc[-4,0] - valid.iloc[-4,1]),(valid.iloc[-3,0] - valid.iloc[-3,1]),(valid.iloc[-2,0] - valid.iloc[-2,1]),(valid.iloc[-1,0] - valid.iloc[-1,1])))
     
     #stock_quote2 = web.DataReader(stock, data_source =  'yahoo', start = date , end = date)
     #print (stock_quote2['Close'])

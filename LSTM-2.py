@@ -3,6 +3,8 @@
 
 import math
 import sys
+import os
+import shutil
 import yfinance as yf
 import pandas_datareader as web
 import numpy as np
@@ -14,7 +16,7 @@ import matplotlib.pyplot as plt
 import datetime
 from cachetools import cached
 from datetime import date
-downloadPath = "C:\\Users\\William Chang\\Downloads\\Data"
+downloadPath = "C:\\Users\\William Chang\\Documents\\Python Scripts\\LSTM"
 
 class Logger(object):
     
@@ -38,6 +40,7 @@ class Logger(object):
 def main():
     stock = input("Enter the stock symbol:  ")
     global downloadPath
+    os.mkdir(downloadPath + '\\' + stock.upper())
     
     time = datetime.datetime.now().time()
 
@@ -142,7 +145,7 @@ def main():
     plt.legend(['Train', 'Val', 'Predictions'], loc = 'lower right')
 #    plt.show()
     today = date.today()
-    plt.savefig(downloadPath + '\\LSTM_' +stock.upper()+ '_' +today.strftime("%m%d%Y") +'.png')
+    plt.savefig(downloadPath  + '\\' + stock.upper() + '\\LSTM_' +stock.upper()+ '_' +today.strftime("%m%d%Y") +'.png')
     
     print("\n", valid.tail(15))
     

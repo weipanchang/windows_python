@@ -8,11 +8,13 @@ import sys
 import holidays
 import shutil
 from yahoo_fin import stock_info as si
+#from yahoo_fin import stock_info as si
 import yfinance as yf
 from openpyxl import load_workbook, Workbook
 
 
-eXCEL_File = "C:\\Users\\William Chang\\Documents\\Python Scripts\\Stock_2.xlsx"
+#eXCEL_File = "C:\\Users\\William Chang\\Documents\\Python Scripts\\Stock_2.xlsx"
+eXCEL_File = ".\\Stock_1.xlsx"
 delay = 1
 
 def update_Excel_Table(xcl):
@@ -23,22 +25,30 @@ def update_Excel_Table(xcl):
     i = 3
     while ws['A' + str(i)].value != "Cash":
         if ws['B' + str(i)].value is not None:
-            print(ws['A' + str(i)].value, end="   ")
+
             stock = ws['C' + str(i)].value.rstrip()
             Stock_Fund = ws['B' + str(i)].value.rstrip()
             # print(ws['F' + str(i)].value)
-            ws['G'+ str(i)] = get_Current_Stock_Price(stock, Stock_Fund)
+            quote = get_Current_Stock_Price(stock, Stock_Fund)
+            if quote != None:
+               ws['G'+ str(i)] = quote
+            else:
+               print("No data found!", end=" ")
+            print(ws['A' + str(i)].value, end="   ")
             print(ws['G'+ str(i)].value)
         i = i + 1            
 
     wb.save(xcl)
 
 def get_Current_Stock_Price(stock, Stock_Fund):
-    if Stock_Fund != 'Fund':
-        return(float(si.get_live_price(stock)))
-    else:
-        ticket = yf.Ticker(stock)
-        return ticket.info['regularMarketPrice']
+   today = date.today()
+
+   if Stock_Fund != 'Fund':
+       return(float(si.get_live_price(stock)))
+   else:
+#       data = yf.download(stock, start=today)
+#       ticket = yf.Ticker(stock)
+       return float(yf.download(stock, start="2022-12-20").iloc[0,4])
 
 def main():
     update_Excel_Table(eXCEL_File)

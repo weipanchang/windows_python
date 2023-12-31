@@ -54,8 +54,7 @@ class get_historical_data():
 #        options.add_argument("--headless")
 
         driver = webdriver.Firefox(capabilities=desiredCapabilities, options=options)
-#        driver.implicitly_wait(10) # seconds
-        driver.set_page_load_timeout(10)
+        driver.set_page_load_timeout(50)
         wait = WebDriverWait(driver, 100, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
 #        url = "https://finance.yahoo.com/quote/" + self.stock_name + "?p=" + self.stock_name + "&.tsrc=fin-srch"
         self.url = "https://finance.yahoo.com"
@@ -70,9 +69,9 @@ class get_historical_data():
             self.quit_driver()
             sys.exit()
 
-
         while True:
             try:
+#                driver = webdriver.Firefox(capabilities=desiredCapabilities, options=options)
                 driver.get(self.url)
                 driver.delete_all_cookies()
                 driver.implicitly_wait(15)
@@ -83,22 +82,18 @@ class get_historical_data():
             except TimeoutException:
                 pass
 
-
         self.url_stock = "https://finance.yahoo.com/quote/"+self.stock_name.upper()+"?p="+self.stock_name.upper()
         time.sleep(delay + 1)
 
-#        time.sleep(delay + 1)
         while True:
             time.sleep(delay + 1)
             try:
                 time.sleep(delay + 1)
                 driver.get(self.url_stock)
                 driver.implicitly_wait(15)
-                # stock_elm = driver.find_element_by_id('yfin-usr-qry')
-                # time.sleep(delay + 1)
-#                stock_elm.send_keys((self.stock_name.upper()) + (Keys.ENTER))
+
                 time.sleep(delay + 1)
-#                print (self.stock_name.upper(), str(driver.current_url))
+
                 if self.stock_name.upper() in str(driver.current_url):
                     break
 
@@ -106,22 +101,27 @@ class get_historical_data():
 
                 print ("Yahoo page slow, will reloop!")
 
-
-        print ("Display Historical Data Page")
+        print ("Process " + self.stock_name + "\n\n")
+        print ("Display Historical Data Page" + "\n")
         try:
-            elm = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Historical Data')]"))).click()
+#//*[@id="quote-nav"]/ul/li[6]/a            
+            elm = driver.find_element_by_xpath("//span[contains(text(), 'Historical Data')]")
+#            elm = wait.until(EC.element_to_be_clickable((By.XPATH, "//*[@id='quote-nav']/ul/li[6]/a"))).click()
         except TimeoutException:
             pass
-
+        elm.click()
         time.sleep(delay + 1)
-
         input_elm = driver.find_element_by_xpath("//span[@class='C($linkColor) Fz(14px)']")
         print ("click at input button")
         input_elm.click()
         time.sleep(delay + 1)
 
-        elm = driver.find_element_by_xpath("//button[@class='Py(5px) W(45px) Fz(s) C($tertiaryColor) Cur(p) Bd Bdc($seperatorColor) Bgc($lv4BgColor) Bdc($linkColor):h Bdrs(3px)' and @data-value='5_D']")
-        print ("click at 5_D")
+        try:
+            elm = driver.find_element_by_xpath("//button[@class='Py(5px) W(45px) Fz(s) C($tertiaryColor) Cur(p) Bd Bdc($seperatorColor) Bgc($lv4BgColor) Bdc($linkColor):h Bdrs(3px)' and @data-value='3_M']")
+        except:
+            time.sleep(delay + 1)
+            elm = driver.find_element_by_xpath("//button[@class='Py(5px) W(45px) Fz(s) C($tertiaryColor) Cur(p) Bd Bdc($seperatorColor) Bgc($lv4BgColor) Bdc($linkColor):h Bdrs(3px)' and @data-value='3_M']")    
+        print ("Select 3 Months Quote")
         elm.click()
         time.sleep(delay + 1)
 
@@ -132,18 +132,31 @@ class get_historical_data():
             pass
 
         time.sleep(delay + 3)
-#        //*[@id="Col1-1-HistoricalDataTable-Proxy"]/section/div[2]/table/tbody/tr[1]
         quote_table = driver.find_element_by_xpath('//*[@id="Col1-1-HistoricalDataTable-Proxy"]/section/div[2]/table/tbody')
         quote_lists = quote_table.find_elements_by_tag_name("tr")
-#        print(len(quote_lists))
+#        print(" Date", '\t',"Open", '\t',"High", '\t',"Low", '\t',"Close", '\t',"Adj", '\t',"Vol")
         for quote_list in quote_lists:
-            quotes= quote_list.find_elements_by_tag_name("td")
-            Date, Open, High, Low, Close, Adj, Vol = quotes[0].text, quotes[1].text,quotes[2].text,quotes[3].text,quotes[4].text,quotes[5].text,quotes[6].text
+            try:
+                quotes= quote_list.find_elements_by_tag_name("td")
+                Date, Open, High, Low, Close, Adj, Vol = quotes[0].text, quotes[1].text,quotes[2].text,quotes[3].text,quotes[4].text,quotes[5].text,quotes[6].text
+    
+                print(Date,'\t', Open, '\t',High, '\t',Low, '\t',Close, '\t',Adj, '\t',Vol)
+            except:
+                continue
+        
+        driver.quit()
+        
+        print("\n")
+        print ("Display Summary Page, please wait.....")
+        driver = webdriver.Firefox(capabilities=desiredCapabilities, options=options)
+        driver.set_page_load_timeout(50)
+        wait = WebDriverWait(driver, 100, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
+        driver.get(self.url)
+        driver.delete_all_cookies()
+        driver.implicitly_wait(15)
+        print("\n\n")
 
 
-            print(Date, Open, High, Low, Close, Adj, Vol)
-
-        print ("Display Summary Page")
         while True:
 #            time.sleep(delay + 1)
             try:
@@ -154,9 +167,8 @@ class get_historical_data():
 #                print (self.stock_name.upper(), str(driver.current_url))
                 if self.stock_name.upper() in str(driver.current_url):
                     break
-
             except:
-#                driver.get(url)
+                driver.get(url)
                 driver.delete_all_cookies()
 
                 print ("Yahoo slow, will reloop!")

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # coding: utf-8
-
 import matplotlib.pyplot as plt
 import yfinance as yf
 import numpy as np
@@ -12,9 +11,11 @@ import pandas as pd
 import time
 import statsmodels.api as sm
 import datetime
+
 from dateutil.relativedelta import relativedelta
 from datetime import date
 #from cachetools import cached
+
 pd.set_option('mode.use_inf_as_na', True)
 
 downloadPath = "C:\\Users\\William Chang\\Documents\\Python Scripts\\data"
@@ -45,7 +46,6 @@ class Logger(object):
         #you might want to specify some extra behavior here.
         pass
 
-#@cached(cache = {})
 def main():
 
     global downloadPath
@@ -67,6 +67,7 @@ def main():
         shutil.rmtree(downloadPath + '\\' + stock.upper())
     except:
         pass
+
     os.mkdir(downloadPath + '\\' + stock.upper())
 
     currentDateTime = datetime.datetime.now()
@@ -131,7 +132,6 @@ def main():
     # plt.show
     # plt.close
 
-
     today = date.today()
     plt.savefig(downloadPath + '\\' + stock.upper() +'\\Individual_Stock__MV_Average_ &_Signal_Line_Report_' +stock.upper()+ '_' +today.strftime("%m%d%Y") +'.png')
     plt.close
@@ -152,7 +152,6 @@ def main():
 
     prediction = result.predict(X)
 
-
     df1['Prediction_Caculated'] = pd.array(prediction)
     df1['Prediction_indicator'] = pd.array([1 if i > cutoff else 0 for i in prediction])
 
@@ -168,10 +167,7 @@ def main():
                                       )
         return confusion_matrix
 
-
     confusion_matrix(y,prediction)
-
-
     z = confusion_matrix(y,prediction)
 
     # try:
@@ -187,7 +183,6 @@ def main():
     df1 = df1.assign(share=np.nan,money=np.nan)
 
     diff_years = round((df1.iloc[-1,1] - df1.iloc[0,1])/np.timedelta64(1,'Y') + 0.5)
-
 
     df1['Signal_Line_Lag'] = df1['Signal_Line'].shift(1)
     df1=df1[['const', 'Date', 'Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Volume_Lag', 'Today_Change_%', 'Trend', 'Trend_Lag', 'High-Low_Change_%', 'Up_Down', 'Short_MV_Avg_Span', 'Long_MV_Avg_Span', 'Short_MV_Avg_Span-Long_MV_Avg_Span', 'Short_MV_Avg_Span-Long_MV_Avg_Span_Lag', 'Prediction_Caculated', 'Prediction_indicator', 'share', 'money', 'Signal_Line', 'Signal_Line_Lag']]
@@ -229,12 +224,10 @@ def main():
     df1['RSI'] = RSI
     df1['RSI_Lag'] = df1['RSI'].shift(1)
 
-
     fig, ax1 = plt.subplots()
     ax2 =  ax1.twinx()
     df1['RSI'][-170:].plot(x = 'Index', color='tab:red', figsize=(16,6), label = 'Relative Strength Index', fontsize = 12,ax = ax2)
     df1['Close'][-150:].plot(x = 'Index',color = 'tab:blue', figsize=(16,6),  label = 'Close Price',fontsize = 12,ax = ax1)
-    #df1['Close'][-100:].plot(figsize=(16,6))
     plt.xlim([len(df1)-100, len(df1)])
     ax2.set_ylabel('Relative Strength Index', fontsize = 18)
     ax1.set_ylabel('Close Price USD ($)', fontsize = 18)
@@ -278,17 +271,16 @@ def main():
     y = df1["Up_Down"].values
     model = sm.Logit(y,X)
     result =  model.fit()
+
     print(result.summary())
     print("\nIf ${:,.0f} was invested in [ {} ], and Just Hold and Not Trade for {:2d} years, the ROI = ${:,.0f}".format( invest, stock.upper(), diff_years, invest/data.iloc[0, 0] * data.iloc[-1,0]))
-
-
     print ("\nIf ${:,.0f} was invested {:2d} years ago, buy and sell according this script\'s recommandation, the ROI = ${:,.0f}".format(invest, diff_years, (money + (share * df1.iloc[-1,5]))))
 
 
     df1_summary=df1[['Date', 'Up_Down','Prediction_indicator']].copy()
     df1_summary['Stock Market Performance'] = df1_summary['Up_Down'].apply(lambda x: 'Up' if x > 0 else 'Down')
     df1_summary['Scribe Predection'] = df1_summary['Prediction_indicator'].apply(lambda x: 'Up' if x > 0 else 'Down')
-    print (df1_summary[['Date','Stock Market Performance','Scribe Predection']].tail(15))
+
 
     print ("\nToday [ %s ] actually went up," %stock.upper(), end = ' ') if (df1.iloc[-1,13] == 1) else print ("\nToday [ %s ] actually went down," %stock.upper(), end = " ")
     print ("--- base on yesterday\'s data, ", end = '')
@@ -316,7 +308,9 @@ def main():
         print ("\n=========> Predication effectiveness is not avairable <=========\n" )
 
     High_Low=((df1.iloc[-1,3]-df1.iloc[-2,3])/df1.iloc[-1,3] + (df1.iloc[-1,4]-df1.iloc[-2,4])/df1.iloc[-1,4])
-    df1.tail(15)
+    print(df1.tail(15))
+
+    print (df1_summary[['Date','Stock Market Performance','Scribe Predection']].tail(15))
 
     prediction = result.predict(x_test)
     now_up_down  = result.predict([1.0, df1.iloc[-1, 10], High_Low, df1.iloc[-1, 26] ,df1.iloc[-1, 22], df1.iloc[-1, 7]])

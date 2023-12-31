@@ -34,7 +34,8 @@ def update_Excel_Table(xcl):
     
     while ws['A' + str(i)].value != "Cash":
         if ws['B' + str(i)].value is not None:
-            if weekno < 5 and (today not in north_america):
+#            if weekno < 5 and (today not in north_america):
+            if weekno < 5:   
                stock = ws['C' + str(i)].value.rstrip()
                Stock_Fund = ws['B' + str(i)].value.rstrip()
                # print(ws['F' + str(i)].value)
@@ -43,7 +44,7 @@ def update_Excel_Table(xcl):
                   ws['G'+ str(i)] = quote
                else:
                   print("Quote IS NOT Avairable! Display Previous Quote", end = "   ")
-#               ws['G'+ str(i)] = quote if quote else print("Quote IS NOT Avairable! Display Previous Quote", end = "   ")
+#               ws['G'+ str(i)] = quote if quote !=None else print("Quote IS NOT Avairable! Display Previous Quote", end = "   ")
             else:
                print("Market is Close Today!", end=" ")
             print(ws['A' + str(i)].value, end="   ")
@@ -56,18 +57,19 @@ def update_Excel_Table(xcl):
 def get_Current_Stock_Price(stock, Stock_Fund):
    today = date.today()
    currentDateTime = datetime.datetime.now()
-   open_time = currentDateTime.replace(hour=17, minute=00, second=0, microsecond=0)
+   open_time = currentDateTime.replace(hour=13, minute=00, second=0, microsecond=0)
 
    if Stock_Fund != 'Fund':
        return(float(si.get_live_price(stock)))
    else:
       if (currentDateTime < open_time):
             today  = today - timedelta(days = 1)
-            print ("\nMutal Fund disaplayed with Previous Day's Quote")
+   #        print ("\nMutal Fund disaplayed with Previous Day's Quote")
    #       data = yf.download(stock, start=today)
    #       ticket = yf.Ticker(stock)
       try:
          return float(yf.download(stock, start=today).iloc[0,4])
+
       except:
          return None
 

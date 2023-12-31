@@ -5,7 +5,6 @@ import yfinance as yf
 import numpy as np
 import sys
 import shutil
-from path import Path
 import os
 import re
 import pandas as pd
@@ -25,12 +24,11 @@ from datetime import date
 pd.set_option('mode.use_inf_as_na', True)
 
 logging.basicConfig(level=logging.INFO)
-Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Prediction"
 # downloadPath_pickle = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Pickle"
 stock = ""
-cutoff =0.515
+
 class Logger(object):
 
     def __init__(self):
@@ -64,7 +62,6 @@ class Logger(object):
         else:
             print ("Log file permission denied, aborted!")
             sys.exit()
-            
 
     def write(self, message):
         self.terminal.write(message)
@@ -76,53 +73,12 @@ class Logger(object):
         #you might want to specify some extra behavior here.
         pass
 
-def rsi(df1, period):
-    
-    for i in range(len(df1)):
-        if df1.iloc[i,9] <= 0:
-            df1.iloc[i,24] = 0
-            df1.iloc[i,25] = df1.iloc[i,9]
-        else:
-            df1.iloc[i,25] = 0
-            df1.iloc[i,24] = df1.iloc[i,9]
-
-    AVG_Gain = df1.Up.ewm(span=period, adjust=False).mean()
-    AVG_Loss = df1.Down.ewm(span=period, adjust=False).mean().abs()
-
-
-    RS = AVG_Gain /AVG_Loss
-    RSI = 100.0 - (100.0 / (1.0 + RS))
-    df1['RSI'] = RSI
-    df1['RSI_Lag'] = df1['RSI'].shift(1)
-
-def confusion_matrix(act,pred, cutoff):
-    predtrans = ['Up' if i > cutoff else 'Down' for i in pred]
-    actuals = ['Up' if i > 0 else 'Down' for i in act]
-    confusion_matrix = pd.crosstab(pd.Series(actuals),
-                                   pd.Series(predtrans),
-                                   rownames = ["Actual"],
-                                   colnames = ["Predict"]
-                                  )
-    return confusion_matrix
-
-
-def buy_sell(open_price, sell_price,prediction, money, share):
-    if prediction == 1 and money != 0:
-        share =  money / open_price
-        money = 0
-    elif prediction == 0 and share != 0:
-        money = share * sell_price
-        share = 0
-    else: pass
-    return [money, share]
-
-
 def read_in_line():
 #    stocks = input("Enter the stock symbol: (Ctr-C to Exit, RETURN for batch process from Stock.txt)  ")
     parser = argparse.ArgumentParser(description='Process Stock Price Predication')
 
     parser.add_argument(
-        '-l ',   # either of this switches
+        '-l',   # either of this switches
         nargs='*',       # one or more parameters to this switch
         type=str,        # /parameters/ are str
         dest='stock_lst',      # store in 'lst'.
@@ -137,8 +93,7 @@ def main():
 
     short_moving_average_span = 20
     long_moving_average_span = 50
-    global cutoff
-#    cutoff=0.51
+    cutoff=0.51
     invest = 100
     years_of_data_to_process = 25
     period = 5
@@ -240,8 +195,17 @@ def main():
 
     y = df1["Up_Down"].values
 
-    confusion_matrix(y, prediction, cutoff)
-    
+    def confusion_matrix(act,pred):
+        predtrans = ['Up' if i > cutoff else 'Down' for i in pred]
+        actuals = ['Up' if i > 0 else 'Down' for i in act]
+        confusion_matrix = pd.crosstab(pd.Series(actuals),
+                                       pd.Series(predtrans),
+                                       rownames = ["Actual"],
+                                       colnames = ["Predict"]
+                                      )
+        return confusion_matrix
+
+    confusion_matrix(y,prediction)
 #    z = confusion_matrix(y,prediction)
 
     # try:
@@ -261,6 +225,16 @@ def main():
     df1['Signal_Line_Lag'] = df1['Signal_Line'].shift(1)
     df1=df1[['const', 'Date', 'Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Volume_Lag', 'Today_Change_%', 'Trend', 'Trend_Lag', 'High-Low_Change_%', 'Up_Down', 'Short_MV_Avg_Span', 'Long_MV_Avg_Span', 'Short_MV_Avg_Span-Long_MV_Avg_Span', 'Short_MV_Avg_Span-Long_MV_Avg_Span_Lag', 'Prediction_Caculated', 'Prediction_indicator', 'share', 'money', 'Signal_Line', 'Signal_Line_Lag']]
 
+    def buy_sell(open_price, sell_price,prediction, money, share):
+        if prediction == 1 and money != 0:
+            share =  money / open_price
+            money = 0
+        elif prediction == 0 and share != 0:
+            money = share * sell_price
+            share = 0
+        else: pass
+        return [money, share]
+
     money = invest
     share = 0
 
@@ -271,7 +245,22 @@ def main():
 
     df1 = df1.assign(Up=np.nan,Down=np.nan)
 
-    rsi(df1, period)
+    for i in range(len(df1)):
+        if df1.iloc[i,9] <= 0:
+            df1.iloc[i,24] = 0
+            df1.iloc[i,25] = df1.iloc[i,9]
+        else:
+            df1.iloc[i,25] = 0
+            df1.iloc[i,24] = df1.iloc[i,9]
+
+    AVG_Gain = df1.Up.ewm(span=period, adjust=False).mean()
+    AVG_Loss = df1.Down.ewm(span=period, adjust=False).mean().abs()
+
+
+    RS = AVG_Gain /AVG_Loss
+    RSI = 100.0 - (100.0 / (1.0 + RS))
+    df1['RSI'] = RSI
+    df1['RSI_Lag'] = df1['RSI'].shift(1)
 
     fig, ax1 = plt.subplots()
     ax2 =  ax1.twinx()
@@ -326,7 +315,7 @@ def main():
 
     df1_summary=df1[['Date', 'Up_Down','Prediction_indicator']].copy()
     df1_summary['Stock Market Performance'] = df1_summary['Up_Down'].apply(lambda x: 'Up' if x > 0 else 'Down')
-    df1_summary['Predection'] = df1_summary['Prediction_indicator'].apply(lambda x: 'Up' if x > 0 else 'Down')
+    df1_summary['Scribe Predection'] = df1_summary['Prediction_indicator'].apply(lambda x: 'Up' if x > 0 else 'Down')
 
 
     print ("\nToday [ %s ] actually went up," %stock.upper(), end = ' ') if (df1.iloc[-1,13] == 1) else print ("\nToday [ %s ] actually went down," %stock.upper(), end = " ")
@@ -347,9 +336,9 @@ def main():
     print("\n",result.summary())
 
     prediction = result.predict(x_test)
-#    confusion_matrix(y_test, prediction, cutoff)
+    confusion_matrix(y_test, prediction)
 
-    z = confusion_matrix(y_test,prediction, cutoff)
+    z = confusion_matrix(y_test,prediction)
 
     try:
         print ("\n=========> Prediction Accuracy Rate: %.4f <=========\n"  %((z.loc['Down','Down'] + z.loc['Up','Up']) / len(x_test)))
@@ -360,7 +349,7 @@ def main():
 #    print(df1.info())
     print(df1[['Date','Open','Close','High','Low','Trend']].tail(15))
     print ('\n' *2 )
-    print (df1_summary[['Date','Stock Market Performance','Predection']].tail(15))
+    print (df1_summary[['Date','Stock Market Performance','Scribe Predection']].tail(15))
 
     # fig, ax1 = plt.subplots()
     # ax2 =  ax1.twinx()
@@ -394,8 +383,7 @@ def main():
     return
 
 if __name__ == "__main__":
-#    global cutoff
-    print ("\nCutoff is set as %f" %cutoff)
+
     stocks = read_in_line().stock_lst
 
     if stocks != None:
