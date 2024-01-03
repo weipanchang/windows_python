@@ -94,7 +94,7 @@ class get_data:
         self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
         self.desiredCapabilities['firefox_profile'] = self.profile.encoded
         self.options = Options()
-#        self.options.add_argument("--headless")
+        self.options.add_argument("--headless")
 
         self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
 
@@ -443,7 +443,7 @@ def main():
                 stock_or_fund ='STOCK'
             # print(stock_or_fund)
             stock = stock.group().rstrip().rstrip(')').lstrip('(')
-            stock_Dictionary[stock] = [stock_fund_name.rstrip()]
+            stock_Dictionary[stock] = [stock_fund_name.rstrip()[:-9]]
             stock_Dictionary[stock].append(stock_or_fund)
             # print (stock_Dictionary)
 
