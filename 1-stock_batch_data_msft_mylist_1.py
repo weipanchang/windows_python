@@ -111,8 +111,6 @@ class get_data:
                 self.driver.get(self.url)
                 self.driver.delete_all_cookies()
                 self.driver.implicitly_wait(10) # seconds
-#                time.sleep(self.delay + 1)
-#                print ("Yahoo finance Page is loaded")
                 if 'watchlist?' in str(self.driver.current_url):
                     break
             except TimeoutException:
@@ -121,86 +119,6 @@ class get_data:
     def quit_driver(self):
         self.driver.quit()
         
-#     def get_historical_data(self): 
-#         print ("Retrieving Historical Data ")
-# 
-#         self.ts = datetime.datetime.strptime(str(self.date),"%Y-%m-%d")
-# #        tuple = element.timetuple()
-#         self.timestamp = str(int(time.mktime(self.ts.timetuple())))
-# 
-#         self.url_history = "https://finance.yahoo.com/quote/" + stock.upper() + "/history?period1=00&period2=" + self.timestamp +"&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
-# #        url_history = "https://finance.yahoo.com/quote/" + stock + "/history?period1=00&period2=1626480000&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
-#         while True:
-#             time.sleep(self.delay + 1)
-#             try:
-#                 time.sleep(self.delay + 1)
-#                 self.driver.get(self.url_history)
-#                 self.driver.implicitly_wait(5)
-#                 if stock.upper() in str(self.driver.current_url):
-#                     break
-#             except:
-#                  print ("Yahoo page slow, will reloop!", end=" ")
-# 
-# #        print ("click at Apply")
-#         try:
-#             elm = self.wait.until(EC.element_to_be_clickable((By.XPATH, '//span[text()="Apply"]'))).click()
-#         except TimeoutException:
-#             pass
-# 
-#         time.sleep(self.delay + 3)
-# 
-#         a_elm = self.driver.find_element("xpath","//a[@class = 'Fl(end) Mt(3px) Cur(p)']")
-# #        print ("click at download link")
-#         a_elm.click()
-#         time.sleep(self.delay + 3)
-# #        print ('\n')
-#         
-#         weekno = datetime.datetime.today().weekday()
-#         north_america = holidays.US()
-# 
-#         Day_of_today = self.date.strftime("%m-%d-%Y")
-# 
-#         if weekno < 5 and (Day_of_today not in north_america):
-# #            print("Saving current stock price.")
-#             current_time = datetime.datetime.now()
-#             open_time = current_time.replace(hour=6, minute=20, second=0, microsecond=0)
-#             while True:
-#                 try:
-#                     self.driver.get(self.url_stock)
-#                     self.driver.refresh()
-#                     self.driver.implicitly_wait(5)
-#                     if stock.upper() in str(self.driver.current_url):
-#                         break
-#                 except:
-#      #               print ("Yahoo slow, will reloop!")
-#                     pass
-# 
-# #             if (current_time > open_time):
-# #                 print("Saving current stock price.")
-# #                 
-# #                 try:
-# #                     elm = self.driver.find_element("xpath","//div[@class= 'Fw(b) Fl(end)--m Fz(s) C($primaryColor']").text
-# # #                    print (elm, end = '\n')
-# #                 except Exception:
-# #                     pass
-# # 
-# #                 Current_price = self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text
-# # 
-# #                 Open = self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[1]/table/tbody/tr[2]/td[2]/span').text
-# # #                print("Open =  %.2f" %float(Open))
-# # 
-# #                 Range_elm = self.driver.find_element_by_xpath('//*[@id="quote-summary"]/div[1]/table/tbody/tr[5]/td[2]').text
-# #                 Low, High  = Range_elm.split(' - ')[0], Range_elm.split(' - ')[1]
-# # #                print ("LOW = %s, HIGH = %s" %(Low, High))
-# # 
-# #                 Volume_elm = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[1]/table/tbody/tr[7]/td[2]/span').text
-# #                 Volume_elm = Volume_elm.replace(',', '')
-# # #                print("Volume =  %d" %int(Volume_elm))
-# #  
-# #                 with open(downloadPath +"\\" + stock.upper() + '.csv', 'a') as file:
-# # #                       writer = csv.writer(file)
-# #                     last_row = ['\n',str(self.ts)[:10], ',', Open, ',', High, ',' , Low, ',', Current_price, ',', Current_price, ',', Volume_elm]
-# #                     file.writelines(last_row)
 
  #        if stock[1:] not in ['XAX', 'IXIC', 'DJI', 'GSPC', 'NYA']:
     def get_target_data(self,msft_ticket):
@@ -247,105 +165,26 @@ class get_data:
 #        os.system("pause")
         time.sleep(1)
 
-        # if check_exists_by_xpath('//img[contains(@class,"Mb(6px) Cur(p)")]'):
-        #     print ("OLD Yahoo Finance Page\n")
-        # 
-        # elif check_exists_by_xpath('//*[@class="rapid-noclick-resp opt-in-link"]'):
-        #     print ("New Yahoo Finance Page\n")
-            
-        # else:
-        #     print ("Not Detected\n")
-        
         print ('Current Price:   %s' % (self.driver.find_element("xpath",'//div[@class= "mainPrice color_red-DS-EntryPoint1-1"]').text))
         if check_exists_by_xpath('//div[@class = "price_PreAfter"]'):
             print("After Hours:     %s\n" % (self.driver.find_element("xpath",'//div[@class = "price_PreAfter"]').text))
             
         elm_list = self.driver.find_elements(By.XPATH,'//span[@class = "summaryValue-DS-EntryPoint1-2"]')
         target = elm_list[0].text.replace('USD','')
-        print( "1y Target Est = ", target)
+        print( "1y Target Est = %s\n" % (target))
         print("Recommedation:    %s\n" % (self.driver.find_element("xpath",'//h2[@class="suggestion-DS-EntryPoint1-1"]').text))
         print("Price Volatility: %s\n" % elm_list[1].text)
         
-        
-                
-            # try:
-            #     elm = self.driver.find_element("xpath","/html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[3]/div[1]/div[2]/div[2]").text
-            #     print (elm, end = '\n')
-            # except Exception:
-            #     pass
-
-            # try:
-            #     Open = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[1]/table/tbody/tr[2]/td[2]').text
-            # except:
-            #     Open = self.driver.find_element("xpath",'/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[2]/span[2]/fin-streamer').text
-            # print("Open =  %.2f" %float(Open.replace(',','')))
-            # 
-            # try:
-            #     Range_elm = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[1]/table/tbody/tr[5]/td[2]').text
-            # except NoSuchElementException:
-            #     Range_elm = self.driver.find_element("xpath",'/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[5]/span[2]/fin-streamer').text
-            # Low, High  = Range_elm.split(' - ')[0], Range_elm.split(' - ')[1]
-            # print ("LOW = %s, HIGH = %s" %(Low, High))
-
+        self.url_stock = "https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M&id="+ msft_ticket
+        self.driver.get(self.url_stock)
+        print ("Display Summary Page... \n")
         time.sleep(1)
-#            try:
-#             if check_exists_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody'):
-#                 table_elm = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[2]/table/tbody')
-#                 list_elm = table_elm.find_elements("xpath",'//*/tr[2]')
-#                 time.sleep(0.1)
-#                 for elm in list_elm:
-#                     if 'Beta (5Y Monthly)' in elm.text:
-#                         print( elm.text)
-#                 time.sleep(0.1)
-#                 list_elm = table_elm.find_elements("xpath",'//*/tr[8]')
-#                 for elm in list_elm:
-#                     if '1y Target Est' in elm.text:
-#                         print ("=====> " + elm.text)
-#                 time.sleep(0.1)
-#                 if check_exists_by_classname('span.Fw\(b\).D\(b\)\-\-mobp.C\(\$negativeColor\)'):
-#                     print("=====> BEARISH")
-#                 elif check_exists_by_classname('span.Fw\(b\).D\(b\)\-\-mobp.C\(\$positiveColor\)'):
-#                     print("=====> BULLISH")
-#                 else:
-# #                check_exists_by_classname('span.Fw\(b\).D\(b\)\-\-mobp.C\(\$cInDiv5-2\)')
-#                     print ("=====> NEUTRAL")
-#             
-#             else:
-#                 print("\n========New Yahoo Finance Page ==========\n")
-#                 beta = self.driver.find_element(By.XPATH,"/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[10]/span[2]").text
-#                 print( "Beta (5Y Monthly = ", beta)
-#                 target = self.driver.find_element(By.XPATH,"/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[16]/span[2]/fin-streamer").text
-#                 print( "1y Target Est =========> ", target)
-# 
-#             try:
-#                 EPS =  self.driver.find_element("xpath",'/html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[2]/table/tbody/tr[4]/td[2]').text
-#             except NoSuchElementException:
-#                 EPS =  self.driver.find_element("xpath",'/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[12]/span[2]/fin-streamer').text
-#             
-#             print ("EPS ( > 1 is better ) ====       %s" %EPS)
-# 
-#             try:
-#                 PE_Ratio = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[2]/table/tbody/tr[3]/td[2]').text
-#             except NoSuchElementException:
-#                 PE_Ratio = self.driver.find_element("xpath",'/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[11]/span[2]/fin-streamer').text
-#             print ("PE_Ratio ( Smaller is better ) = %s" %PE_Ratio)
-# 
-#             if self.stock_or_fund == 'ETF':
-#                 try:
-#                     print ('Current Price:   %s' % (self.driver.find_element("xpath",'//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]').text))
-#                 except:
-#                     print ('Current Price:   %s' % (self.driver.find_element("xpath",'//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text))
-#                    
-#                 Open = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[1]/table/tbody/tr[2]/td[2]').text
-#                 print("Open =  %.2f" %float(Open.replace(',','')))
-#                 try:
-#                     PE_Rato = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[2]/table/tbody/tr[3]/td[2]/span').text
-#                 except:
-#                     PE_Rato = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[2]/table/tbody/tr[3]/td[2]').text
-#                 print ("PE_Rato ( Smaller is better ) = %s" %PE_Rato)
-# 
-#                 print (self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[1]').text, end ='   ')
-#                 print (self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[2]').text)
+
+        elm_list = self.driver.find_elements(By.XPATH,'//div[@class = "factsRowValue-DS-EntryPoint1-1"]')
+        previous = elm_list[0].text
+        print( "Previous Close = %s\n" % (previous))
+        
+        time.sleep(1)
 
     print ('\n' *3)
         
@@ -372,22 +211,7 @@ class get_data:
         else:
             ticket = yf.Ticker(stock)
             return ticket.info['regularMarketPrice']
-    #         self.url_stock = "https://finance.yahoo.com/quote/"+stock.upper()+"?p="+stock.upper()
-    #         while True:
-    #             try:
-    #                 self.driver.get(self.url_stock)
-    #                 self.driver.implicitly_wait(10)
-    #                 time.sleep(self.delay + 1)
-    #                 # print(stock, str(self.driver.current_url))
-    #                 if stock.upper() in str(self.driver.current_url):
-    #                     break
-    #             except:
-    #                 print ("Yahoo page slow, will reloop!", end=" ")
-    #                 pass
-    # #        print((self.driver.find_element("xpath",'//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text))
-    # #        //*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]
-    # #        return float((self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text))
-    #         return (float(self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]').text))
+
 
 def main():
 #    global downloadPath
