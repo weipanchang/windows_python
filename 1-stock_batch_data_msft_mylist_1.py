@@ -148,24 +148,25 @@ class get_data:
                 return False
             return True
         
-        self.url_stock = "https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M&id="+ msft_ticket+"&l3=L3_Earnings"       
+        self.url_stock = "https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M&id="+ msft_ticket+"&l3=L3_Earnings"
+        self.driver.get(self.url_stock)
+        self.driver.implicitly_wait(5)
         print ("Display Earning Page... \n\n")
+           
+        self.driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div/div[5]/div[2]/div/div[1]/div/div[3]/div[2]/div/div/button[4]/span').click()
 
-        while True:
-            try:
-                self.driver.get(self.url_stock)
-                self.driver.implicitly_wait(5)
-                time.sleep(self.delay + 1)
-#                print(str(self.driver.current_url))
-                if "&l3=L3_Earnings" in str(self.driver.current_url):
-                    break
-            except:
-                print ("Microsoft page slow, will reloop!", end=" ")
-                pass
-#        os.system("pause")
         time.sleep(1)
-
-        print ('Current Price:   %s' % (self.driver.find_element("xpath",'//div[@class= "mainPrice color_red-DS-EntryPoint1-1"]').text))
+        
+        while True:
+            if check_exists_by_xpath('//div[@class= "mainPrice color_red-DS-EntryPoint1-1"]'):
+                print ('Current Price:   %s' % (self.driver.find_element("xpath",'//div[@class= "mainPrice color_red-DS-EntryPoint1-1"]').text))
+                break
+            elif check_exists_by_xpath('//div[@class= "mainPrice color_green-DS-EntryPoint1-1"]'):
+                print ('Current Price:   %s' % (self.driver.find_element("xpath",'//div[@class= "mainPrice color_green-DS-EntryPoint1-1"]').text))
+                break
+            else:
+                pass
+            
         if check_exists_by_xpath('//div[@class = "price_PreAfter"]'):
             print("After Hours:     %s\n" % (self.driver.find_element("xpath",'//div[@class = "price_PreAfter"]').text))
             
