@@ -35,7 +35,7 @@ from datetime import date
 from selenium import webdriver
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\data"
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
-eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_2.xlsx"
+eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Watch List.xlsx"
         
 #short_cut_url = "https://finance.yahoo.com/quote/AVGO/history?period1=1249516800&period2=1626307200&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
 stock = ""
@@ -49,7 +49,7 @@ class Logger(object):
         today = date.today()
         #d1 = today.strftime("%m%d%Y")
         self.terminal = sys.stdout
-        self.log = open(downloadPath +"\\Summary_Report_"+ today.strftime("%m%d%Y") + ".txt" , "a+")
+        self.log = open(downloadPath +"\\Summary_Report__From_Yahoo_"+ today.strftime("%m%d%Y") + ".txt" , "a+")
 
     def write(self, message):
         self.terminal.write(message)
@@ -269,7 +269,12 @@ class get_data:
  
             if check_exists_by_xpath("//fin-streamer[contains(@data-field,'postMarketPrice')]"):
                 print("After Hours:     %s\n" % (self.driver.find_element("xpath","//fin-streamer[contains(@data-field,'postMarketPrice')]").text))
+            if check_exists_by_xpath("//td[@data-test='PREV_CLOSE-value']"):
+                print("Previous   :     %s\n" % (self.driver.find_element("xpath","//td[@data-test='PREV_CLOSE-value']").text))
+            if check_exists_by_xpath("//fin-streamer[@data-field='regularMarketPreviousClose']"):
+                print("Previous   :     %s\n" % (self.driver.find_element("xpath","//fin-streamer[@data-field='regularMarketPreviousClose']").text))
                 
+
             try:
                 elm = self.driver.find_element("xpath","/html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[3]/div[1]/div[2]/div[2]").text
                 print (elm, end = '\n')
@@ -280,12 +285,14 @@ class get_data:
                 Open = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[1]/table/tbody/tr[2]/td[2]').text
             except:
                 Open = self.driver.find_element("xpath",'/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[2]/span[2]/fin-streamer').text
+#            Open =   self.driver.find_element("xpath","//td[@data-test='OPEN-value']").text
             print("Open =  %.2f" %float(Open.replace(',','')))
 
             try:
                 Range_elm = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[1]/table/tbody/tr[5]/td[2]').text
             except NoSuchElementException:
                 Range_elm = self.driver.find_element("xpath",'/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[5]/span[2]/fin-streamer').text
+#            Range_elm =   self.driver.find_element("xpath","//td[@data-test='DAYS_RANGE-value']").text
             Low, High  = Range_elm.split(' - ')[0], Range_elm.split(' - ')[1]
             print ("LOW = %s, HIGH = %s" %(Low, High))
 
@@ -314,7 +321,7 @@ class get_data:
                     print ("=====> NEUTRAL")
             
             else:
-                print("\n========New Yahoo Finance Page ==========\n")
+                # print("\n========New Yahoo Finance Page ==========\n")
                 beta = self.driver.find_element(By.XPATH,"/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[10]/span[2]").text
                 print( "Beta (5Y Monthly = ", beta)
                 target = self.driver.find_element(By.XPATH,"/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[16]/span[2]/fin-streamer").text
@@ -351,24 +358,41 @@ class get_data:
                 print (self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[2]').text)
 
         print ('\n' *3)
-        
-    def update_Excel_Table(self): 
-        print ("Updating Spreadsheet Data... \n\n")
+    def lines_that_contain(string, fp):
+        return [line for line in fp if string in line]
+    
+    def update_Excel_Table(self):
+        today = date.today()
+        print ("Updating Invest Table Target Data... \n\n")
         wb = load_workbook(eXCEL_File)
-        ws =  wb.active
-        i = 3
-        while ws['B' + str(i)].value is not None:
-            print(ws['A' + str(i)].value, end="   ")
-            stock = ws['C' + str(i)].value.rstrip()
-            Stock_Fund = ws['B' + str(i)].value.rstrip()
-            # print(ws['F' + str(i)].value)
-            ws['G'+ str(i)] = self.get_Current_Stock_Price(stock, Stock_Fund)
-            print(ws['G'+ str(i)].value)
+        ws =  wb.active 
+        i = 9
+        while ws['D' + str(i)].value != "INDEX":
+            if ws['D' + str(i)].value is not None:
+#            print(ws['B' + str(i)].value, end="   ")
+                print(ws['C' + str(i)].value, end="   ")
+                stock = ws['C' + str(i)].value
+                with open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\data\\Summary_Report__From_Yahoo_" + today.strftime("%m%d%Y")+".txt") as Yahoo, \
+                    open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\MSFT_Analysis\\Summary_Report_From_Microsoft_" + today.strftime("%m%d%Y")+".txt") as Microsoft:
+                    print(ws['D' + str(i)].value, end="   ")
+                    print(ws['k' + str(i)].value, end="   ")
+                    print(ws['L' + str(i)].value)
+                # stock = ws['C' + str(i)].value.rstrip()
+                # Stock_Fund = ws['B' + str(i)].value.rstrip()
+                # print(ws['F' + str(i)].value)
+    #            ws['G'+ str(i)] = self.get_Current_Stock_Price(stock, Stock_Fund)
+    #            print(ws['G'+ str(i)].value)
+                    pass
             i += 1
 
         wb.save(eXCEL_File)
         self.quit_driver()
-
+    # with open('/tmp/results_nslookup.txt', 'r') as f:
+    # for line in f:
+    #     if line == 'Non-authoritative answer:\n':
+    #         for i in range(8):
+    #             print(next(lines).strip())
+                
     def get_Current_Stock_Price(self, stock, Stock_Fund):
         if Stock_Fund != 'Fund':
             return(float(si.get_live_price(stock)))
@@ -409,9 +433,9 @@ def main():
     print("\nTime: ", now_time, "\n")
     menu_options = { \
     1: 'Download Historical Data', \
-    2: 'Get Summary Data', \
+    2: 'Get Yahoo Summary Data', \
     3: 'Download Historycal Data And Summary Date', \
-    4: 'Update Excel table with Current Stock Price', \
+    4: 'Update Investment table with 1YR TargetPrice', \
     5: 'Exit', \
     }
 
@@ -457,19 +481,19 @@ def main():
         get_history_data.get_historical_data()
         get_history_data.get_Summary_data()
 
-    def option4():
+    def option4(): 
         get_history_data = get_data('STOCK')
         get_history_data.update_Excel_Table()
         
-    while(True):
-#        print_menu()
-        option = ''
-        try:
-            option = print_menu()
-            break
-        except:
-            print('Wrong input. Please enter a number ...')
-
+#     while(True):
+# #        print_menu()
+#         option = ''
+#         try:
+#             option = print_menu()
+#             break
+#         except:
+#             print('Wrong input. Please enter a number ...')
+    option = 2
     if option == 4:
         wb = load_workbook(eXCEL_File)
         try:

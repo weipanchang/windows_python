@@ -49,7 +49,7 @@ class Logger(object):
         today = date.today()
         #d1 = today.strftime("%m%d%Y")
         self.terminal = sys.stdout
-        self.log = open(downloadPath +"\\Summary_Report_From_Microsoft"+ today.strftime("%m%d%Y") + ".txt" , "a+")
+        self.log = open(downloadPath +"\\Summary_Report_From_Microsoft_"+ today.strftime("%m%d%Y") + ".txt" , "a+")
 
     def write(self, message):
         self.terminal.write(message)
@@ -150,12 +150,12 @@ class get_data:
         
         self.url_stock = "https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M&id="+ msft_ticket+"&l3=L3_Earnings"
         self.driver.get(self.url_stock)
-        self.driver.implicitly_wait(5)
+        self.driver.implicitly_wait(10)
         print ("Display Earning Page... \n\n")
            
         self.driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div/div[5]/div[2]/div/div[1]/div/div[3]/div[2]/div/div/button[4]/span').click()
 
-        time.sleep(1)
+        time.sleep(10)
         
         while True:
             if check_exists_by_xpath('//div[@class= "mainPrice color_red-DS-EntryPoint1-1"]'):
@@ -169,10 +169,12 @@ class get_data:
             
         if check_exists_by_xpath('//div[@class = "price_PreAfter"]'):
             print("After Hours:     %s\n" % (self.driver.find_element("xpath",'//div[@class = "price_PreAfter"]').text))
-            
+        
+        time.sleep(10)    
         elm_list = self.driver.find_elements(By.XPATH,'//span[@class = "summaryValue-DS-EntryPoint1-2"]')
         target = elm_list[0].text.replace('USD','')
         print( "1y Target Est = %s\n" % (target))
+        time.sleep(5)
         print("Recommedation:    %s\n" % (self.driver.find_element("xpath",'//h2[@class="suggestion-DS-EntryPoint1-1"]').text))
         print("Price Volatility: %s\n" % elm_list[1].text)
         
@@ -287,15 +289,15 @@ def main():
         get_history_data = get_data('STOCK')
         get_history_data.update_Excel_Table()
         
-    while(True):
-#        print_menu()
-        option = ''
-        try:
-            option = print_menu()
-            break
-        except:
-            print('Wrong input. Please enter a number ...')
-
+#     while(True):
+# #        print_menu()
+#         option = ''
+#         try:
+#             option = print_menu()
+#             break
+#         except:
+#             print('Wrong input. Please enter a number ...')
+    option = 2
     if option == 4:
         wb = load_workbook(eXCEL_File)
         try:
