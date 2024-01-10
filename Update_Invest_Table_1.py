@@ -59,8 +59,9 @@ def update_Excel_Table(xcl):
                if "1y Target Est" in line_from_Yahoo:
                   target_price = line_from_Yahoo.split()[-1]
                   print("From Yahoo    ", end="   ")
-                  print(ws['K' + str(i)].value, end="   ")
-                  print (target_price)
+                  print(ws['K' + str(i)].value, end="\t")
+                  print (target_price, end = "\t" )
+                  print("-\n") if ws['K' + str(i)].value > float(target_price) else print ("+\n")
                   ws['K'+ str(i)] = float(target_price.strip(' "'))
                   break
                
@@ -68,19 +69,31 @@ def update_Excel_Table(xcl):
             line_from_Microsoft = Microsoft.readline()   
             while "("+stock+")" not in line_from_Microsoft:
                line_from_Microsoft = Microsoft.readline()
-
+            
             while True:
                line_from_Microsoft = Microsoft.readline()
                if "1y Target Est" in line_from_Microsoft:
                   target_price = line_from_Microsoft.split()[-1]
                   print("From Microsoft", end="   ")
-                  print(ws['L' + str(i)].value, end="   ")
-                  print (target_price)
+                  print(ws['L' + str(i)].value, end="\t")
+                  print (target_price, end="\t")
+                  print("-\n") if ws['L' + str(i)].value > float(target_price) else print ("+\n")
                   ws['L'+ str(i)] = float(target_price.strip(' "'))
                   break     
- 
+               line_from_Microsoft = Microsoft.readline()
+               if "1y Target Est" in line_from_Microsoft:
+                  target_price = line_from_Microsoft.split()[-1]
+                  print("From Microsoft    ", end="   ")
+                  print(ws['L' + str(i)].value, end="\t")
+                  print (target_price, end = "\t" )
+                  print("-\n") if ws['L' + str(i)].value > float(target_price) else print ("+\n")
+                  ws['K'+ str(i)] = float(target_price.strip(' "'))
+                  break 
+
+
+
             line_from_Prediction = Prediction.readline()   
-            while stock not in line_from_Prediction:
+            while "[ "+stock+" ]" not in line_from_Prediction:
                line_from_Prediction = Prediction.readline()
 
             while True:
@@ -88,9 +101,10 @@ def update_Excel_Table(xcl):
                if "Current trend" in line_from_Prediction:
                   Current_trend = line_from_Prediction.split()[4]
                   print("Prediction Trend", end=" ")
-                  print(ws['O' + str(i)].value, end="   ")
-                  print (Current_trend)
+                  print(ws['O' + str(i)].value, end="\t")
+                  print (Current_trend.replace(",",""), end="\t")
                   ws['O'+ str(i)] = float(Current_trend.replace(",",""))
+                  print("-\n") if ws['O' + str(i)].value > float(Current_trend.replace(",","")) else print("+\n")
                   break
       print("")
       i += 1
