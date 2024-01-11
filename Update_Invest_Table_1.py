@@ -58,10 +58,10 @@ def update_Excel_Table(xcl):
                line_from_Yahoo = Yahoo.readline()
                if "1y Target Est" in line_from_Yahoo:
                   target_price = line_from_Yahoo.split()[-1]
-                  print("From Yahoo    ", end="   ")
+                  print("From Yahoo    ", end="\t\t")
                   print(ws['K' + str(i)].value, end="\t")
                   print (target_price, end = "\t" )
-                  print("-\n") if ws['K' + str(i)].value > float(target_price) else print ("+\n")
+                  print("-\n") if ws['K' + str(i)].value > float(target_price) else print ("+\n")                  
                   ws['K'+ str(i)] = float(target_price.strip(' "'))
                   break
                
@@ -74,20 +74,11 @@ def update_Excel_Table(xcl):
                line_from_Microsoft = Microsoft.readline()
                if "1y Target Est" in line_from_Microsoft:
                   target_price = line_from_Microsoft.split()[-1]
-                  print("From Microsoft", end="   ")
-                  print(ws['L' + str(i)].value, end="\t")
-                  print (target_price, end="\t")
-                  print("-\n") if ws['L' + str(i)].value > float(target_price) else print ("+\n")
-                  ws['L'+ str(i)] = float(target_price.strip(' "'))
-                  break     
-               line_from_Microsoft = Microsoft.readline()
-               if "1y Target Est" in line_from_Microsoft:
-                  target_price = line_from_Microsoft.split()[-1]
-                  print("From Microsoft    ", end="   ")
+                  print("From Microsoft    ", end="\t")
                   print(ws['L' + str(i)].value, end="\t")
                   print (target_price, end = "\t" )
                   print("-\n") if ws['L' + str(i)].value > float(target_price) else print ("+\n")
-                  ws['K'+ str(i)] = float(target_price.strip(' "'))
+                  ws['L'+ str(i)] = float(target_price.strip(' "'))
                   break 
 
 
@@ -100,11 +91,12 @@ def update_Excel_Table(xcl):
                line_from_Prediction = Prediction.readline()
                if "Current trend" in line_from_Prediction:
                   Current_trend = line_from_Prediction.split()[4]
-                  print("Prediction Trend", end=" ")
+                  print("Prediction Trend", end="\t")
                   print(ws['O' + str(i)].value, end="\t")
                   print (Current_trend.replace(",",""), end="\t")
+                  print("-\n") if ws['O' + str(i)].value > float(Current_trend.replace(",","")) else print("+\n")                  
                   ws['O'+ str(i)] = float(Current_trend.replace(",",""))
-                  print("-\n") if ws['O' + str(i)].value > float(Current_trend.replace(",","")) else print("+\n")
+#                  print("-\n") if ws['O' + str(i)].value > float(Current_trend.replace(",","")) else print("+\n")
                   break
       print("")
       i += 1
