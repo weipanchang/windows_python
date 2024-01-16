@@ -21,22 +21,12 @@ from openpyxl import load_workbook, Workbook
 
 # from bs4 import BeautifulSoup
 # import unittest
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import *
-from selenium.webdriver.firefox.options import Options
-from selenium.common.exceptions import NoSuchElementException
+
 import time
 import datetime
 from datetime import date
 # import sys
 # from bs4 import BeautifulSoup as bs
-from selenium import webdriver
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\data"
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Watch_List.xlsx"
@@ -65,9 +55,10 @@ class Logger(object):
         #you might want to specify some extra behavior here.
         pass
 
-class get_data:
+class get_data():
 
     #def __init__(self, stock_name, startDate, endDate, downloadPath):
+    sys.stdout = Logger()
     def __init__(self, stock_or_fund):
 #        global downloadPath
         global stock
@@ -78,85 +69,11 @@ class get_data:
         self.delay = 0
         self.currentDateTime = datetime.datetime.now()
         self.date = self.currentDateTime.date()
-        
-        self.profile = webdriver.FirefoxProfile()
-        self.profile.set_preference("browser.download.folderList", 2)
-        self.profile.set_preference("browser.download.manager.showWhenStarting", False)
-        self.profile.set_preference("browser.download.dir", downloadPath)
-        self.profile.set_preference("browser.helperApps.neverAsk.openFile", "text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml")
-        self.profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml")
-        self.profile.set_preference("browser.helperApps.alwaysAsk.force", False)
-        self.profile.set_preference("browser.download.manager.alertOnEXEOpen", False)
-        self.profile.set_preference("browser.download.manager.focusWhenStarting", False)
-        self.profile.set_preference("browser.download.manager.useWindow", False)
-        self.profile.set_preference("browser.download.manager.showAlertOnComplete", False)
-        self.profile.set_preference("browser.download.manager.closeWhenDone", False)
-        self.profile.set_preference("browser.cache.disk.enable", False)
-        self.profile.set_preference("browser.cache.memory.enable", False)
-        self.profile.set_preference("browser.cache.offline.enable", False)
-        self.profile.set_preference("network.http.use-cache", False)
-        self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
-        self.desiredCapabilities['firefox_profile'] = self.profile.encoded
-        self.options = Options()
-        self.options.add_argument("--headless")
-
-        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
-
-        self.driver.set_page_load_timeout(80)
-        self.wait = WebDriverWait(self.driver, 200, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
-#        url = "https://finance.yahoo.com/quote/" + self.stock_name + "?p=" + self.stock_name + "&.tsrc=fin-srch"
-
-        self.url = "https://finance.yahoo.com"
-        self.url_stock = "https://finance.yahoo.com/quote/"+stock.upper()+"?p="+stock.upper()
-        i = 0
-        while True:
-            try:
-                self.driver.get(self.url)
-                self.driver.delete_all_cookies()
-                self.driver.implicitly_wait(20) # seconds
-#                time.sleep(self.delay + 1)
-#                print ("Yahoo finance Page is loaded")
-                if 'finance' in str(self.driver.current_url):
-                    break
-            except TimeoutException:
-                pass
-
-    def quit_driver(self):
-        self.driver.quit()
-        
-    def get_historical_data(self): 
-        print ("Retrieving Historical Data ")
 
         self.ts = datetime.datetime.strptime(str(self.date),"%Y-%m-%d")
 #        tuple = element.timetuple()
         self.timestamp = str(int(time.mktime(self.ts.timetuple())))
 
-        self.url_history = "https://finance.yahoo.com/quote/" + stock.upper() + "/history?period1=00&period2=" + self.timestamp +"&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
-#        url_history = "https://finance.yahoo.com/quote/" + stock + "/history?period1=00&period2=1626480000&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
-        while True:
-            time.sleep(self.delay + 1)
-            try:
-                time.sleep(self.delay + 1)
-                self.driver.get(self.url_history)
-                self.driver.implicitly_wait(5)
-                if stock.upper() in str(self.driver.current_url):
-                    break
-            except:
-                 print ("Yahoo page slow, will reloop!", end=" ")
-
-#        print ("click at Apply")
-        try:
-            elm = self.wait.until(EC.element_to_be_clickable((By.XPATH, '//span[text()="Apply"]'))).click()
-        except TimeoutException:
-            pass
-
-        time.sleep(self.delay + 3)
-
-        a_elm = self.driver.find_element("xpath","//a[@class = 'Fl(end) Mt(3px) Cur(p)']")
-#        print ("click at download link")
-        a_elm.click()
-        time.sleep(self.delay + 3)
-#        print ('\n')
         
         weekno = datetime.datetime.today().weekday()
         north_america = holidays.US()
@@ -167,203 +84,46 @@ class get_data:
 #            print("Saving current stock price.")
             current_time = datetime.datetime.now()
             open_time = current_time.replace(hour=6, minute=20, second=0, microsecond=0)
-            while True:
-                try:
-                    self.driver.get(self.url_stock)
-                    self.driver.refresh()
-                    self.driver.implicitly_wait(5)
-                    if stock.upper() in str(self.driver.current_url):
-                        break
-                except:
-     #               print ("Yahoo slow, will reloop!")
-                    pass
-                
-    def get_Summary_data(self):
-        def check_exists_by_css_selector(css_selector):
-            try:
-                self.driver.find_element(By.CSS_SELECTOR,css_selector)
-            except NoSuchElementException:
-                return False
-            return True
-        def check_exists_by_classname(classname):
-            try:
-                self.driver.find_element(By.CLASS_NAME,classname)
-            except NoSuchElementException:
-                return False
-            return True
-        
-        def check_exists_by_xpath(xpath):
-            try:
-                self.driver.find_element(By.XPATH,xpath)
-            except NoSuchElementException:
-                return False
-            return True
-        def check_exists_by_tag(tag_name):
-            try:
-                self.driver.find_element(By.TAG_NAME,tag_name)
-            except NoSuchElementException:
-                return False
-            return True
-                
-        print ("Display Summary Page... \n\n")
 
-        while True:
-            try:
-                self.driver.get(self.url_stock)
-                self.driver.implicitly_wait(5)
-                time.sleep(self.delay + 1)
-                print(str(self.driver.current_url))
-                if stock.upper() in str(self.driver.current_url):
-                    break
-            except:
-                print ("Yahoo page slow, will reloop!", end=" ")
-                pass
-        time.sleep(4)
-
-        if check_exists_by_xpath('//img[contains(@class,"Mb(6px) Cur(p)")]'):
-            print ("OLD Yahoo Finance Page\n")
-
-        elif check_exists_by_xpath('//*[@class="rapid-noclick-resp opt-in-link"]'):
-            print ("New Yahoo Finance Page\n")
-            
-        else:
-            print ("Not Detected\n")
-                    
-        while True:
-            try:
-                print ('Current Price:   %s' % (self.driver.find_element("xpath",'//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]').text))
-                break
-            except NoSuchElementException:
-                try:
-                    print ('Current Price:   %s' % (self.driver.find_element("xpath",'/html/body/div[1]/main/section/section/section/article/section[1]/section/div/section[1]/div[1]/fin-streamer[1]').text))
-                    break
-                except NoSuchElementException:
-                    print ('Current Price:   %s' % (self.driver.find_element("xpath",'//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text))
-                    break
-         
-        if self.stock_or_fund == 'STOCK':
- 
-            if check_exists_by_xpath("//fin-streamer[contains(@data-field,'postMarketPrice')]"):
-                print("After Hours:     %s\n" % (self.driver.find_element("xpath","//fin-streamer[contains(@data-field,'postMarketPrice')]").text))
-            if check_exists_by_xpath("//td[@data-test='PREV_CLOSE-value']"):
-                print("Previous   :     %s\n" % (self.driver.find_element("xpath","//td[@data-test='PREV_CLOSE-value']").text))
-            if check_exists_by_xpath("//fin-streamer[@data-field='regularMarketPreviousClose']"):
-                print("Previous   :     %s\n" % (self.driver.find_element("xpath","//fin-streamer[@data-field='regularMarketPreviousClose']").text))
-                
-
-            try:
-                elm = self.driver.find_element("xpath","/html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[3]/div[1]/div[2]/div[2]").text
-                print (elm, end = '\n')
-            except Exception:
-                pass
-
-            try:
-                Open = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[1]/table/tbody/tr[2]/td[2]').text
-            except:
-                Open = self.driver.find_element("xpath",'/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[2]/span[2]/fin-streamer').text
-#            Open =   self.driver.find_element("xpath","//td[@data-test='OPEN-value']").text
-            print("Open =  %.2f" %float(Open.replace(',','')))
-
-            try:
-                Range_elm = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[1]/table/tbody/tr[5]/td[2]').text
-            except NoSuchElementException:
-                Range_elm = self.driver.find_element("xpath",'/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[5]/span[2]/fin-streamer').text
-#            Range_elm =   self.driver.find_element("xpath","//td[@data-test='DAYS_RANGE-value']").text
-            Low, High  = Range_elm.split(' - ')[0], Range_elm.split(' - ')[1]
-            print ("LOW = %s, HIGH = %s" %(Low, High))
-
-            time.sleep(1)
-
-#            try:
-            if check_exists_by_xpath('//*[@id="quote-summary"]/div[2]/table/tbody'):
-                table_elm = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[2]/table/tbody')
-                list_elm = table_elm.find_elements("xpath",'//*/tr[2]')
-                time.sleep(0.1)
-                for elm in list_elm:
-                    if 'Beta (5Y Monthly)' in elm.text:
-                        print( elm.text)
-                time.sleep(0.1)
-                list_elm = table_elm.find_elements("xpath",'//*/tr[8]')
-                for elm in list_elm:
-                    if '1y Target Est' in elm.text:
-                        print ("=====> " + elm.text)
-                time.sleep(0.1)
-                if check_exists_by_classname('span.Fw\(b\).D\(b\)\-\-mobp.C\(\$negativeColor\)'):
-                    print("=====> BEARISH")
-                elif check_exists_by_classname('span.Fw\(b\).D\(b\)\-\-mobp.C\(\$positiveColor\)'):
-                    print("=====> BULLISH")
-                else:
-#                check_exists_by_classname('span.Fw\(b\).D\(b\)\-\-mobp.C\(\$cInDiv5-2\)')
-                    print ("=====> NEUTRAL")
-            
-            else:
-                # print("\n========New Yahoo Finance Page ==========\n")
-                beta = self.driver.find_element(By.XPATH,"/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[10]/span[2]").text
-                print( "Beta (5Y Monthly = ", beta)
-                target = self.driver.find_element(By.XPATH,"/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[16]/span[2]/fin-streamer").text
-                print( "1y Target Est =========> ", target)
-
-            try:
-                EPS =  self.driver.find_element("xpath",'/html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[2]/table/tbody/tr[4]/td[2]').text
-            except NoSuchElementException:
-                EPS =  self.driver.find_element("xpath",'/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[12]/span[2]/fin-streamer').text
-            
-            print ("EPS ( > 1 is better ) ====       %s" %EPS)
-
-            try:
-                PE_Ratio = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[2]/table/tbody/tr[3]/td[2]').text
-            except NoSuchElementException:
-                PE_Ratio = self.driver.find_element("xpath",'/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[11]/span[2]/fin-streamer').text
-            print ("PE_Ratio ( Smaller is better ) = %s" %PE_Ratio)
-
-            if self.stock_or_fund == 'ETF':
-                try:
-                    print ('Current Price:   %s' % (self.driver.find_element("xpath",'//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]').text))
-                except:
-                    print ('Current Price:   %s' % (self.driver.find_element("xpath",'//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text))
-                   
-                Open = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[1]/table/tbody/tr[2]/td[2]').text
-                print("Open =  %.2f" %float(Open.replace(',','')))
-                try:
-                    PE_Rato = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[2]/table/tbody/tr[3]/td[2]/span').text
-                except:
-                    PE_Rato = self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[2]/table/tbody/tr[3]/td[2]').text
-                print ("PE_Rato ( Smaller is better ) = %s" %PE_Rato)
-
-                print (self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[1]').text, end ='   ')
-                print (self.driver.find_element("xpath",'//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[2]').text)
-
-        print ('\n' *3)
         
     def lines_that_contain(string, fp):
         return [line for line in fp if string in line]
     
-    def update_Excel_Table():
+    def stock_summary():
         today = date.today()
-        print ("Get 1 Yr Target Data... \n\n")
-        wb = load_workbook(eXCEL_File)
-        ws =  wb.active 
-        i = 9
-        while ws['D' + str(i)].value != "INDEX":
-            if ws['D' + str(i)].value is not None:
-#            print(ws['B' + str(i)].value, end="   ")
-                print(ws['C' + str(i)].value, end="\t")
-                stock = ws['C' + str(i)].value
+#        print ("Get 1 Yr Target Data... \n\n")
+        # wb = load_workbook(eXCEL_File)
+        # ws =  wb.active 
+        # i = 9
+#         while ws['D' + str(i)].value != "INDEX":
+#             if ws['D' + str(i)].value is not None:
+# #            print(ws['B' + str(i)].value, end="   ")
+#                 print(ws['C' + str(i)].value, end="\t")
+#                 stock = ws['C' + str(i)].value
+# 
+#                     # print(ws['D' + str(i)].value, end="   ")
+#                 print(ws['k' + str(i)].value, end="\t")
+        quote_table = si.get_quote_table(stock)
+        print("Current Price:\t%s\n" % quote_table["Quote Price"])
+        print("Previous Close:\t%s\n" % quote_table["Previous Close"])
+        print("Open:\t%s\n" % quote_table["Open"])
+        Low, High  = quote_table["Day's Range"].split(' - ')[0], quote_table["Day's Range"].split(' - ')[1]
+        print ("LOW = %s, HIGH = %s\n" %(Low, High))
+        print("Beta (5Y Monthly):\t%s\n" % quote_table["Beta (5Y Monthly)"])
+        print("=====> 1y Target Est\t%s\n" % quote_table["1y Target Est"])
+        print("EPS ( > 1 is better ):\t%s\n" % quote_table["EPS (TTM)"])
+        print("PE_Ratio ( Smaller is better ):\t%s\n" % quote_table["PE Ratio (TTM)"])
+        
+#                     # print(ws['L' + str(i)].value)
+#                 # stock = ws['C' + str(i)].value.rstrip()
+#                 # Stock_Fund = ws['B' + str(i)].value.rstrip()
+#                 # print(ws['F' + str(i)].value)
+#     #            ws['G'+ str(i)] = self.get_Current_Stock_Price(stock, Stock_Fund)
+#     #            print(ws['G'+ str(i)].value)
+#                pass
+#            i += 1
 
-                    # print(ws['D' + str(i)].value, end="   ")
-                print(ws['k' + str(i)].value, end="\t")
-                quote_table = si.get_quote_table(stock)
-                print(quote_table["1y Target Est"])
-                    # print(ws['L' + str(i)].value)
-                # stock = ws['C' + str(i)].value.rstrip()
-                # Stock_Fund = ws['B' + str(i)].value.rstrip()
-                # print(ws['F' + str(i)].value)
-    #            ws['G'+ str(i)] = self.get_Current_Stock_Price(stock, Stock_Fund)
-    #            print(ws['G'+ str(i)].value)
-                pass
-            i += 1
-
-        wb.save(eXCEL_File)
+#        wb.save(eXCEL_File)
 #        self.quit_driver()
     # with open('/tmp/results_nslookup.txt', 'r') as f:
     # for line in f:
@@ -377,22 +137,7 @@ class get_data:
         else:
             ticket = yf.Ticker(stock)
             return ticket.info['regularMarketPrice']
-    #         self.url_stock = "https://finance.yahoo.com/quote/"+stock.upper()+"?p="+stock.upper()
-    #         while True:
-    #             try:
-    #                 self.driver.get(self.url_stock)
-    #                 self.driver.implicitly_wait(10)
-    #                 time.sleep(self.delay + 1)
-    #                 # print(stock, str(self.driver.current_url))
-    #                 if stock.upper() in str(self.driver.current_url):
-    #                     break
-    #             except:
-    #                 print ("Yahoo page slow, will reloop!", end=" ")
-    #                 pass
-    # #        print((self.driver.find_element("xpath",'//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text))
-    # #        //*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]
-    # #        return float((self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text))
-    #         return (float(self.driver.find_element_by_xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]').text))
+
 
 def main():
 #    global downloadPath
@@ -409,20 +154,7 @@ def main():
 
     now_time = datetime.datetime.now().time()
     print("\nTime: ", now_time, "\n")
-    menu_options = { \
-    1: 'Download Historical Data', \
-    2: 'Get Yahoo Summary Data', \
-    3: 'Download Historycal Data And Summary Date', \
-    4: 'Get 1YR Target Price', \
-    5: 'Exit', \
-    }
 
-    def print_menu():
-        print("Enter your choice: \n\n")
-        for key in menu_options.keys():
-            print (key, '--', menu_options[key] )
-        print ("\n")
-        return(int(input()))
 
     def fetch_Stock_Name(stock_Dictionary):
         
@@ -435,6 +167,7 @@ def main():
             stock = re.search(r'(\(\^\w+\))', stock_fund_name)
             if stock is None:
                 stock = re.search('\(\w+\)', stock_fund_name)
+                msft_ticket = re.search('\[\w+\]', stock_fund_name)
 
             is_stock =  re.search("ETF|Fund",stock_fund_name)
 #            print is_stock
@@ -447,72 +180,37 @@ def main():
                 stock_or_fund ='STOCK'
             # print(stock_or_fund)
             stock = stock.group().rstrip().rstrip(')').lstrip('(')
+            msft_ticket = msft_ticket.group().rstrip().rstrip(']').lstrip('[')
             stock_Dictionary[stock] = [stock_fund_name.rstrip()[:-9]]
             stock_Dictionary[stock].append(stock_or_fund)
-            # print (stock_Dictionary)
+            stock_Dictionary[stock].append(msft_ticket)
 
-    def option1():
-        get_history_data.get_historical_data()
-    
-    def option2():
-        get_history_data.get_Summary_data()
-    
-    def option3():
-        get_history_data.get_historical_data()
-        get_history_data.get_Summary_data()
+    # def option1():
+    #     get_history_data.get_historical_data()
+    # 
+    # def option2():
+    #     get_history_data.get_Summary_data()
+    # 
+    # def option3():
+    #     get_history_data.get_historical_data()
+    #     get_history_data.get_Summary_data()
 
     def option4(): 
 #        get_history_data = get_data('STOCK')
-        get_data.update_Excel_Table()
+        get_data.stock_summary()
         
-#     while(True):
-# #        print_menu()
-#         option = ''
-#         try:
-#             option = print_menu()
-#             break
-#         except:
-#             print('Wrong input. Please enter a number ...')
-    option = 4
-    if option == 4:
-        wb = load_workbook(eXCEL_File)
-        try:
-            wb.save(eXCEL_File)
-            pass
-        except:
-            print('Please close the Spreadsheet file, Process Aborted!')
-            time.sleep(3)
-            # self.quit_driver()
-            sys.exit()
+
+    sys.stdout = Logger()
+    fetch_Stock_Name(stock_Dictionary:={})
+
+    for stock in stock_Dictionary.keys():
+        print("\n")
+        print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
+        print ("Processing " + stock_Dictionary[stock][0] +" data")
+        print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
+ #       get_data(stock_Dictionary[stock][1])
+        
         option4()
 
-    elif option < 4:
-
-        fetch_Stock_Name(stock_Dictionary:={})
-        for stock in stock_Dictionary.keys():
-
-            sys.stdout = Logger()
-            print("\n")
-            print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
-            print ("Processing " + stock_Dictionary[stock][0] +" data")
-            print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
-
-            get_history_data = get_data(stock_Dictionary[stock][1])
-    
-            if option == 1:
-                option1()
-            elif option == 2:
-                option2()
-            elif option == 3:
-                option3()
-            get_history_data.quit_driver()
-                
-    else:
-        print('\nProgram Terminated')
-        sys.exit()
-
-    # if option < 5:        
-    #     get_history_data.quit_driver()
-        
 if __name__ == "__main__":
     main()
