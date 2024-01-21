@@ -30,7 +30,7 @@ Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Prediction"
 # downloadPath_pickle = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Pickle"
 stock = ""
-cutoff =0.50
+cutoff =0.51
 class Logger(object):
 
     def __init__(self):
@@ -336,12 +336,12 @@ def main():
     print ("We Predication [ %s ] should be going up." %stock.upper()) if (df1.iloc[-1,19] == 1) else print ("We Predicae [ %s ] should be going down." %stock.upper())
     print ("\n=========> Actual and Predication MATCH <=========\n") if (df1.iloc[-1,13] == df1.iloc[-1,19]) else print("\n=========> Actual and Predication DO NOT match <=========\n")
 
-    x_tran= df1[df1.Date.dt.year < 2021][['const','Trend_Lag','High-Low_Change_%', 'RSI_Lag','Signal_Line_Lag','Volume_Lag']]
-    y_train=df1[df1.Date.dt.year < 2021]["Up_Down"]
-    x_test= df1[df1.Date.dt.year >= 2021][['const','Trend_Lag','High-Low_Change_%', 'RSI_Lag','Signal_Line_Lag','Volume_Lag']]
-    y_test= df1[df1.Date.dt.year >= 2021]["Up_Down"]
+    x_train= df1[df1.Date.dt.year < 2022][['const','Trend_Lag','High-Low_Change_%', 'RSI_Lag','Signal_Line_Lag','Volume_Lag']]
+    y_train=df1[df1.Date.dt.year < 2022]["Up_Down"]
+    x_test= df1[df1.Date.dt.year >= 2022][['const','Trend_Lag','High-Low_Change_%', 'RSI_Lag','Signal_Line_Lag','Volume_Lag']]
+    y_test= df1[df1.Date.dt.year >= 2022]["Up_Down"]
 
-    model = sm.Logit(y_train,x_tran)
+    model = sm.Logit(y_train,x_train)
     result = model.fit()
     # with open(downloadPath_pickle + '\\' + stock.upper()+'.result.pickle', 'wb') as pickle_file:
     #     pickle.dump(result,pickle_file)

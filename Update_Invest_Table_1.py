@@ -45,7 +45,6 @@ def update_Excel_Table(xcl):
    while ws['D' + str(i)].value != "INDEX":
       if ws['D' + str(i)].value is not None:
          stock = ws['C' + str(i)].value
-         
          with open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\data\\Summary_Report__From_Yahoo_" + today.strftime("%m%d%Y")+".txt") as Yahoo, \
              open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\MSFT_Analysis\\Summary_Report_From_Microsoft_" + today.strftime("%m%d%Y")+".txt") as Microsoft,\
              open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Prediction\\Individual_Stock_Report__" + today.strftime("%m%d%Y")+".txt") as Prediction:
@@ -61,9 +60,17 @@ def update_Excel_Table(xcl):
                   print("From Yahoo    ", end="\t\t")
                   print(ws['K' + str(i)].value, end="\t")
                   print (target_price, end = "\t" )
-                  print("-\n") if ws['K' + str(i)].value > float(target_price) else print ("+\n")                  
+                  print("-\t", end="") if ws['K' + str(i)].value > float(target_price) else print ("+\t", end="")                  
                   ws['K'+ str(i)] = float(target_price.strip(' "'))
+               if "Volume over Average:" in line_from_Yahoo:
+                  volume_over_average = line_from_Yahoo.split()[-1]
+                  print(ws['O' + str(i)].value, end="\t")
+                  print (volume_over_average, end = "\n" )
+#                  print("-\n") if ws['K' + str(i)].value > float(target_price) else print ("+\n")                  
+                  ws['O'+ str(i)] = float(volume_over_average.strip(' "'))
+               
                   break
+               
                
                
             line_from_Microsoft = Microsoft.readline()   
@@ -92,11 +99,10 @@ def update_Excel_Table(xcl):
                if "Current trend" in line_from_Prediction:
                   Current_trend = line_from_Prediction.split()[4]
                   print("Prediction Trend", end="\t")
-                  print(ws['O' + str(i)].value, end="\t")
+                  print(ws['P' + str(i)].value, end="\t")
                   print (Current_trend.replace(",",""), end="\t")
-                  print("-\n") if ws['O' + str(i)].value > float(Current_trend.replace(",","")) else print("+\n")                  
-                  ws['O'+ str(i)] = float(Current_trend.replace(",",""))
-#                  print("-\n") if ws['O' + str(i)].value > float(Current_trend.replace(",","")) else print("+\n")
+                  print("-\n") if ws['P' + str(i)].value > float(Current_trend.replace(",","")) else print("+\n")                  
+                  ws['P'+ str(i)] = float(Current_trend.replace(",",""))
                   break
       print("")
       i += 1
