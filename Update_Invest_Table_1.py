@@ -13,6 +13,7 @@ from yahoo_fin import stock_info as si
 #from yahoo_fin import stock_info as si
 import yfinance as yf
 from openpyxl import load_workbook, Workbook
+from openpyxl.styles import PatternFill
 
 
 #eXCEL_File = "C:\\Users\\William Chang\\Documents\\Python Scripts\\Stock_2.xlsx"
@@ -40,7 +41,12 @@ def update_Excel_Table(xcl):
 
    print ("Updating Invest Table Data... \n\n")
    wb = load_workbook(xcl)
-   ws =  wb.active 
+   ws =  wb.active
+   fill_cell1 = PatternFill(patternType='solid', fgColor='FC2C03')  #Red
+   fill_cell2 = PatternFill(patternType='solid', fgColor='B4C7DC') 
+   fill_cell3 = PatternFill(patternType='solid', fgColor='FFD7D7')  #Pink
+   fill_cell4 = PatternFill(patternType='solid', fgColor='FFFF00')  #Yellow
+   fill_cell5 = PatternFill(patternType='solid', fgColor='B4C7D7')  #blue
    i = 9
    while ws['D' + str(i)].value != "INDEX":
       if ws['D' + str(i)].value is not None:
@@ -60,7 +66,16 @@ def update_Excel_Table(xcl):
                   print("From Yahoo    ", end="\t\t")
                   print(ws['K' + str(i)].value, end="\t")
                   print (target_price, end = "\t" )
-                  print("-\t", end="") if ws['K' + str(i)].value > float(target_price) else print ("+\t", end="")                  
+                  if ws['K' + str(i)].value > float(target_price):
+                     print("-\t", end="")
+                     ws['K' + str(i)].fill = fill_cell1
+                  elif ws['K' + str(i)].value < float(target_price):
+                     print ("+\t", end="")
+                     ws['K' + str(i)].fill = fill_cell4
+                  else: 
+                     print (" \t", end="")
+                     ws['K' + str(i)].fill = fill_cell5
+                     
                   ws['K'+ str(i)] = float(target_price.strip(' "'))
                if "Volume over Average:" in line_from_Yahoo:
                   volume_over_average = line_from_Yahoo.split()[-1]
@@ -84,7 +99,15 @@ def update_Excel_Table(xcl):
                   print("From Microsoft    ", end="\t")
                   print(ws['L' + str(i)].value, end="\t")
                   print (target_price, end = "\t" )
-                  print("-\n") if ws['L' + str(i)].value > float(target_price) else print ("+\n")
+                  if ws['L' + str(i)].value > float(target_price):
+                     print("-\n")
+                     ws['L' + str(i)].fill = fill_cell1
+                  elif ws['L' + str(i)].value < float(target_price):
+                     print ("+\n")
+                     ws['L' + str(i)].fill = fill_cell4
+                  else:
+                     print (" \t")
+                     ws['L' + str(i)].fill = fill_cell3
                   ws['L'+ str(i)] = float(target_price.strip(' "'))
                   break 
 
@@ -101,7 +124,12 @@ def update_Excel_Table(xcl):
                   print("Prediction Trend", end="\t")
                   print(ws['P' + str(i)].value, end="\t")
                   print (Current_trend.replace(",",""), end="\t")
-                  print("-\n") if ws['P' + str(i)].value > float(Current_trend.replace(",","")) else print("+\n")                  
+                  if ws['P' + str(i)].value > float(Current_trend.replace(",","")):
+                     print("-\n")
+                  elif ws['P' + str(i)].value < float(Current_trend.replace(",","")):
+                     print("+\n")
+                  else:
+                     print (" \t", end="")
                   ws['P'+ str(i)] = float(Current_trend.replace(",",""))
                   break
       print("")
