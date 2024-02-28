@@ -156,7 +156,7 @@ def main():
     
     def check_exists_by_xpath(driver, xpath):
         try:
-            driver.find_element_by_xpath(xpath)
+            driver.find_element(By.XPATH, xpath)
         except NoSuchElementException:
             return False
         return True
@@ -248,24 +248,26 @@ def main():
     signin_button = driver.find_element(By.XPATH,"//button[contains(@class, 'colorwhite w12 radiiround displayflex bgorange-light hoverBgorange h_px1 flexrcc fontSize6 fontWeightsemibold aligncenter w_px6 my4 mobile_fontSize6 mobile_py3 mobile_h_pxauto mobile_mt5')]")
     signin_button.click()
     
-    time.sleep(10)   
+    time.sleep(15)   
     #actions = ActionChains(driver)
     # webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     # time.sleep(1)
     
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    time.sleep(1)
+    time.sleep(15)
 
-    try:
+#    try:
 #        stock_table = driver.find_element(By.XPATH, '//tbody[@class="rt-tbody"]')
-#        if check_exists_by_xpath (driver, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody'):
-#        if check_exists_by_xpath (driver, '//tbody[@class="rt-tbody"'):
-            stock_table = driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody')
-            stock_table_html = stock_table.get_attribute('innerHTML')
-            stock_table_html = stock_table_html.encode("utf-8")
+    if check_exists_by_xpath (driver, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody'):
+#    if check_exists_by_xpath (driver, '//tbody[contains(@class,"rt-tbody")]'):
+#        print("found")
+        stock_table = driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody')
+        stock_table_html = stock_table.get_attribute('innerHTML')
+        stock_table_html = stock_table_html.encode("utf-8")
         # print(stock_table_html)
         # print("found stock_table")   /html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]
-    except:
+#    except:
+    else:
         print("not found")
         os.system("PAUSE")
     driver.quit()
