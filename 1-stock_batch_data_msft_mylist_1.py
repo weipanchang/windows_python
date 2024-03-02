@@ -98,7 +98,7 @@ class get_data:
 
         self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
 
-        self.driver.set_page_load_timeout(50)
+        self.driver.set_page_load_timeout(30)
         self.wait = WebDriverWait(self.driver, 200, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
 #        url = "https://finance.yahoo.com/quote/" + self.stock_name + "?p=" + self.stock_name + "&.tsrc=fin-srch"
 
@@ -191,31 +191,6 @@ class get_data:
 
     print ('\n' *3)
         
-    def update_Excel_Table(self): 
-        print ("Updating Spreadsheet Data... \n\n")
-        wb = load_workbook(eXCEL_File)
-        ws =  wb.active
-        i = 3
-        while ws['B' + str(i)].value is not None:
-            print(ws['A' + str(i)].value, end="   ")
-            stock = ws['C' + str(i)].value.rstrip()
-            Stock_Fund = ws['B' + str(i)].value.rstrip()
-            # print(ws['F' + str(i)].value)
-            ws['G'+ str(i)] = self.get_Current_Stock_Price(stock, Stock_Fund)
-            print(ws['G'+ str(i)].value)
-            i += 1
-
-        wb.save(eXCEL_File)
-        self.quit_driver()
-
-    def get_Current_Stock_Price(self, stock, Stock_Fund):
-        if Stock_Fund != 'Fund':
-            return(float(si.get_live_price(stock)))
-        else:
-            ticket = yf.Ticker(stock)
-            return ticket.info['regularMarketPrice']
-
-
 def main():
 #    global downloadPath
     global stock
@@ -231,20 +206,6 @@ def main():
 
     now_time = datetime.datetime.now().time()
     print("\nTime: ", now_time, "\n")
-    menu_options = { \
-    1: 'Download Historical Data', \
-    2: 'Get Target Price from Microsoft', \
-    3: 'Download Historycal Data And Summary Date', \
-    4: 'Update Excel table with Current Stock Price', \
-    5: 'Exit', \
-    }
-
-    def print_menu():
-        print("Enter your choice: \n\n")
-        for key in menu_options.keys():
-            print (key, '--', menu_options[key] )
-        print ("\n")
-        return(int(input()))
 
     def fetch_Stock_Name(stock_Dictionary):
         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
@@ -273,70 +234,22 @@ def main():
             
             stock_Dictionary[stock].append(stock_or_fund)
             stock_Dictionary[stock].append(msft_ticket)
-#            print (stock_Dictionary)
-#            os.system("pause")
-    def option1():
-        get_history_data.get_historical_data()
-    
-    def option2(msft_ticket):
-        get_target_data.get_target_data(msft_ticket)
-    
-    def option3():
-        get_history_data.get_historical_data()
-        get_history_data.get_Summary_data()
 
-    def option4():
-        get_history_data = get_data('STOCK')
-        get_history_data.update_Excel_Table()
-        
-#     while(True):
-# #        print_menu()
-#         option = ''
-#         try:
-#             option = print_menu()
-#             break
-#         except:
-#             print('Wrong input. Please enter a number ...')
-    option = 2
-    if option == 4:
-        wb = load_workbook(eXCEL_File)
-        try:
-            wb.save(eXCEL_File)
-            pass
-        except:
-            print('Please close the Spreadsheet file, Process Aborted!')
-            time.sleep(3)
-            # self.quit_driver()
-            sys.exit()
-        option4()
+    fetch_Stock_Name(stock_Dictionary:={})
+    for stock in stock_Dictionary.keys():
 
-    elif option < 4:
+        sys.stdout = Logger()
+        print("\n")
+        print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
+        print ("Processing " + stock_Dictionary[stock][0] +" data")
+        print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
 
-        fetch_Stock_Name(stock_Dictionary:={})
-        for stock in stock_Dictionary.keys():
+        get_target_data = get_data(stock_Dictionary[stock][1], stock_Dictionary[stock][2])
+        get_target_data.get_target_data(stock_Dictionary[stock][2])
+#        option2(stock_Dictionary[stock][2])
 
-            sys.stdout = Logger()
-            print("\n")
-            print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
-            print ("Processing " + stock_Dictionary[stock][0] +" data")
-            print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
+        get_target_data.quit_driver()
 
-            get_target_data = get_data(stock_Dictionary[stock][1], stock_Dictionary[stock][2])
-#            get_history_data = get_data(stock_Dictionary[stock][1])
-            if option == 1:
-                option1()
-            elif option == 2:
-                option2(stock_Dictionary[stock][2])
-            elif option == 3:
-                option3()
-            get_target_data.quit_driver()
-                
-    else:
-        print('\nProgram Terminated')
-        sys.exit()
-
-    # if option < 5:        
-    #     get_history_data.quit_driver()
         
 if __name__ == "__main__":
     main()
