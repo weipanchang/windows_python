@@ -105,16 +105,16 @@ class init_webdriver():
         #wait = WebDriverWait(self.driver, 200, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
         
         #run in headless mode
-        #self.options.add_argument("--headless")
+        #options.add_argument("--headless")
         
         # disable the AutomationControlled feature of Blink rendering engine
-        self.options.add_argument('--disable-blink-features=AutomationControlled')
+        # options.add_argument('--disable-blink-features=AutomationControlled')
         #  
         # disable pop-up blocking
-        self.options.add_argument('--disable-popup-blocking')
+        #self.options.add_argument('--disable-popup-blocking')
         #  
         # # start the browser window in maximized mode
-        self.options.add_argument('--start-maximized')
+        # options.add_argument('--start-maximized')
         #  
         # disable extensions
         self.options.add_argument('--disable-extensions')
@@ -137,7 +137,7 @@ class init_webdriver():
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
         ]
-
+        
         # select random user agent
         user_agent = random.choice(user_agents)
 #        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0"
@@ -154,58 +154,12 @@ class init_webdriver():
 def main():
  #   sys.stdout = Logger()
     
-    def check_exists_by_xpath(driver, xpath):
+    def check_exists_by_xpath(xpath):
         try:
-            driver.find_element(By.XPATH, xpath)
+            driver.find_element_by_xpath(xpath)
         except NoSuchElementException:
             return False
         return True
-    
-    def fetch_Stock_Name(stock_Dictionary):
-        stock_fund_names =  [line for line in open("STOCK.txt", "r")]
-        for stock_fund_name in stock_fund_names:
-            if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
-                continue
-
-            stock = re.search(r'(\(\^\w+\))', stock_fund_name)
-            if stock is None:
-                stock = re.search('\(\w+\)', stock_fund_name)
-                msft_ticket = re.search('\[\w+\]', stock_fund_name)
-
-            is_stock =  re.search("ETF|Fund",stock_fund_name)
-#            print is_stock
-            if is_stock:
-                if 'ETF' in stock_fund_name:
-                    stock_or_fund =  'ETF'
-                else:
-                    stock_or_fund = 'Fund'
-            else:
-                stock_or_fund ='STOCK'
-
-            stock = stock.group().rstrip().rstrip(')').lstrip('(')
-            msft_ticket = msft_ticket.group().rstrip().rstrip(']').lstrip('[')
-            stock_Dictionary[stock] = [stock_fund_name.rstrip()[:-9]]
-            
-            stock_Dictionary[stock].append(stock_or_fund)
-            stock_Dictionary[stock].append(msft_ticket)
-            
-    def extract_price(s, sub1, sub2):
-
-        idx1 = s.index(sub1)
-        idx2 = s.index(sub2)
-        return(s[idx1 + len(sub1) + 1: idx2])
-    
-    def extract_price_3(s, sub1, sub2):
-
-        idx1 = s.index(sub1)
-        idx2 = s.index(sub2)
-        return(s[idx1 + len(sub1): idx2 + 1])
-    
-    
-    def extract_price_2(s, sub1):
-
-        idx1 = s.index(sub1)
-        return(s[idx1 + len(sub1):])
     
     def fetch_Stock_Name(stock_Dictionary):
         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
@@ -234,6 +188,18 @@ def main():
             
             stock_Dictionary[stock].append(stock_or_fund)
             stock_Dictionary[stock].append(msft_ticket)
+            
+    def extract_price(s, sub1, sub2):
+
+        idx1 = s.index(sub1)
+        idx2 = s.index(sub2)
+        return(s[idx1 + len(sub1) + 1: idx2])
+    
+    def extract_price_2(s, sub1):
+
+        idx1 = s.index(sub1)
+        return(s[idx1 + len(sub1):])
+    
 
     logging.basicConfig(level=logging.INFO)
     driver = init_webdriver().driver_init()
@@ -241,7 +207,7 @@ def main():
     time.sleep(3)
     #actions = ActionChains(driver)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    time.sleep(5)
+    time.sleep(3)
     
     #driver.find_element("xpath","//input[@name = 'email'").click()
     email_box = driver.find_element(By.XPATH,"//input[contains(@class, 'w12 py4 px3 radiimedium')]")
@@ -252,74 +218,187 @@ def main():
     password_box.click()
     password_box.send_keys("abcde12345")
     
-    signin_button = driver.find_element(By.XPATH,"//button[contains(@class, 'colorwhite w12 radiiround displayflex bgorange-light hoverBgorange h_px1 flexrcc fontSize6 fontWeightsemibold aligncenter w_px6 mt4 mb3 mobile_fontSize6 mobile_py3 mobile_h_pxauto mobile_mt5')]")
-
+    signin_button = driver.find_element(By.XPATH,"//button[contains(@class, 'colorwhite w12 radiiround displayflex bgorange-light hoverBgorange h_px1 flexrcc fontSize6 fontWeightsemibold aligncenter w_px6 my4 mobile_fontSize6 mobile_py3 mobile_h_pxauto mobile_mt5')]")
     signin_button.click()
     
-    time.sleep(15)   
+    time.sleep(10)   
     #actions = ActionChains(driver)
-    # webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    # time.sleep(1)
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+    #time.sleep(10)
+    #os.system("PAUSE")
+    
+    # mycookie = driver.get_cookies()
+    # print(mycookie)
+    # try:
+#    stock_table = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table")
+#        print("found stock_table")
+    # except:
+    #     print("not found")
+#    menu_bar = driver.find_elements(By.XPATH,"/html/body/div[1]/div[2]/div[1]/div[2]/div/div[1]/div[3]/div/div/div/div/div/div[4]/button/div/div")
+    #profile_button = menu_bar.find_element(By.XPATH, "//span[text()='Portfolio']")
+
+    
+    time.sleep(1)
+#sys.stdout = Logger()    
     
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    time.sleep(5)
-    if not check_exists_by_xpath (driver, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody'):
-        time.sleep(25)
-#    try:
+    time.sleep(3)
+    #xml = html.fromstring()
+    try:
 #        stock_table = driver.find_element(By.XPATH, '//tbody[@class="rt-tbody"]')
-    if check_exists_by_xpath (driver, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody'):
-#    if check_exists_by_xpath (driver, '//tbody[contains(@class,"rt-tbody")]'):
-#        print("found")
         stock_table = driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody')
         stock_table_html = stock_table.get_attribute('innerHTML')
         stock_table_html = stock_table_html.encode("utf-8")
         # print(stock_table_html)
-        print("=======> Found Stock Table!! <======")   #/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]
-#    except:
-    else:
-        print("======> Stock Table Not Found!! <======")
+        # print("found stock_table")   /html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]
+    except:
+        print("not found")
         os.system("PAUSE")
+    #time.sleep(10)
     driver.quit()
-    
     soup = BeautifulSoup(stock_table_html, 'html.parser')
+    
     soup = str(soup).split("><")
-    #soup = str(soup).replace("><", "\n")
-    # for i in soup:
-    #     print (i)
-    # #print(soup)
-    # os.system("PAUSE")
-
-    data_list = []
+#    print(type(soup))
+    #sys.stdout = Logger()     
     for i in soup:
-        if 'data-key' in i:
-#           print (extract_price_2(i, 'data-key=\"')[:-1], end='\t')
-           data_list.append(extract_price_2(i, 'data-key=\"')[:-1])
-           
-        if 'w_px2 ml3 alignstart">' in i:
-#           print (extract_price(i, 'w_px2 ml3 alignstart">')[:-1], end='\t')
-           data_list.append(extract_price_3(i, 'w_px2 ml3 alignstart">','</')[:-1])
-#           w_px2 ml3 alignstart">    </
-        if 'title="The Price now ' in i:
-#            print (i)
-#            print (extract_price(i, 'Currency in US Dollar\">', '<div class='))
-            data_list.append(extract_price(i, 'Currency in US Dollar\">', '<div class='))
-      
-    data_dict = {}
-    for i in range(0, len(data_list), 3):
-        data_dict[data_list[i]] = [(data_list[i + 1])]
-        data_dict[data_list[i]].append(data_list[i + 2])
-#    print (data_dict)   
-    fetch_Stock_Name(stock_Dictionary:={})
-    sys.stdout = Logger()
+         if 'data-key' in i:
+             print (extract_price_2(i, 'data-key=\"')[:-1], end='\t')
+         if 'title="The Price now ' in i:
+    #         print (i)
+             print (extract_price(i, 'Currency in US Dollar\">', '<div class='))
+    #         print()
+
+
+    #print(soup.prettify())
+    #sys.stdout = Logger()
+    #stock_rows = stock_table_html.find_all(class_='rt-tr')
+    # for rows in stock_rows:
+    #     
+    #     print(rows)
+    #print(len(stock_rows))
     
-    for stock in stock_Dictionary.keys():
-        print("\n")
-        print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
-        print ("Processing " + stock_Dictionary[stock][0] +" data")
-        print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
-        print( "1y Target Est = %s\n" % (data_dict[stock][1]))
-        print("Recommedation:   %s\n" % (data_dict[stock][0]))
     
+    #os.system("PAUSE")
+    # init_webdriver().quit()
+    #driver.quit()
+    #stock_table_html = stock_table.get_attribute('innerHTML')
+    # 
+    # stock_table_html = stock_table_html.encode("utf-8")
+    # stock_table_html.decode()
+    # print(stock_table_html)
+    #table =  xml.xpath("/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table")[0]
+#    for row in stock_table.find_elements(By.XPATH, ".//tr"):
+    # 
+    #      print([td.text for td in row.find_elements(By.XPATH, ".//td[@class='rt-tr']")])
+    #      print([td.text for td in row.find_elements(By.XPATH, ".//td[@class='flexccc w12    displayflex colorpale fontWeightsemibold']")])
+
+    
+    #os.system("PAUSE")
+    #stock_input_box =  driver.find_element(By.XPATH,"//input[@id='react-select-2-input']")
+    #stock_table_rows= stock_table.find_elements(By.XPATH, "//tr[@class ='rt-tr']")
+    # print(len(stock_table_rows))
+    # print(stock_table_rows)
+    #fetch_Stock_Name(stock_Dictionary:={})
+    #for stock in stock_Dictionary.keys():
+        
+        #print(len(stock_table.find_elements(By.XPATH, "//tr[@class ='rt-tr']")))
+        # for row in stock_table.find_elements(By.XPATH, "//td[@class ='rt-tr']"):
+        #     print(len(row))
+                    # for td in row.find_element(By.XPATH, ".//td[@class='rt-tr' and @data-key= stock]" ):
+                    #     print("found stock")
+                
+             # print([td.get_attribute('href') for td in row.find_elements(By.XPATH, ".//td[@class='rt-tr' and @data-key= stock]" )])
+             # print([td.text for td in row.find_elements(By.XPATH, ".//td[@class='flexccc w12    displayflex colorpale fontWeightsemibold']")])
+
+#         sys.stdout = Logger()
+#         print("\n")
+#         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
+#         print ("Processing " + stock_Dictionary[stock][0] +" data")
+#         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
+#         print("\n")
+#         time.sleep(1)
+#         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+#         time.sleep(15)
+#         stock_input_box = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-2-input']")))
+#         stock_input_box.click()
+#         # while True:
+#         # try:
+#         #     stock_input_box.click()
+#         #     break
+#         # except
+#         #   <div id="gray4093">
+#         #     <div id="gray77">
+#         time.sleep(1)
+#         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+#         time.sleep(1)
+#         stock_input_box.send_keys(stock)
+#         stock_input_box.send_keys(Keys.ENTER)
+# 
+#         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+#         time.sleep(3)
+#         
+#         # while True:
+#         #     try:
+#         #         print (('Current Price:   %s') % (driver.find_element("xpath",'//span[@class= "transitioncolor"]')).text[1:])
+#         #         break
+#         #     except:
+#         #         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+#         #         time.sleep(1)
+#         #         pass
+#         #     
+#         #         
+#         # if driver.find_element("xpath",'//span[@class = "mr3  transitioncolor"]'):
+#         #     print("After Hours:     %s\n" % (driver.find_element("xpath",'//span[@class = "mr3  transitioncolor"]').text[1:]))
+#         # 
+#         # # try:
+#         #     print("1y Target High Est = %s\n" % (driver.find_element("xpath",'//span[@class="colorpale  ml3 mobile_fontSize7 laptop_ml0"]').text[1:]))
+#         # except:
+#         #     pass
+#         
+#         while True:
+#             try:
+# #                self.driver.implicitly_wait(3) # seconds
+#                 print("1y Target Est = %s\n" % (driver.find_element("xpath",'//span[@class="colorgray-1  ml3 mobile_fontSize7 laptop_ml0"]').text[1:]))
+#                 break
+#             except:
+#                 webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+#                 time.sleep(1)                
+#                 pass
+#             
+#         # try:
+#         #     print("1y Target Low Est = %s\n" % (driver.find_element("xpath",'//span[@class="colorpurple-dark  ml3 mobile_fontSize7 laptop_ml0"]').text[1:]))
+#         # except:
+#         #     pass
+#         
+# #         while True:
+# #             try:
+# # #                self.driver.implicitly_wait(3) # seconds
+#         time.sleep(1)                
+# #        print("Recommedation:    %s\n" % (driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div[3]/div[1]/div[1]/div[5]/div[1]/div[2]/div[3]/div[2]/div/span").text))
+# #        /html/body/div[1]/div[2]/div[4]/div[3]/div[1]/div[1]/div[5]/div[1]/div[2]/div[3]/div[2]/div/span
+# #                 break
+# #             except:
+# #                 if check_exists_by_xpath('button[@class="colorwhite hoverBgorange mt4 bgorange-light radiilarge1 aligncenter fontSize5 border1 py2 w_px200 mobile_fontSize6 mobile_w_px3"]'):
+# #                     driver.find_element("xpath", 'button[@class="colorwhite hoverBgorange mt4 bgorange-light radiilarge1 aligncenter fontSize5 border1 py2 w_px200 mobile_fontSize6 mobile_w_px3"]').click()
+# #                 if check_exists_by_xpath('button[@class="colorwhite hoverBgorange mt4 bgorange-light radiilarge1 aligncenter fontSize5 border1 py2 w_px200 mobile_fontSize6 mobile_w_px3"]'):
+# #                     driver.find_element("xpath", 'button[@class="a__sc-np32r2-0 iTPDzx"]').click()
+# #                 if check_exists_by_xpath('div[@class="a__sc-np32r2-0 iTPDzx using-keyboard"]'):
+# #                     driver.find_element("xpath", 'div[@class="a__sc-np32r2-0 iTPDzx using-keyboard"]').click()                    
+# #                     
+# #                 pass  
+#         
+#     #    os.system("PAUSE")
+#     #  
+#     # # Wait for page to load
+#     # while driver.execute_script("return document.readyState") != "complete":
+#     #     pass
+#     #  
+#     # # Take screenshot
+#     # driver.save_screenshot("opensea.png")
+#      
+#     # Close browser
+#    driver.quit()
 
 if __name__ == "__main__":
     main()

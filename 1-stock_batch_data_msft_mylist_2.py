@@ -5,7 +5,6 @@ Firefox version: 73.0 (64-bit)
 #import xml.etree.ElementTree as ET
 #import urllib2
 import requests, urllib3, sys
-#import requests, sys
 import re
 from path import Path
 import os
@@ -32,15 +31,12 @@ import time
 import datetime
 from datetime import date
 # import sys
-# from bs4 import BeautifulSoup as bs
 from selenium import webdriver
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\MSFT_Analysis"
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_2.xlsx"
         
-#short_cut_url = "https://finance.yahoo.com/quote/AVGO/history?period1=1249516800&period2=1626307200&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
 stock = ""
-#home_dir = os.path.expanduser( '~' )
 
 class Logger(object):
 
@@ -246,6 +242,9 @@ def main():
             elif check_exists_by_xpath(driver,'//div[@class= "mainPrice color_green-DS-EntryPoint1-1"]'):
                 print ('Current Price:   %s' % (driver.find_element("xpath",'//div[@class= "mainPrice color_green-DS-EntryPoint1-1"]').text))
                 break
+            elif check_exists_by_xpath(driver,'//div[@class= "mainPrice color_nochange-DS-EntryPoint1-1"]'):
+                print ('Current Price:   %s' % (driver.find_element("xpath",'//div[@class= "mainPrice color_nochange-DS-EntryPoint1-1"]').text))
+                break
             else:
                 pass
             
@@ -272,7 +271,6 @@ def main():
         
         time.sleep(1)
     driver.quit()
-
         
 if __name__ == "__main__":
     main()

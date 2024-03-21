@@ -94,7 +94,7 @@ class get_data:
         self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
         self.desiredCapabilities['firefox_profile'] = self.profile.encoded
         self.options = Options()
-        self.options.add_argument("--headless")
+#        self.options.add_argument("--headless")
 
         self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
 

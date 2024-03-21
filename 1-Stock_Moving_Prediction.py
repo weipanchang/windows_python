@@ -360,9 +360,9 @@ def main():
 
     High_Low=((df1.iloc[-1,3]-df1.iloc[-2,3])/df1.iloc[-1,3] + (df1.iloc[-1,4]-df1.iloc[-2,4])/df1.iloc[-1,4])
 #    print(df1.info())
-    print(df1[['Date','Open','Close','High','Low','Trend']].tail(15))
+    print(df1[['Date','Open','Close','High','Low','Trend']].tail(30))
     print ('\n' *2 )
-    print (df1_summary[['Date','Stock Market Performance','Predection']].tail(15))
+    print (df1_summary[['Date','Stock Market Performance','Predection']].tail(30))
 
     # fig, ax1 = plt.subplots()
     # ax2 =  ax1.twinx()

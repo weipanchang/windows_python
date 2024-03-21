@@ -140,7 +140,7 @@ class init_webdriver():
 
         # select random user agent
         user_agent = random.choice(user_agents)
-#        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0"
+#        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0"
         # pass in selected user agent as an argument
         self.options.add_argument(f'user-agent={user_agent}')
     def driver_init(self):
@@ -195,13 +195,6 @@ def main():
         idx2 = s.index(sub2)
         return(s[idx1 + len(sub1) + 1: idx2])
     
-    def extract_price_3(s, sub1, sub2):
-
-        idx1 = s.index(sub1)
-        idx2 = s.index(sub2)
-        return(s[idx1 + len(sub1): idx2 + 1])
-    
-    
     def extract_price_2(s, sub1):
 
         idx1 = s.index(sub1)
@@ -237,34 +230,38 @@ def main():
 
     logging.basicConfig(level=logging.INFO)
     driver = init_webdriver().driver_init()
-    driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
+    driver.get("https://www.chase.com/")
     time.sleep(3)
     #actions = ActionChains(driver)
-    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    time.sleep(5)
     
+    
+    # sign_in_button = driver.find_element(By.XPATH,"//a[contains(@class, 'btn btn--primary chaseanalytics-track-link signInBtn')]")
+    # sign_in_button.click()
+    # 
+    # time.sleep(3)
+    # 
     #driver.find_element("xpath","//input[@name = 'email'").click()
-    email_box = driver.find_element(By.XPATH,"//input[contains(@class, 'w12 py4 px3 radiimedium')]")
-    email_box.click()
-    email_box.send_keys("weipanchang@mail.com")
+    # email_box = driver.find_element(By.XPATH,"//*[@id='userId-text-input-field']")
+    # 
+    # email_box.click()
+    # email_box.send_keys("weipanchang887")
+    # 
+    # password_box = driver.find_element(By.XPATH,"//*[@id='password-text-input-field']")
+    # password_box.click()
+    # password_box.send_keys("Ta1p310608$$")
     
-    password_box = driver.find_element(By.XPATH,"//input[contains(@type, 'password')]")
-    password_box.click()
-    password_box.send_keys("abcde12345")
-    
-    signin_button = driver.find_element(By.XPATH,"//button[contains(@class, 'colorwhite w12 radiiround displayflex bgorange-light hoverBgorange h_px1 flexrcc fontSize6 fontWeightsemibold aligncenter w_px6 mt4 mb3 mobile_fontSize6 mobile_py3 mobile_h_pxauto mobile_mt5')]")
-
-    signin_button.click()
-    
+    # signin_button = driver.find_element(By.XPATH,"//button[contains(@id, 'signin-button')]")
+    # signin_button.click()
+    os.system("PAUSE")
     time.sleep(15)   
     #actions = ActionChains(driver)
     # webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     # time.sleep(1)
     
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    time.sleep(5)
+    time.sleep(3)
     if not check_exists_by_xpath (driver, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody'):
-        time.sleep(25)
+        time.sleep(15)
 #    try:
 #        stock_table = driver.find_element(By.XPATH, '//tbody[@class="rt-tbody"]')
     if check_exists_by_xpath (driver, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody'):
@@ -274,52 +271,42 @@ def main():
         stock_table_html = stock_table.get_attribute('innerHTML')
         stock_table_html = stock_table_html.encode("utf-8")
         # print(stock_table_html)
-        print("=======> Found Stock Table!! <======")   #/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]
+        print("found stock_table")   #/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]
 #    except:
     else:
-        print("======> Stock Table Not Found!! <======")
+        print("not found")
         os.system("PAUSE")
     driver.quit()
     
     soup = BeautifulSoup(stock_table_html, 'html.parser')
     soup = str(soup).split("><")
     #soup = str(soup).replace("><", "\n")
-    # for i in soup:
-    #     print (i)
-    # #print(soup)
-    # os.system("PAUSE")
+    #print(soup)
 
     data_list = []
     for i in soup:
         if 'data-key' in i:
 #           print (extract_price_2(i, 'data-key=\"')[:-1], end='\t')
            data_list.append(extract_price_2(i, 'data-key=\"')[:-1])
-           
-        if 'w_px2 ml3 alignstart">' in i:
-#           print (extract_price(i, 'w_px2 ml3 alignstart">')[:-1], end='\t')
-           data_list.append(extract_price_3(i, 'w_px2 ml3 alignstart">','</')[:-1])
-#           w_px2 ml3 alignstart">    </
         if 'title="The Price now ' in i:
 #            print (i)
 #            print (extract_price(i, 'Currency in US Dollar\">', '<div class='))
             data_list.append(extract_price(i, 'Currency in US Dollar\">', '<div class='))
       
     data_dict = {}
-    for i in range(0, len(data_list), 3):
-        data_dict[data_list[i]] = [(data_list[i + 1])]
-        data_dict[data_list[i]].append(data_list[i + 2])
+    for i in range(0, len(data_list), 2):
+        data_dict[data_list[i]] = data_list[i + 1]    
 #    print (data_dict)   
     fetch_Stock_Name(stock_Dictionary:={})
     sys.stdout = Logger()
-    
+
     for stock in stock_Dictionary.keys():
         print("\n")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print ("Processing " + stock_Dictionary[stock][0] +" data")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
-        print( "1y Target Est = %s\n" % (data_dict[stock][1]))
-        print("Recommedation:   %s\n" % (data_dict[stock][0]))
-    
+        print( "1y Target Est = %s\n" % (data_dict[stock]))
+
 
 if __name__ == "__main__":
     main()

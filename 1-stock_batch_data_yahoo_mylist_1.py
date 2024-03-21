@@ -43,7 +43,7 @@ class Logger(object):
         today = date.today()
         #d1 = today.strftime("%m%d%Y")
         self.terminal = sys.stdout
-        self.log = open(downloadPath +"\\Summary_Report__From_Yahoo_"+ today.strftime("%m%d%Y") + ".txt" , "a+")
+        self.log = open(downloadPath +"\\Summary_Report__From_Yahoo_"+ today.strftime("%m%d%Y") + ".txt" , "w")
 
     def write(self, message):
         self.terminal.write(message)
@@ -91,18 +91,7 @@ class get_data():
     
     def stock_summary():
         today = date.today()
-#        print ("Get 1 Yr Target Data... \n\n")
-        # wb = load_workbook(eXCEL_File)
-        # ws =  wb.active 
-        # i = 9
-#         while ws['D' + str(i)].value != "INDEX":
-#             if ws['D' + str(i)].value is not None:
-# #            print(ws['B' + str(i)].value, end="   ")
-#                 print(ws['C' + str(i)].value, end="\t")
-#                 stock = ws['C' + str(i)].value
-# 
-#                     # print(ws['D' + str(i)].value, end="   ")
-#                 print(ws['k' + str(i)].value, end="\t")
+
         quote_table = si.get_quote_table(stock)
         print("Current Price:\t%s\n" % quote_table["Quote Price"])
         print("Previous Close:\t%s\n" % quote_table["Previous Close"])
@@ -112,24 +101,15 @@ class get_data():
         print("Beta (5Y Monthly):\t%s\n" % quote_table["Beta (5Y Monthly)"])
         print("=====> 1y Target Est\t%s\n" % quote_table["1y Target Est"])
         print("EPS ( > 1 is better ):\t%s\n" % quote_table["EPS (TTM)"])
+        try:
+            print("Earning Date:\t%s\n" % quote_table["'Earnings Date': "])
+        except:
+            pass
         print("PE_Ratio ( Smaller is better ):\t%s\n" % quote_table["PE Ratio (TTM)"])
-        
-#                     # print(ws['L' + str(i)].value)
-#                 # stock = ws['C' + str(i)].value.rstrip()
-#                 # Stock_Fund = ws['B' + str(i)].value.rstrip()
-#                 # print(ws['F' + str(i)].value)
-#     #            ws['G'+ str(i)] = self.get_Current_Stock_Price(stock, Stock_Fund)
-#     #            print(ws['G'+ str(i)].value)
-#                pass
-#            i += 1
+        print("Volume over Average:\t{:.{}f}".format( (quote_table["Volume"])/quote_table["Avg. Volume"], 2 ))
 
-#        wb.save(eXCEL_File)
-#        self.quit_driver()
-    # with open('/tmp/results_nslookup.txt', 'r') as f:
-    # for line in f:
-    #     if line == 'Non-authoritative answer:\n':
-    #         for i in range(8):
-    #             print(next(lines).strip())
+        
+
                 
     def get_Current_Stock_Price(self, stock, Stock_Fund):
         if Stock_Fund != 'Fund':

@@ -49,7 +49,7 @@ class Logger(object):
         today = date.today()
         #d1 = today.strftime("%m%d%Y")
         self.terminal = sys.stdout
-        self.log = open(downloadPath +"\\Summary_Report__From_Yahoo_"+ today.strftime("%m%d%Y") + ".txt" , "a+")
+        self.log = open(downloadPath +"\\Summary_Report_"+ today.strftime("%m%d%Y") + ".txt" , "a+")
 
     def write(self, message):
         self.terminal.write(message)
@@ -98,7 +98,7 @@ class get_data:
 
         self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
 
-        self.driver.set_page_load_timeout(80)
+        self.driver.set_page_load_timeout(50)
         self.wait = WebDriverWait(self.driver, 200, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
 #        url = "https://finance.yahoo.com/quote/" + self.stock_name + "?p=" + self.stock_name + "&.tsrc=fin-srch"
 
@@ -109,7 +109,7 @@ class get_data:
             try:
                 self.driver.get(self.url)
                 self.driver.delete_all_cookies()
-                self.driver.implicitly_wait(20) # seconds
+                self.driver.implicitly_wait(10) # seconds
 #                time.sleep(self.delay + 1)
 #                print ("Yahoo finance Page is loaded")
                 if 'finance' in str(self.driver.current_url):
@@ -359,12 +359,80 @@ class get_data:
 
         print ('\n' *3)
         
+    def get_target_data(self,msft_ticket):
+        def check_exists_by_css_selector(css_selector):
+            try:
+                self.driver.find_element(By.CSS_SELECTOR,css_selector)
+            except NoSuchElementException:
+                return False
+            return True
+        def check_exists_by_classname(classname):
+            try:
+                self.driver.find_element(By.CLASS_NAME,classname)
+            except NoSuchElementException:
+                return False
+            return True
+        
+        def check_exists_by_xpath(xpath):
+            try:
+                self.driver.find_element(By.XPATH,xpath)
+            except NoSuchElementException:
+                return False
+            return True
+        def check_exists_by_tag(tag_name):
+            try:
+                self.driver.find_element(By.TAG_NAME,tag_name)
+            except NoSuchElementException:
+                return False
+            return True
+        
+        self.url_stock = "https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M&id="+ msft_ticket+"&l3=L3_Earnings"
+        self.driver.get(self.url_stock)
+        self.driver.implicitly_wait(10)
+        print ("Display Earning Page... \n\n")
+           
+        self.driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div/div[5]/div[2]/div/div[1]/div/div[3]/div[2]/div/div/button[4]/span').click()
+
+        time.sleep(10)
+        
+        while True:
+            if check_exists_by_xpath('//div[@class= "mainPrice color_red-DS-EntryPoint1-1"]'):
+                print ('Current Price:   %s' % (self.driver.find_element("xpath",'//div[@class= "mainPrice color_red-DS-EntryPoint1-1"]').text))
+                break
+            elif check_exists_by_xpath('//div[@class= "mainPrice color_green-DS-EntryPoint1-1"]'):
+                print ('Current Price:   %s' % (self.driver.find_element("xpath",'//div[@class= "mainPrice color_green-DS-EntryPoint1-1"]').text))
+                break
+            else:
+                pass
+            
+        if check_exists_by_xpath('//div[@class = "price_PreAfter"]'):
+            print("After Hours:     %s\n" % (self.driver.find_element("xpath",'//div[@class = "price_PreAfter"]').text))
+        
+        time.sleep(10)    
+        elm_list = self.driver.find_elements(By.XPATH,'//span[@class = "summaryValue-DS-EntryPoint1-2"]')
+        target = elm_list[0].text.replace('USD','')
+        print( "1y Target Est = %s\n" % (target))
+        time.sleep(5)
+        print("Recommedation:    %s\n" % (self.driver.find_element("xpath",'//h2[@class="suggestion-DS-EntryPoint1-1"]').text))
+        print("Price Volatility: %s\n" % elm_list[1].text)
+        
+        self.url_stock = "https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M&id="+ msft_ticket
+        self.driver.get(self.url_stock)
+        print ("Display Summary Page... \n")
+        time.sleep(1)
+
+        elm_list = self.driver.find_elements(By.XPATH,'//div[@class = "factsRowValue-DS-EntryPoint1-1"]')
+        previous = elm_list[0].text
+        print( "Previous Close = %s\n" % (previous))
+        
+        time.sleep(1)
+        
+        
     def lines_that_contain(string, fp):
         return [line for line in fp if string in line]
     
-    def update_Excel_Table(self):
-        today = date.today()
-        print ("Updating Invest Table Target Data... \n\n")
+    def update_Excel_Table(self): 
+        print ("Updating Spreadsheet Data... \n\n")
         wb = load_workbook(eXCEL_File)
         ws =  wb.active 
         i = 9
@@ -372,18 +440,12 @@ class get_data:
             if ws['D' + str(i)].value is not None:
 #            print(ws['B' + str(i)].value, end="   ")
                 print(ws['C' + str(i)].value, end="   ")
-                stock = ws['C' + str(i)].value
-                with open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\data\\Summary_Report__From_Yahoo_" + today.strftime("%m%d%Y")+".txt") as Yahoo, \
-                    open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\MSFT_Analysis\\Summary_Report_From_Microsoft_" + today.strftime("%m%d%Y")+".txt") as Microsoft:
-                    print(ws['D' + str(i)].value, end="   ")
-                    print(ws['k' + str(i)].value, end="   ")
-                    print(ws['L' + str(i)].value)
+                print(ws['D' + str(i)].value, end="   ")
                 # stock = ws['C' + str(i)].value.rstrip()
                 # Stock_Fund = ws['B' + str(i)].value.rstrip()
                 # print(ws['F' + str(i)].value)
     #            ws['G'+ str(i)] = self.get_Current_Stock_Price(stock, Stock_Fund)
     #            print(ws['G'+ str(i)].value)
-                    pass
             i += 1
 
         wb.save(eXCEL_File)
@@ -435,8 +497,8 @@ def main():
     menu_options = { \
     1: 'Download Historical Data', \
     2: 'Get Yahoo Summary Data', \
-    3: 'Download Historycal Data And Summary Date', \
-    4: 'Update Investment table with 1YR TargetPrice', \
+    3: 'Get Microsoft Summary Data', \
+    4: 'Update Invest table with 1Yr Target Price', \
     5: 'Exit', \
     }
 
@@ -448,8 +510,6 @@ def main():
         return(int(input()))
 
     def fetch_Stock_Name(stock_Dictionary):
-        
-        __slots__ = stock_Dictionary
         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
         for stock_fund_name in stock_fund_names:
             if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
@@ -472,6 +532,7 @@ def main():
             stock = stock.group().rstrip().rstrip(')').lstrip('(')
             stock_Dictionary[stock] = [stock_fund_name.rstrip()[:-9]]
             stock_Dictionary[stock].append(stock_or_fund)
+            stock_Dictionary[stock].append(msft_ticket)
             # print (stock_Dictionary)
 
     def option1():
@@ -485,18 +546,18 @@ def main():
         get_history_data.get_Summary_data()
 
     def option4(): 
-        get_history_data = get_data('STOCK')
+#        get_history_data = get_data('STOCK')
         get_history_data.update_Excel_Table()
         
-#     while(True):
-# #        print_menu()
-#         option = ''
-#         try:
-#             option = print_menu()
-#             break
-#         except:
-#             print('Wrong input. Please enter a number ...')
-    option = 2
+    while(True):
+#        print_menu()
+        option = ''
+        try:
+            option = print_menu()
+            break
+        except:
+            print('Wrong input. Please enter a number ...')
+#    option = 2
     if option == 4:
         wb = load_workbook(eXCEL_File)
         try:
