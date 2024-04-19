@@ -239,6 +239,7 @@ def main():
     driver = init_webdriver().driver_init()
     driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
     time.sleep(3)
+    driver.minimize_window()
     #actions = ActionChains(driver)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(5)
@@ -267,10 +268,11 @@ def main():
         time.sleep(25)
 #    try:
 #        stock_table = driver.find_element(By.XPATH, '//tbody[@class="rt-tbody"]')
-    if check_exists_by_xpath (driver, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody'):
+    if check_exists_by_xpath (driver, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody')  or check_exists_by_xpath (driver, '//tbody[contains(@class,"rt-tbody")]'):
 #    if check_exists_by_xpath (driver, '//tbody[contains(@class,"rt-tbody")]'):
 #        print("found")
-        stock_table = driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody')
+#        stock_table = driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody')
+        stock_table = driver.find_element(By.XPATH, '//tbody[contains(@class,"rt-tbody")]')
         stock_table_html = stock_table.get_attribute('innerHTML')
         stock_table_html = stock_table_html.encode("utf-8")
         # print(stock_table_html)
