@@ -1,3 +1,23 @@
+#!/usr/bin/env python
+"""
+Firefox version: 73.0 (64-bit)
+"""
+#import xml.etree.ElementTree as ET
+#import urllib2
+import requests, urllib3, sys
+import re
+from path import Path
+import os
+import holidays
+import shutil
+import random
+import logging
+from yahoo_fin import stock_info as si
+import yfinance as yf
+from openpyxl import load_workbook, Workbook
+
+# from bs4 import BeautifulSoup
+# import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
@@ -8,54 +28,26 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import *
 from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
-from path import Path
-from bs4 import BeautifulSoup
-from lxml import html
 import time
-import re
 import datetime
-import shutil
-import sys
 from datetime import date
-#from selenium_stealth import stealth
-import random
-import os
-import logging
-#from csv import DictReader
-
-from dateutil.relativedelta import relativedelta
-from datetime import date
-#from cachetools import cached
-
+# import sys
+from selenium import webdriver
+downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\MSFT_Analysis"
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
-downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Tipranks"
-
-print ("")
+eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_2.xlsx"
+        
+stock = ""
 
 class Logger(object):
 
     def __init__(self):
-        global downloadPath
+#        global downloadPath
+        global stock
         today = date.today()
-
-        try:
-            shutil.rmtree(downloadPath)
-            # shutil.rmtree(downloadPath_pickle)
-        except:
-#            print("failed to remove")
-            pass
-        time.sleep(1)
-        
-        try:
-            os.mkdir(downloadPath)
-            # os.mkdir(downloadPath_pickle)
-        except:
-            pass
-        # time.sleep(2)
+        #d1 = today.strftime("%m%d%Y")
         self.terminal = sys.stdout
-        self.log = open(downloadPath +"\\Summary_Report_From_Tipranks_"+ today.strftime("%m%d%Y") + ".txt" , "a+")
+        self.log = open(downloadPath +"\\Summary_Report_From_Microsoft_"+ today.strftime("%m%d%Y") + ".txt" , "a+")
 
     def write(self, message):
         self.terminal.write(message)
@@ -105,7 +97,7 @@ class init_webdriver():
         #wait = WebDriverWait(self.driver, 200, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
         
         #run in headless mode
-        #self.options.add_argument("--headless")
+        self.options.add_argument("--headless")
         
         # disable the AutomationControlled feature of Blink rendering engine
         self.options.add_argument('--disable-blink-features=AutomationControlled')
@@ -114,8 +106,7 @@ class init_webdriver():
         self.options.add_argument('--disable-popup-blocking')
         #  
         # # start the browser window in maximized mode
-        self.options.add_argument('--start-minimized')
-        #self.options.add_argument('--start-maximized')
+        self.options.add_argument('--start-maximized')
         #  
         # disable extensions
         self.options.add_argument('--disable-extensions')
@@ -147,68 +138,55 @@ class init_webdriver():
     def driver_init(self):
         self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
         self.driver.set_page_load_timeout(50)
-        self.driver.minimize_window()
         return(self.driver)
-        
-    # def quit(self):
-    #     self.driver.quit()
+
         
 def main():
- #   sys.stdout = Logger()
-    
-    def check_exists_by_xpath(driver, xpath):
+#    global downloadPath
+    global stock
+    try:
+        shutil.rmtree(downloadPath)
+    except:
+         pass
+    time.sleep(2)
+    try:
+        os.mkdir(downloadPath)
+    except:
+        pass
+
+    now_time = datetime.datetime.now().time()
+    print("\nTime: ", now_time, "\n")
+
+    logging.basicConfig(level=logging.INFO)
+    driver = init_webdriver().driver_init()
+    driver.get('https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M')
+    time.sleep(1)
+    def check_exists_by_css_selector(driver, css_selector):
         try:
-            driver.find_element(By.XPATH, xpath)
+            driver.find_element(By.CSS_SELECTOR,css_selector)
+        except NoSuchElementException:
+            return False
+        return True
+    def check_exists_by_classname(driver,classname):
+        try:
+            driver.find_element(By.CLASS_NAME,classname)
         except NoSuchElementException:
             return False
         return True
     
-    def fetch_Stock_Name(stock_Dictionary):
-        stock_fund_names =  [line for line in open("STOCK.txt", "r")]
-        for stock_fund_name in stock_fund_names:
-            if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
-                continue
-
-            stock = re.search(r'(\(\^\w+\))', stock_fund_name)
-            if stock is None:
-                stock = re.search('\(\w+\)', stock_fund_name)
-                msft_ticket = re.search('\[\w+\]', stock_fund_name)
-
-            is_stock =  re.search("ETF|Fund",stock_fund_name)
-#            print is_stock
-            if is_stock:
-                if 'ETF' in stock_fund_name:
-                    stock_or_fund =  'ETF'
-                else:
-                    stock_or_fund = 'Fund'
-            else:
-                stock_or_fund ='STOCK'
-
-            stock = stock.group().rstrip().rstrip(')').lstrip('(')
-            msft_ticket = msft_ticket.group().rstrip().rstrip(']').lstrip('[')
-            stock_Dictionary[stock] = [stock_fund_name.rstrip()[:-9]]
-            
-            stock_Dictionary[stock].append(stock_or_fund)
-            stock_Dictionary[stock].append(msft_ticket)
-            
-    def extract_price(s, sub1, sub2):
-
-        idx1 = s.index(sub1)
-        idx2 = s.index(sub2)
-        return(s[idx1 + len(sub1) + 1: idx2])
-    
-    def extract_price_3(s, sub1, sub2):
-
-        idx1 = s.index(sub1)
-        idx2 = s.index(sub2)
-        return(s[idx1 + len(sub1): idx2 + 1])
-    
-    
-    def extract_price_2(s, sub1):
-
-        idx1 = s.index(sub1)
-        return(s[idx1 + len(sub1):])
-    
+    def check_exists_by_xpath(driver,xpath):
+        try:
+            driver.find_element(By.XPATH,xpath)
+        except NoSuchElementException:
+            return False
+        return True
+    def check_exists_by_tag(driver,tag_name):
+        try:
+            driver.find_element(By.TAG_NAME,tag_name)
+        except NoSuchElementException:
+            return False
+        return True
+        
     def fetch_Stock_Name(stock_Dictionary):
         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
         for stock_fund_name in stock_fund_names:
@@ -237,94 +215,70 @@ def main():
             stock_Dictionary[stock].append(stock_or_fund)
             stock_Dictionary[stock].append(msft_ticket)
 
-    logging.basicConfig(level=logging.INFO)
-    driver = init_webdriver().driver_init()
-    driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
-    time.sleep(3)
-#    driver.minimize_window()
-    #actions = ActionChains(driver)
-    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    time.sleep(5)
-    
-    #driver.find_element("xpath","//input[@name = 'email'").click()
-    email_box = driver.find_element(By.XPATH,"//input[contains(@class, 'w12 py4 px3 radiimedium')]")
-    email_box.click()
-    email_box.send_keys("weipanchang@mail.com")
-    
-    password_box = driver.find_element(By.XPATH,"//input[contains(@type, 'password')]")
-    password_box.click()
-    password_box.send_keys("abcde12345")
-    
-    signin_button = driver.find_element(By.XPATH,"//button[contains(@class, 'colorwhite w12 radiiround displayflex bgorange-light hoverBgorange h_px1 flexrcc fontSize6 fontWeightsemibold aligncenter w_px6 mt4 mb3 mobile_fontSize6 mobile_py3 mobile_h_pxauto mobile_mt5')]")
-
-    signin_button.click()
-    
-    time.sleep(15)   
-    #actions = ActionChains(driver)
-    # webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    # time.sleep(1)
-    
-    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    time.sleep(5)
-    if not check_exists_by_xpath (driver, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody'):
-        time.sleep(25)
-#    try:
-#        stock_table = driver.find_element(By.XPATH, '//tbody[@class="rt-tbody"]')
-    if check_exists_by_xpath (driver, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody')  or check_exists_by_xpath (driver, '//tbody[contains(@class,"rt-tbody")]'):
-#    if check_exists_by_xpath (driver, '//tbody[contains(@class,"rt-tbody")]'):
-#        print("found")
-#        stock_table = driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table/tbody')
-        stock_table = driver.find_element(By.XPATH, '//tbody[contains(@class,"rt-tbody")]')
-        stock_table_html = stock_table.get_attribute('innerHTML')
-        stock_table_html = stock_table_html.encode("utf-8")
-        # print(stock_table_html)
-        print("=======> Found Stock Table!! <======")   #/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]
-#    except:
-    else:
-        print("======> Stock Table Not Found!! <======")
-        os.system("PAUSE")
-        sys.exit("Fail to fetch table")
-    driver.quit()
-    
-    soup = BeautifulSoup(stock_table_html, 'html.parser')
-    soup = str(soup).split("><")
-    #soup = str(soup).replace("><", "\n")
-    # for i in soup:
-    #     print (i)
-    # #print(soup)
-    # os.system("PAUSE")
-
-    data_list = []
-    for i in soup:
-        if 'data-key' in i:
-#           print (extract_price_2(i, 'data-key=\"')[:-1], end='\t')
-           data_list.append(extract_price_2(i, 'data-key=\"')[:-1])
-           
-        if 'w_px2 ml3 alignstart">' in i:
-#           print (extract_price(i, 'w_px2 ml3 alignstart">')[:-1], end='\t')
-           data_list.append(extract_price_3(i, 'w_px2 ml3 alignstart">','</')[:-1])
-#           w_px2 ml3 alignstart">    </
-        if 'title="The Price now ' in i:
-#            print (i)
-#            print (extract_price(i, 'Currency in US Dollar\">', '<div class='))
-            data_list.append(extract_price(i, 'Currency in US Dollar\">', '<div class='))
-      
-    data_dict = {}
-    for i in range(0, len(data_list), 3):
-        data_dict[data_list[i]] = [(data_list[i + 1])]
-        data_dict[data_list[i]].append(data_list[i + 2])
-#    print (data_dict)   
     fetch_Stock_Name(stock_Dictionary:={})
-    sys.stdout = Logger()
-    
     for stock in stock_Dictionary.keys():
+
+        sys.stdout = Logger()
         print("\n")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print ("Processing " + stock_Dictionary[stock][0] +" data")
-        print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
-        print( "1y Target Est = %s\n" % (data_dict[stock][1]))
-        print("Recommedation:   %s\n" % (data_dict[stock][0]))
-    
+        print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
 
+        msft_ticket = stock_Dictionary[stock][2]
+
+        url_stock = "https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M&id="+ msft_ticket+"&l3=L3_Earnings"
+        driver.get(url_stock)
+        driver.implicitly_wait(1)
+
+        print ("Display Earning Page... \n\n")
+        time.sleep(2)
+        while True:
+            if check_exists_by_xpath(driver, '/html/body/div[1]/div[1]/div/div[5]/div[2]/div/div[1]/div/div[3]/div[2]/div/div/button[4]/span'):
+                driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div/div[5]/div[2]/div/div[1]/div/div[3]/div[2]/div/div/button[4]/span').click()
+                break
+
+            if check_exists_by_xpath(driver, '//button[@title="Earnings"]'):
+                driver.find_element(By.XPATH,'//button[@title="Earnings"]').click() 
+                break
+
+        time.sleep(1)
+        
+        while True:
+            if check_exists_by_xpath(driver, '//div[@class= "mainPrice color_red-DS-EntryPoint1-1"]'):
+                print ('Current Price:   %s' % (driver.find_element("xpath",'//div[@class= "mainPrice color_red-DS-EntryPoint1-1"]').text))
+                break
+            elif check_exists_by_xpath(driver,'//div[@class= "mainPrice color_green-DS-EntryPoint1-1"]'):
+                print ('Current Price:   %s' % (driver.find_element("xpath",'//div[@class= "mainPrice color_green-DS-EntryPoint1-1"]').text))
+                break
+            elif check_exists_by_xpath(driver,'//div[@class= "mainPrice color_nochange-DS-EntryPoint1-1"]'):
+                print ('Current Price:   %s' % (driver.find_element("xpath",'//div[@class= "mainPrice color_nochange-DS-EntryPoint1-1"]').text))
+                break
+            else:
+                pass
+            
+        if check_exists_by_xpath(driver, '//div[@class = "price_PreAfter"]'):
+            print("After Hours:     %s\n" % (driver.find_element("xpath",'//div[@class = "price_PreAfter"]').text))
+        
+        time.sleep(1)    
+        elm_list = driver.find_elements(By.XPATH,'//span[@class = "summaryValue-DS-EntryPoint1-2"]')
+        target = elm_list[0].text.replace('USD','')
+        print( "1y Target Est = %s\n" % (target))
+        time.sleep(5)
+        print("Recommedation:    %s\n" % (driver.find_element("xpath",'//h2[@class="suggestion-DS-EntryPoint1-1"]').text))
+        print("Price Volatility: %s\n" % elm_list[1].text)
+        
+        url_stock = "https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M&id="+ msft_ticket
+        driver.get(url_stock)
+        
+        print ("Display Summary Page... \n")
+        time.sleep(1)
+        
+        elm_list = driver.find_element(By.XPATH,'//div[@class = "factsRowValue-DS-EntryPoint1-1"]')
+        previous = elm_list.text
+        print( "Previous Close = %s\n" % (previous))
+        
+        time.sleep(1)
+    driver.quit()
+        
 if __name__ == "__main__":
     main()
