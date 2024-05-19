@@ -29,7 +29,7 @@ from datetime import date
 # from bs4 import BeautifulSoup as bs
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\data"
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
-eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Watch_List.xlsx"
+#eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Watch_List.xlsx"
         
 #short_cut_url = "https://finance.yahoo.com/quote/AVGO/history?period1=1249516800&period2=1626307200&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
 stock = ""

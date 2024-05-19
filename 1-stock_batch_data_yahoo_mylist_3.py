@@ -231,21 +231,20 @@ def main():
         driver.get(url_stock)
  #       print(url_stock)
         driver.implicitly_wait(1)
-        delay = 1
+#       delay = 1
         while True:
             try:
                 driver.get(url_stock)
-                driver.implicitly_wait(1)
-                time.sleep(delay + 1)
+                driver.implicitly_wait(2)
+                time.sleep(1)
                 print(str(driver.current_url))
                 if stock.upper() in str(driver.current_url):
                     break
             except:
                 print ("Yahoo page slow, will reloop!", end=" ")
                 pass
-        time.sleep(2)
+#        time.sleep(2)
 
-        # print ("Display Earning Page... \n\n")
         time.sleep(1)           
         # if check_exists_by_xpath(driver, '//span'):
         #     print("Found span")
@@ -336,7 +335,7 @@ def main():
             Range_elm = driver.find_element(By.XPATH,'/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[5]/span[2]/fin-streamer').text
 #            Range_elm =   self.driver.find_element(By.XPATH,"//td[@data-test='DAYS_RANGE-value']").text
         Low, High  = Range_elm.split(' - ')[0], Range_elm.split(' - ')[1]
-        print ("LOW = %s, HIGH = %s" %(Low, High))
+        print ("LOW = %s, HIGH = %s\n" %(Low, High))
 
         time.sleep(1)
 
@@ -352,7 +351,7 @@ def main():
             list_elm = table_elm.find_elements(By.XPATH,'//*/tr[8]')
             for elm in list_elm:
                 if '1y Target Est' in elm.text:
-                    print ("=====> " + elm.text)
+                    print ("\n=====> " + elm.text + "\n")
             time.sleep(0.1)
             if check_exists_by_classname(driver, 'span.Fw\(b\).D\(b\)\-\-mobp.C\(\$negativeColor\)'):
                 print("=====> BEARISH")
@@ -367,7 +366,8 @@ def main():
             beta = driver.find_element(By.XPATH,"/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[10]/span[2]").text
             print( "Beta (5Y Monthly = ", beta)
             target = driver.find_element(By.XPATH,"/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[16]/span[2]/fin-streamer").text
-            print( "1y Target Est =========> ", target)
+            print( "\n1y Target Est =========> ", target)
+            print("")
 
         try:
             EPS =  driver.find_element(By.XPATH,'/html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[2]/table/tbody/tr[4]/td[2]').text
@@ -394,7 +394,7 @@ def main():
         #     EPS =  driver.find_element(By.XPATH,'/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[12]/span[2]/fin-streamer').text
 #        print(Avg_Volume)
         try:
-            print ("Volume over Average = %s" %round(float(Volume)/float(Avg_Volume),2))
+            print ("\nVolume over Average = %s\n" %round(float(Volume)/float(Avg_Volume),2))
         except:
             pass
         print ("EOT")

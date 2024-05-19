@@ -155,7 +155,6 @@ class init_webdriver():
         
 def main():
  #   sys.stdout = Logger()
-    
     def check_exists_by_xpath(driver, xpath):
         try:
             driver.find_element(By.XPATH, xpath)
@@ -209,33 +208,33 @@ def main():
         idx1 = s.index(sub1)
         return(s[idx1 + len(sub1):])
     
-    def fetch_Stock_Name(stock_Dictionary):
-        stock_fund_names =  [line for line in open("STOCK.txt", "r")]
-        for stock_fund_name in stock_fund_names:
-            if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
-                continue
-
-            stock = re.search(r'(\(\^\w+\))', stock_fund_name)
-            if stock is None:
-                stock = re.search('\(\w+\)', stock_fund_name)
-                msft_ticket = re.search('\[\w+\]', stock_fund_name)
-
-            is_stock =  re.search("ETF|Fund",stock_fund_name)
-#            print is_stock
-            if is_stock:
-                if 'ETF' in stock_fund_name:
-                    stock_or_fund =  'ETF'
-                else:
-                    stock_or_fund = 'Fund'
-            else:
-                stock_or_fund ='STOCK'
-            # print(stock_or_fund)
-            stock = stock.group().rstrip().rstrip(')').lstrip('(')
-            msft_ticket = msft_ticket.group().rstrip().rstrip(']').lstrip('[')
-            stock_Dictionary[stock] = [stock_fund_name.rstrip()[:-9]]
-            
-            stock_Dictionary[stock].append(stock_or_fund)
-            stock_Dictionary[stock].append(msft_ticket)
+#     def fetch_Stock_Name(stock_Dictionary):
+#         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
+#         for stock_fund_name in stock_fund_names:
+#             if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
+#                 continue
+# 
+#             stock = re.search(r'(\(\^\w+\))', stock_fund_name)
+#             if stock is None:
+#                 stock = re.search('\(\w+\)', stock_fund_name)
+#                 msft_ticket = re.search('\[\w+\]', stock_fund_name)
+# 
+#             is_stock =  re.search("ETF|Fund",stock_fund_name)
+# #            print is_stock
+#             if is_stock:
+#                 if 'ETF' in stock_fund_name:
+#                     stock_or_fund =  'ETF'
+#                 else:
+#                     stock_or_fund = 'Fund'
+#             else:
+#                 stock_or_fund ='STOCK'
+#             # print(stock_or_fund)
+#             stock = stock.group().rstrip().rstrip(')').lstrip('(')
+#             msft_ticket = msft_ticket.group().rstrip().rstrip(']').lstrip('[')
+#             stock_Dictionary[stock] = [stock_fund_name.rstrip()[:-9]]
+#             
+#             stock_Dictionary[stock].append(stock_or_fund)
+#             stock_Dictionary[stock].append(msft_ticket)
 
     logging.basicConfig(level=logging.INFO)
     driver = init_webdriver().driver_init()
@@ -255,8 +254,10 @@ def main():
     password_box.click()
     password_box.send_keys("abcde12345")
     
+    time.sleep(3)
+    # password_box.send_keys(Keys.RETURN)
     signin_button = driver.find_element(By.XPATH,"//button[contains(@class, 'colorwhite w12 radiiround displayflex bgorange-light hoverBgorange h_px1 flexrcc fontSize6 fontWeightsemibold aligncenter w_px6 mt4 mb3 mobile_fontSize6 mobile_py3 mobile_h_pxauto mobile_mt5')]")
-
+    
     signin_button.click()
     
     time.sleep(15)   
@@ -288,15 +289,16 @@ def main():
     
     soup = BeautifulSoup(stock_table_html, 'html.parser')
     soup = str(soup).split("><")
-    #soup = str(soup).replace("><", "\n")
-    # for i in soup:
-    #     print (i)
-    # #print(soup)
+ #   soup = str(soup).replace("><", "\n")
+    for i in soup:
+        print (i)
+    print(soup)
     # os.system("PAUSE")
 
     data_list = []
     for i in soup:
         if 'data-key' in i:
+           print(i)
 #           print (extract_price_2(i, 'data-key=\"')[:-1], end='\t')
            data_list.append(extract_price_2(i, 'data-key=\"')[:-1])
            
@@ -308,7 +310,7 @@ def main():
 #            print (i)
 #            print (extract_price(i, 'Currency in US Dollar\">', '<div class='))
             data_list.append(extract_price(i, 'Currency in US Dollar\">', '<div class='))
-      
+    print (data_list)  
     data_dict = {}
     for i in range(0, len(data_list), 3):
         data_dict[data_list[i]] = [(data_list[i + 1])]

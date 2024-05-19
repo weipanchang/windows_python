@@ -146,7 +146,7 @@ class get_data:
         except TimeoutException:
             pass
 
-        time.sleep(self.delay + 3)
+        time.sleep(self.delay + 1)
 
         a_elm = self.driver.find_element("xpath","//a[@class = 'Fl(end) Mt(3px) Cur(p)']")
 #        print ("click at download link")
@@ -242,14 +242,14 @@ class get_data:
             except:
                 print ("Yahoo page slow, will reloop!", end=" ")
                 pass
-        time.sleep(4)
+        time.sleep(2)
 
         if check_exists_by_xpath('//img[contains(@class,"Mb(6px) Cur(p)")]'):
             print ("OLD Yahoo Finance Page\n")
 
         elif check_exists_by_xpath('//*[@class="rapid-noclick-resp opt-in-link"]'):
             print ("New Yahoo Finance Page\n")
-            
+            self.driver.find_element(By.XPATH,'//*[@class="rapid-noclick-resp opt-in-link"]').click()            
         else:
             print ("Not Detected\n")
                     

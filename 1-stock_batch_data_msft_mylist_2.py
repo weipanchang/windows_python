@@ -230,8 +230,14 @@ def main():
         driver.implicitly_wait(1)
 
         print ("Display Earning Page... \n\n")
-           
-        driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div/div[5]/div[2]/div/div[1]/div/div[3]/div[2]/div/div/button[4]/span').click()
+        time.sleep(2)           
+        try:
+            
+            driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div/div[5]/div[2]/div/div[1]/div/div[3]/div[2]/div/div/button[4]/span').click()
+#            driver.find_element(By.XPATH,'//button[@title="Earnings"]').click()
+        except:
+            driver.find_element(By.XPATH,'//button[@title="Earnings"]').click()            
+#            driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div/div[3]/div[3]/div[2]/div/div[1]/div/div[4]/div[2]/div/div/button[4]/span').click()
 
         time.sleep(1)
         
@@ -261,10 +267,10 @@ def main():
         
         url_stock = "https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M&id="+ msft_ticket
         driver.get(url_stock)
-
+        
         print ("Display Summary Page... \n")
         time.sleep(1)
-
+        
         elm_list = driver.find_element(By.XPATH,'//div[@class = "factsRowValue-DS-EntryPoint1-1"]')
         previous = elm_list.text
         print( "Previous Close = %s\n" % (previous))

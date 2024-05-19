@@ -19,6 +19,7 @@ from openpyxl.styles import PatternFill
 #eXCEL_File = "C:\\Users\\William Chang\\Documents\\Python Scripts\\Stock_2.xlsx"
 eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Watch_List.xlsx"
 delay = 1
+flag_equal_value_reset_to_default_color = False# True is default
 
 def update_Excel_Table(xcl):
 
@@ -47,47 +48,57 @@ def update_Excel_Table(xcl):
    fill_cell3 = PatternFill(patternType='solid', fgColor='FFD7D7')  #Pink
    fill_cell4 = PatternFill(patternType='solid', fgColor='FFFF00')  #Yellow
    fill_cell5 = PatternFill(patternType='solid', fgColor='B4C7D7')  #blue
+   fill_cell6 = PatternFill(patternType='solid', fgColor='dee6ef')  #Grey
+   fill_cell8 = PatternFill(patternType='solid', fgColor='d9d2e9')  #Purple
+      
    i = 9
    while ws['D' + str(i)].value != "INDEX":
       if ws['D' + str(i)].value is not None:
          stock = ws['C' + str(i)].value
          with open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\data\\Summary_Report__From_Yahoo_" + today.strftime("%m%d%Y")+".txt") as Yahoo, \
              open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\MSFT_Analysis\\Summary_Report_From_Microsoft_" + today.strftime("%m%d%Y")+".txt") as Microsoft,\
+             open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Tipranks\\Summary_Report_From_Tipranks_" + today.strftime("%m%d%Y")+".txt") as Tipranks,\
+             open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Chase\\Summary_Report_From_Chase_" + today.strftime("%m%d%Y")+".txt") as Chase,\
+             open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stanley\\Summary_Report_From_Stanley_" + today.strftime("%m%d%Y")+".txt") as Stanley,\
              open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Prediction\\Individual_Stock_Report__" + today.strftime("%m%d%Y")+".txt") as Prediction:
-
-            line_from_Yahoo = Yahoo.readline()   
+            n = 0
+            line_from_Yahoo = Yahoo.readline()
             while "("+stock+")" not in line_from_Yahoo:
                line_from_Yahoo = Yahoo.readline()
             print (line_from_Yahoo)
+
             while True:
                line_from_Yahoo = Yahoo.readline()
                if "1y Target Est" in line_from_Yahoo:
-                  target_price = line_from_Yahoo.split()[-1]
+                  target_price = line_from_Yahoo.split()[-1].replace(',', '')
                   print("From Yahoo    ", end="\t\t")
                   print(ws['K' + str(i)].value, end="\t")
                   print (target_price, end = "\t" )
                   if ws['K' + str(i)].value > float(target_price):
-                     print("-\t", end="")
+                     print("-\t", end="\t")
                      ws['K' + str(i)].fill = fill_cell1
                   elif ws['K' + str(i)].value < float(target_price):
-                     print ("+\t", end="")
+                     print ("+\t", end="\t")
                      ws['K' + str(i)].fill = fill_cell4
                   else: 
-                     print (" \t", end="")
-                     ws['K' + str(i)].fill = fill_cell5
-                     
+                     print (" \t", end="\t")
+                     if flag_equal_value_reset_to_default_color:
+                        ws['K' + str(i)].fill = fill_cell5
                   ws['K'+ str(i)] = float(target_price.strip(' "'))
-               if "Volume over Average:" in line_from_Yahoo:
+#                  print("\n")
+               # else:
+               #    print("1y Target Est not Found")
+               #    break
+               if "Volume over Average" in line_from_Yahoo:
                   volume_over_average = line_from_Yahoo.split()[-1]
                   print(ws['O' + str(i)].value, end="\t")
                   print (volume_over_average, end = "\n" )
 #                  print("-\n") if ws['K' + str(i)].value > float(target_price) else print ("+\n")                  
                   ws['O'+ str(i)] = float(volume_over_average.strip(' "'))
-               
+               if "EOT" in line_from_Yahoo:
+                  print("")
                   break
-               
-               
-               
+  
             line_from_Microsoft = Microsoft.readline()   
             while "("+stock+")" not in line_from_Microsoft:
                line_from_Microsoft = Microsoft.readline()
@@ -95,21 +106,98 @@ def update_Excel_Table(xcl):
             while True:
                line_from_Microsoft = Microsoft.readline()
                if "1y Target Est" in line_from_Microsoft:
-                  target_price = line_from_Microsoft.split()[-1]
+                  target_price = line_from_Microsoft.split()[-1].replace(',', '')
                   print("From Microsoft    ", end="\t")
                   print(ws['L' + str(i)].value, end="\t")
                   print (target_price, end = "\t" )
                   if ws['L' + str(i)].value > float(target_price):
-                     print("-\n")
+                     print("-\t")
                      ws['L' + str(i)].fill = fill_cell1
                   elif ws['L' + str(i)].value < float(target_price):
-                     print ("+\n")
+                     print ("+\t")
                      ws['L' + str(i)].fill = fill_cell4
                   else:
                      print (" \t")
-                     ws['L' + str(i)].fill = fill_cell3
+                     if flag_equal_value_reset_to_default_color:
+                        ws['L' + str(i)].fill = fill_cell3
                   ws['L'+ str(i)] = float(target_price.strip(' "'))
                   break 
+
+            line_from_Tipranks = Tipranks.readline()   
+            while "("+stock+")" not in line_from_Tipranks:
+               line_from_Tipranks = Tipranks.readline()
+            
+            while True:
+               line_from_Tipranks = Tipranks.readline()
+               if "1y Target Est" in line_from_Tipranks:
+                  target_price = line_from_Tipranks.split()[-1].replace(',', '')
+                  print("From Tipranks    ", end="\t")
+                  print(ws['M' + str(i)].value, end="\t")
+                  print (target_price, end = "\t" )
+                  if ws['M' + str(i)].value > float(target_price):
+                     print("-\n")
+                     ws['M' + str(i)].fill = fill_cell1
+                  elif ws['M' + str(i)].value < float(target_price):
+                     print ("+\n")
+                     ws['M' + str(i)].fill = fill_cell4
+                  else:
+                     print (" \t")
+                     target_place = target_price.replace(',', '')
+                     if flag_equal_value_reset_to_default_color:
+                        ws['M' + str(i)].fill = fill_cell6
+                  ws['M'+ str(i)] = float(target_price.strip(' "'))
+                  break
+            
+            line_from_Chase = Chase.readline()   
+            while "("+stock+")" not in line_from_Chase:
+               line_from_Chase = Chase.readline()
+               
+            while True:
+               line_from_Chase = Chase.readline()
+               if "1y Target Est" in line_from_Chase:
+                  target_price = line_from_Chase.split()[-1].replace(',', '')
+                  print("From Chase    ", end="\t\t")
+                  print(ws['N' + str(i)].value, end="\t")
+                  print (target_price, end = "\t" )
+                  if ws['N' + str(i)].value > float(target_price) and float(target_price) != 0:
+                     print("-\n")
+                     ws['N' + str(i)].fill = fill_cell1
+                  elif ws['N' + str(i)].value < float(target_price):
+                     print ("+\n")
+                     ws['N' + str(i)].fill = fill_cell4
+                  else:
+                     print (" \t")
+                     target_place = target_price.replace(',', '')
+                     if flag_equal_value_reset_to_default_color:
+                        ws['N' + str(i)].fill = fill_cell7
+                  ws['N'+ str(i)] = float(target_price)
+                  break 
+
+            line_from_Stanley = Stanley.readline()   
+            while "("+stock+")" not in line_from_Stanley:
+               line_from_Stanley = Stanley.readline()
+               
+            while True:
+               line_from_Stanley = Stanley.readline()
+               if "1y Target Est" in line_from_Stanley:
+                  target_price = line_from_Stanley.split()[-1].replace(',', '')
+                  print("From Stanley    ", end="\t")
+                  print(ws['Q' + str(i)].value, end="\t")
+                  print (target_price, end = "\t" )
+                  if ws['Q' + str(i)].value > float(target_price) and float(target_price) != 0:
+                     print("-\n")
+                     ws['Q' + str(i)].fill = fill_cell1
+                  elif ws['Q' + str(i)].value < float(target_price):
+                     print ("+\n")
+                     ws['Q' + str(i)].fill = fill_cell4
+                  else:
+                     print (" \t")
+                     target_place = target_price.replace(',', '')
+                     if flag_equal_value_reset_to_default_color:
+                        ws['Q' + str(i)].fill = fill_cell8
+                  ws['Q'+ str(i)] = float(target_price.strip(' "'))
+                  break 
+
 
 
 
@@ -171,7 +259,7 @@ if __name__ == '__main__':
     #     print("No internet connection.\n\n")
     #     time.sleep(delay + 3)
     #     sys.exit()
-    
+#    print(sys.argv[0])
     try:
         wb = load_workbook(eXCEL_File)
     except:
