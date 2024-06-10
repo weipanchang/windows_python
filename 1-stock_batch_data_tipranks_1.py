@@ -148,7 +148,8 @@ def main():
     
     def check_exists_by_xpath(xpath):
         try:
-            driver.find_element_by_xpath(xpath)
+            driver.find_element(By.XPATH,xpath)
+            #driver.find_element_by_xpath(driver, xpath)
         except NoSuchElementException:
             return False
         return True
@@ -172,6 +173,8 @@ def main():
     
     def fetch_Stock_Name(stock_Dictionary):
         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
+#        stock_fund_names =  [line for line in open("STOCK-01.txt", "r")]
+        
         for stock_fund_name in stock_fund_names:
             if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
                 continue
@@ -210,7 +213,7 @@ def main():
     #driver.find_element("xpath","//input[@name = 'email'").click()
     email_box = driver.find_element(By.XPATH,"//input[contains(@class, 'w12 py4 px3 radiimedium')]")
     email_box.click()
-    email_box.send_keys("weipanchang@mail.com")
+    email_box.send_keys("weipanchang@aol.com")
     
     password_box = driver.find_element(By.XPATH,"//input[contains(@type, 'password')]")
     password_box.click()
@@ -230,13 +233,6 @@ def main():
     
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
-
-    # # try:
-    # stock_table = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[5]/div[2]/div[3]/div[2]/div[4]/div[1]/div[2]/table")
-    #     # print("found stock_table")
-    # # except:
-    #     # print("not found")
-
 
     #stock_input_box =  driver.find_element(By.XPATH,"//input[@id='react-select-2-input']")
     sys.stdout = Logger()                                    
@@ -278,20 +274,7 @@ def main():
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         time.sleep(6)
 #        os.system("PAUSE")
-        # while True:
-        #     try:
-        #         print (('Current Price:   %s') % (driver.find_element("xpath",'//span[@class= "transitioncolor"]')).text[1:])
-        #         break
-        #     except:
-        #         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        #         time.sleep(1)
-        #         pass
-        #     
-        #         
-        # if driver.find_element("xpath",'//span[@class = "mr3  transitioncolor"]'):
-        #     print("After Hours:     %s\n" % (driver.find_element("xpath",'//span[@class = "mr3  transitioncolor"]').text[1:]))
-        # 
-        # # try:
+
         try:
             driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
             
@@ -301,22 +284,23 @@ def main():
 #            print("Found")
         except NoSuchElementException:
             print("Frame NOT Found")
-#
+        time.sleep(1)
+        if check_exists_by_xpath("/html/body/div[2]/div[2]/div[4]/div[3]/div[1]/div[1]/div/picture/img"):
+            os.system("PAUSE")
+        time.sleep(3)
+        # webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+        os.system("PAUSE")
+        
         element = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
-        element.click()
+        try:
+            element.click()
+        except:
+            sys.exit()
         value = str((element.text).encode('utf8'))
 #       print(value)
         target  = extract_price_3(value, "$","\\n\\xe2")
 
         print( "1y Target Est = %s\n" %(target))
-#            print("Found")
-        # except NoSuchElementException:
-        #     print("NOT Found")
-#        return True
-#        print("1y Target High Est = %s\n" % (driver.find_element(By.XPATH,'/html/body/div[2]/div[2]/div[4]/div[3]/div[1]/div[1]/div[5]/div[2]/div[2]/div[3]/div[2]/div/div[1]/div[1]')))
-#       os.system("PAUSE")
-
- #      time.sleep(1)                
 
     # Close browser
     driver.quit()
