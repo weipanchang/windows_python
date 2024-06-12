@@ -214,11 +214,11 @@ def main():
             
             stock_Dictionary[stock].append(stock_or_fund)
             stock_Dictionary[stock].append(msft_ticket)
-
+    sys.stdout = Logger()
     fetch_Stock_Name(stock_Dictionary:={})
     for stock in stock_Dictionary.keys():
 
-        sys.stdout = Logger()
+#        sys.stdout = Logger()
         print("\n")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print ("Processing " + stock_Dictionary[stock][0] +" data")

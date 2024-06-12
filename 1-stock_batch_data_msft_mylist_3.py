@@ -216,9 +216,10 @@ def main():
             stock_Dictionary[stock].append(msft_ticket)
 
     fetch_Stock_Name(stock_Dictionary:={})
+    sys.stdout = Logger()
     for stock in stock_Dictionary.keys():
 
-        sys.stdout = Logger()
+#        sys.stdout = Logger()
         print("\n")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print ("Processing " + stock_Dictionary[stock][0] +" data")
@@ -267,15 +268,15 @@ def main():
         print("Recommedation:    %s\n" % (driver.find_element("xpath",'//h2[@class="suggestion-DS-EntryPoint1-1"]').text))
         print("Price Volatility: %s\n" % elm_list[1].text)
         
-        url_stock = "https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M&id="+ msft_ticket
-        driver.get(url_stock)
+        # url_stock = "https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M&id="+ msft_ticket
+        # driver.get(url_stock)
+        # 
+        # print ("Display Summary Page... \n")
+        # time.sleep(1)
         
-        print ("Display Summary Page... \n")
-        time.sleep(1)
-        
-        elm_list = driver.find_element(By.XPATH,'//div[@class = "factsRowValue-DS-EntryPoint1-1"]')
-        previous = elm_list.text
-        print( "Previous Close = %s\n" % (previous))
+        # elm_list = driver.find_element(By.XPATH,'//div[@class = "factsRowValue-DS-EntryPoint1-1"]')
+        # previous = elm_list.text
+        # print( "Previous Close = %s\n" % (previous))
         
         time.sleep(1)
     driver.quit()
