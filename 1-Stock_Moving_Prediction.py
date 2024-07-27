@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import yfinance as yf
 import numpy as np
@@ -12,7 +14,7 @@ import pandas as pd
 import time
 import statsmodels.api as sm
 import datetime
-import shutil
+# import shutil
 import string
 import logging
 import argparse

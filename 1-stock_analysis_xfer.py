@@ -37,14 +37,28 @@ class Logger(object):
 def main():
     
     def extract_data(data_list):
+        line_from_Stock_Analysis =""
         with open(sTock_Analysis_data_file) as Stock_Analysis:
+            try:
+                line_from_Stock_Analysis = Stock_Analysis.readline()
+            except:
+                pass
+            while "Next Year" not in line_from_Stock_Analysis:
 
-            while "Next Year Next Year" not in Stock_Analysis.readline():
-                continue
+                line_from_Stock_Analysis = Stock_Analysis.readline()
+
+                # print(line_from_Stock_Analysis)
+                # os.system("pause")
+#                    continue
+            # os.system("pause")
+            
             while True:
 #                line_from_Stock_Analysis = Stock_Analysis.readline()
 #                if "Watchlist Averages" not in line_from_Stock_Analysis:
+                # try:
                 line_from_Stock_Analysis = Stock_Analysis.readline()
+                # except:
+                #     pass
                 if "Watchlist Averages" not in line_from_Stock_Analysis:
                     if len(line_from_Stock_Analysis)  != 0:
                         elements = line_from_Stock_Analysis.split()
@@ -83,14 +97,26 @@ def main():
             stock_Dictionary[stock].append(stock_or_fund)
             stock_Dictionary[stock].append(msft_ticket)
             
+    try:
+        shutil.rmtree(downloadPath)
+    except:
+         pass
+    time.sleep(2)
+    try:
+        os.mkdir(downloadPath)
+    except:
+        pass            
+    source = "C:\\Users\\William Chang\\Downloads\\Stock Watchlist & Portfolio Tracker - Stock Analysis.txt"
+#    destination = "D:\Pycharm projects\gfg\Test\A"
+    shutil.move(source, downloadPath)            
     fetch_Stock_Name(stock_Dictionary:={})
 
-#    print(stock_Dictionary)
+ #  print(stock_Dictionary)
     sys.stdout = Logger()
 #    os.system("pause")    
 
     extract_data(data_list:={})
-#    print (data_list)
+#   print (data_list)
 #    os.system("pause")
     for stock in stock_Dictionary.keys():
         

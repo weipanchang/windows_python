@@ -38,20 +38,20 @@ class Logger(object):
         global downloadPath
         today = date.today()
 
-        try:
-            shutil.rmtree(downloadPath)
-            # shutil.rmtree(downloadPath_pickle)
-        except:
-#            print("failed to remove")
-            pass
-        time.sleep(1)
-        
-        try:
-            os.mkdir(downloadPath)
-            # os.mkdir(downloadPath_pickle)
-        except:
-            pass
-        # time.sleep(2)
+#         try:
+#             shutil.rmtree(downloadPath)
+#             # shutil.rmtree(downloadPath_pickle)
+#         except:
+# #            print("failed to remove")
+#             pass
+#         time.sleep(1)
+#         
+#         try:
+#             os.mkdir(downloadPath)
+#             # os.mkdir(downloadPath_pickle)
+#         except:
+#             pass
+#         # time.sleep(2)
         self.terminal = sys.stdout
         self.log = open(downloadPath +"\\Summary_Report_From_Tipranks_"+ today.strftime("%m%d%Y") + ".txt" , "a+")
 
@@ -149,15 +149,18 @@ def main():
     def check_exists_by_xpath(xpath):
         try:
             driver.find_element(By.XPATH,xpath)
+            #driver.find_element_by_xpath(driver, xpath)
         except NoSuchElementException:
             return False
         return True
     
     def extract_price(s, n, sub2):
+
         idx2 = s.index(sub2)
         return(s[3: idx2])
     
     def extract_price_3(s, sub1, sub2):
+    
         idx1 = s.index(sub1)
         idx2 = s.index(sub2)
         return(s[idx1 + len(sub1): idx2])
@@ -172,7 +175,7 @@ def main():
         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
 #        stock_fund_names =  [line for line in open("STOCK-01.txt", "r")]
         
-        for stock_fund_name in stock_fund_names[:10]:
+        for stock_fund_name in stock_fund_names[10:15]:
             if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
                 continue
 
@@ -245,6 +248,8 @@ def main():
         time.sleep(1)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         time.sleep(15)
+        if check_exists_by_xpath('//div[@class="Card__CardHeader-sc-1s2p2gv-1 a__sc-3vtlsk-1 givWLU cVIXeq"]'):
+            driver.find_element(By.XPATH,'//button[@class="Button__StyledButton-a1qza5-0 fLZgds"]').click()
         stock_input_box = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-2-input']")))
         stock_input_box.click()
         time.sleep(1)
@@ -260,16 +265,24 @@ def main():
         # stock_input_box = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-2-input']")))
         # stock_input_box.click()
 
-        time.sleep(1)
+        time.sleep(3)
         driver.refresh()
+        # stock_input_box.send_keys(stock)
+        # time.sleep(6)
+        # stock_input_box.send_keys(Keys.ENTER)
 
+        # time.sleep(1)
+        # stock_input_box.send_keys(Keys.ENTER)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         time.sleep(6)
 #        os.system("PAUSE")
 
         try:
             driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
+            
+#           /html/body/div[2]/div[2]/div[4]/div[3]/div[1]/div[1]/div[5]/div[2]/div[2]/div[3]/div[2]/div/div[1]/div[1]
             frame = driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
+            
 #            print("Found")
         except NoSuchElementException:
             print("Frame NOT Found")
@@ -278,24 +291,23 @@ def main():
         #     os.system("PAUSE")
         time.sleep(3)
         # webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        os.system("PAUSE")
+        #os.system("PAUSE")
         
         if check_exists_by_xpath('//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]'):
-            
-            element = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
+            flex_box = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
         
         if check_exists_by_xpath('//div[@class="flexccc    mt3 displayflex colorpurple-dark shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]'):
+            flex_box = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpurple-dark shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
             
-            element = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpurple-dark shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
-        try:
-            element.click()
-        except:
-            sys.exit()
-        value = str((element.text).encode('utf8'))
-        target  = extract_price_3(value, "$","\\n\\xe2")
-
+        flex_box = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((flex_box)))            
+#        try:
+        flex_box.click()
+#        except:
+#            sys.exit()
+#        value = str((element.text).encode('utf8'))
+        target  = extract_price_3(str((flex_box.text).encode('utf8')), "$","\\n\\xe2")
         print( "1y Target Est = %s\n" %(target))
-  #      sys.stdout = None
+
     # Close browser
     driver.quit()
 

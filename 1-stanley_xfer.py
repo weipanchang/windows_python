@@ -63,6 +63,18 @@ def main():
             stock_Dictionary[stock].append(stock_or_fund)
             stock_Dictionary[stock].append(msft_ticket)
             
+    try:
+        shutil.rmtree(downloadPath)
+    except:
+         pass
+    time.sleep(2)
+    try:
+        os.mkdir(downloadPath)
+    except:
+        pass            
+    source = "C:\\Users\\William Chang\\Downloads\\Morgan Stanley Online.txt"
+#    destination = "D:\Pycharm projects\gfg\Test\A"
+    shutil.move(source, downloadPath)        
     fetch_Stock_Name(stock_Dictionary:={})
 
 #   print(stock_Dictionary)

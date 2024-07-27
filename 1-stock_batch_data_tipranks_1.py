@@ -172,7 +172,7 @@ def main():
         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
 #        stock_fund_names =  [line for line in open("STOCK-01.txt", "r")]
         
-        for stock_fund_name in stock_fund_names[:10]:
+        for stock_fund_name in stock_fund_names[:5]:
             if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
                 continue
 
@@ -256,6 +256,14 @@ def main():
         stock_input_box.send_keys(stock)
         time.sleep(3)
         stock_input_box.send_keys(Keys.ENTER)
+        
+        # stock_input_box.click()
+        # time.sleep(1)
+        # stock_input_box.clear()
+        # time.sleep(1)
+        # stock_input_box.send_keys(stock)
+        # time.sleep(3)
+        # stock_input_box.send_keys(Keys.ENTER)
 
         # stock_input_box = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-2-input']")))
         # stock_input_box.click()
@@ -265,7 +273,7 @@ def main():
 
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         time.sleep(6)
-#        os.system("PAUSE")
+
 
         try:
             driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
@@ -278,7 +286,7 @@ def main():
         #     os.system("PAUSE")
         time.sleep(3)
         # webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        os.system("PAUSE")
+        # os.system("PAUSE")
         
         if check_exists_by_xpath('//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]'):
             
