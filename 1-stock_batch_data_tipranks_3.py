@@ -73,6 +73,7 @@ class init_webdriver():
         print ("")
 #        print ("Processing " + self.stock_name.upper() +" stock data")
 #        self.stock_or_fund = stock_or_fund
+        #self.my_proxy = "45.190.170.254:999"
         self.delay = 0
         self.currentDateTime = datetime.datetime.now()
         self.date = self.currentDateTime.date()
@@ -95,21 +96,22 @@ class init_webdriver():
         self.profile.set_preference("network.http.use-cache", False)
         self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
         self.desiredCapabilities['firefox_profile'] = self.profile.encoded
+        #self.desiredCapabilities['proxy'] = {"proxyType": "MANUAL", "httpProxy": self.my_proxy, "ftpProxy": self.my_proxy,"sslProxy": self.my_proxy}
         self.options = Options()
         
-        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
+        #self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
 
-        self.driver.set_page_load_timeout(50)
+        #self.driver.set_page_load_timeout(50)
         #wait = WebDriverWait(self.driver, 200, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
         
         #run in headless mode
-        #options.add_argument("--headless")
+        #self.options.add_argument("--headless")
         
         # disable the AutomationControlled feature of Blink rendering engine
-        # options.add_argument('--disable-blink-features=AutomationControlled')
+        self.options.add_argument('--disable-blink-features=AutomationControlled')
         #  
         # disable pop-up blocking
-        #self.options.add_argument('--disable-popup-blocking')
+        self.options.add_argument('--disable-popup-blocking')
         #  
         # # start the browser window in maximized mode
         # options.add_argument('--start-maximized')
@@ -142,6 +144,11 @@ class init_webdriver():
 #        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0"
         # pass in selected user agent as an argument
         self.options.add_argument(f'user-agent={user_agent}')
+        
+    def driver_init(self):
+        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
+        self.driver.set_page_load_timeout(50)
+        return(self.driver)
         
 def main():
  #   sys.stdout = Logger()
@@ -203,7 +210,9 @@ def main():
     
     
     logging.basicConfig(level=logging.INFO)
-    driver = init_webdriver().driver
+    driver = init_webdriver().driver_init()
+    driver.minimize_window() 
+    #driver = init_webdriver().driver
     driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
     time.sleep(3)
     #actions = ActionChains(driver)
@@ -227,10 +236,8 @@ def main():
     time.sleep(10)   
     #actions = ActionChains(driver)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    
     time.sleep(1)
 
-    
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
 
@@ -265,51 +272,44 @@ def main():
         # stock_input_box = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-2-input']")))
         # stock_input_box.click()
 
-        time.sleep(3)
+        time.sleep(1)
         driver.refresh()
-        # stock_input_box.send_keys(stock)
-        # time.sleep(6)
-        # stock_input_box.send_keys(Keys.ENTER)
 
-        # time.sleep(1)
-        # stock_input_box.send_keys(Keys.ENTER)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        time.sleep(6)
+        time.sleep(2)
+        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+        time.sleep(2)
 #        os.system("PAUSE")
 
         try:
-            driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
-            
+#           driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
 #           /html/body/div[2]/div[2]/div[4]/div[3]/div[1]/div[1]/div[5]/div[2]/div[2]/div[3]/div[2]/div/div[1]/div[1]
             frame = driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
-            
 #            print("Found")
         except NoSuchElementException:
             print("Frame NOT Found")
-        # time.sleep(1)
-        # if check_exists_by_xpath("/html/body/div[2]/div[2]/div[4]/div[3]/div[1]/div[1]/div/picture/img"):
-        #     os.system("PAUSE")
         time.sleep(3)
-        # webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         #os.system("PAUSE")
         
         if check_exists_by_xpath('//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]'):
-            flex_box = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
+            
+            element = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
         
         if check_exists_by_xpath('//div[@class="flexccc    mt3 displayflex colorpurple-dark shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]'):
-            flex_box = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpurple-dark shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
             
-        flex_box = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((flex_box)))            
-#        try:
-        flex_box.click()
-#        except:
-#            sys.exit()
-#        value = str((element.text).encode('utf8'))
-        target  = extract_price_3(str((flex_box.text).encode('utf8')), "$","\\n\\xe2")
+            element = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpurple-dark shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
+        try:
+            element.click()
+        except:
+            sys.exit()
+        value = str((element.text).encode('utf8'))
+        target  = extract_price_3(value, "$","\\n\\xe2")
         print( "1y Target Est = %s\n" %(target))
 
     # Close browser
     driver.quit()
+
 
 if __name__ == "__main__":
     main()

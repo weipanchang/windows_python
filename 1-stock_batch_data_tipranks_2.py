@@ -97,22 +97,22 @@ class init_webdriver():
         self.desiredCapabilities['firefox_profile'] = self.profile.encoded
         self.options = Options()
         
-        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
+        #self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
 
-        self.driver.set_page_load_timeout(50)
+        #self.driver.set_page_load_timeout(50)
         #wait = WebDriverWait(self.driver, 200, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
         
         #run in headless mode
-        #options.add_argument("--headless")
+        #self.options.add_argument("--headless")
         
         # disable the AutomationControlled feature of Blink rendering engine
-        # options.add_argument('--disable-blink-features=AutomationControlled')
+        self.options.add_argument('--disable-blink-features=AutomationControlled')
         #  
         # disable pop-up blocking
-        #self.options.add_argument('--disable-popup-blocking')
+        self.options.add_argument('--disable-popup-blocking')
         #  
         # # start the browser window in maximized mode
-        # options.add_argument('--start-maximized')
+        #options.add_argument('--start-maximized')
         #  
         # disable extensions
         self.options.add_argument('--disable-extensions')
@@ -142,6 +142,11 @@ class init_webdriver():
 #        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0"
         # pass in selected user agent as an argument
         self.options.add_argument(f'user-agent={user_agent}')
+        
+    def driver_init(self):
+        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
+        self.driver.set_page_load_timeout(50)
+        return(self.driver)        
         
 def main():
  #   sys.stdout = Logger()
@@ -203,7 +208,9 @@ def main():
     
     
     logging.basicConfig(level=logging.INFO)
-    driver = init_webdriver().driver
+    driver = init_webdriver().driver_init()
+    driver.minimize_window() 
+    #driver = init_webdriver().driver
     driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
     time.sleep(3)
     #actions = ActionChains(driver)
@@ -271,14 +278,14 @@ def main():
         # time.sleep(6)
         # stock_input_box.send_keys(Keys.ENTER)
 
-        # time.sleep(1)
-        # stock_input_box.send_keys(Keys.ENTER)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        time.sleep(6)
+        time.sleep(2)
+        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+        time.sleep(2)
 #        os.system("PAUSE")
 
         try:
-            driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
+#            driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
             
 #           /html/body/div[2]/div[2]/div[4]/div[3]/div[1]/div[1]/div[5]/div[2]/div[2]/div[3]/div[2]/div/div[1]/div[1]
             frame = driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
@@ -290,22 +297,22 @@ def main():
         # if check_exists_by_xpath("/html/body/div[2]/div[2]/div[4]/div[3]/div[1]/div[1]/div/picture/img"):
         #     os.system("PAUSE")
         time.sleep(3)
-        # webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         #os.system("PAUSE")
         
         if check_exists_by_xpath('//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]'):
-            flex_box = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
+            
+            element = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
         
         if check_exists_by_xpath('//div[@class="flexccc    mt3 displayflex colorpurple-dark shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]'):
-            flex_box = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpurple-dark shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
             
-        flex_box = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((flex_box)))            
-#        try:
-        flex_box.click()
-#        except:
-#            sys.exit()
-#        value = str((element.text).encode('utf8'))
-        target  = extract_price_3(str((flex_box.text).encode('utf8')), "$","\\n\\xe2")
+            element = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpurple-dark shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
+        try:
+            element.click()
+        except:
+            sys.exit()
+        value = str((element.text).encode('utf8'))
+        target  = extract_price_3(value, "$","\\n\\xe2")
         print( "1y Target Est = %s\n" %(target))
 
     # Close browser

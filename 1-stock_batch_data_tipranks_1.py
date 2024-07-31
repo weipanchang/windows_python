@@ -97,19 +97,19 @@ class init_webdriver():
         self.desiredCapabilities['firefox_profile'] = self.profile.encoded
         self.options = Options()
         
-        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
+        #self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
 
-        self.driver.set_page_load_timeout(50)
+        #self.driver.set_page_load_timeout(50)
         #wait = WebDriverWait(self.driver, 200, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
         
         #run in headless mode
-        #options.add_argument("--headless")
+        #self.options.add_argument("--headless")
         
         # disable the AutomationControlled feature of Blink rendering engine
-        # options.add_argument('--disable-blink-features=AutomationControlled')
+        self.options.add_argument('--disable-blink-features=AutomationControlled')
         #  
         # disable pop-up blocking
-        #self.options.add_argument('--disable-popup-blocking')
+        self.options.add_argument('--disable-popup-blocking')
         #  
         # # start the browser window in maximized mode
         # options.add_argument('--start-maximized')
@@ -139,9 +139,15 @@ class init_webdriver():
         
         # select random user agent
         user_agent = random.choice(user_agents)
+        #self.driver.set_page_load_timeout(50)
 #        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0"
         # pass in selected user agent as an argument
         self.options.add_argument(f'user-agent={user_agent}')
+        
+    def driver_init(self):
+        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
+        self.driver.set_page_load_timeout(50)
+        return(self.driver)
         
 def main():
  #   sys.stdout = Logger()
@@ -200,7 +206,9 @@ def main():
     
     
     logging.basicConfig(level=logging.INFO)
-    driver = init_webdriver().driver
+    driver = init_webdriver().driver_init()
+    driver.minimize_window()
+    #driver = init_webdriver().driver
     driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
     time.sleep(3)
     #actions = ActionChains(driver)
@@ -276,7 +284,7 @@ def main():
 
 
         try:
-            driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
+#            driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
             frame = driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
 #            print("Found")
         except NoSuchElementException:
@@ -285,7 +293,7 @@ def main():
         # if check_exists_by_xpath("/html/body/div[2]/div[2]/div[4]/div[3]/div[1]/div[1]/div/picture/img"):
         #     os.system("PAUSE")
         time.sleep(3)
-        # webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         # os.system("PAUSE")
         
         if check_exists_by_xpath('//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]'):
