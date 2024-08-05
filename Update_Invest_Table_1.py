@@ -19,7 +19,7 @@ from openpyxl.styles import PatternFill
 #eXCEL_File = "C:\\Users\\William Chang\\Documents\\Python Scripts\\Stock_2.xlsx"
 eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Watch_List.xlsx"
 delay = 1
-flag_equal_value_reset_to_default_color = False# True is default
+flag_equal_value_reset_to_default_color = True# True is default
 
 def update_Excel_Table(xcl):
 
@@ -49,6 +49,7 @@ def update_Excel_Table(xcl):
    fill_cell4 = PatternFill(patternType='solid', fgColor='FFFF00')  #Yellow
    fill_cell5 = PatternFill(patternType='solid', fgColor='B4C7D7')  #blue
    fill_cell6 = PatternFill(patternType='solid', fgColor='dee6ef')  #Grey
+   fill_cell7 = PatternFill(patternType='solid', fgColor='00ff00')  #Green
    fill_cell8 = PatternFill(patternType='solid', fgColor='d9d2e9')  #Purple
       
    i = 9
@@ -60,6 +61,8 @@ def update_Excel_Table(xcl):
              open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Tipranks\\Summary_Report_From_Tipranks_" + today.strftime("%m%d%Y")+".txt") as Tipranks,\
              open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Chase\\Summary_Report_From_Chase_" + today.strftime("%m%d%Y")+".txt") as Chase,\
              open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stanley\\Summary_Report_From_Stanley_" + today.strftime("%m%d%Y")+".txt") as Stanley,\
+             open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_Analysis\\Summary_Report_From_Stock_Analysis_" + today.strftime("%m%d%Y")+".txt") as Stock_Analysis,\
+             open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen\\Summary_Report_From_WallStreetZen_" + today.strftime("%m%d%Y")+".txt") as WallStreetZen,\
              open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Prediction\\Individual_Stock_Report__" + today.strftime("%m%d%Y")+".txt") as Prediction:
             n = 0
             line_from_Yahoo = Yahoo.readline()
@@ -96,7 +99,7 @@ def update_Excel_Table(xcl):
 #                  print("-\n") if ws['K' + str(i)].value > float(target_price) else print ("+\n")                  
                   ws['O'+ str(i)] = float(volume_over_average.strip(' "'))
                if "EOT" in line_from_Yahoo:
-                  print("")
+                  #print("")
                   break
   
             line_from_Microsoft = Microsoft.readline()   
@@ -135,10 +138,10 @@ def update_Excel_Table(xcl):
                   print(ws['M' + str(i)].value, end="\t")
                   print (target_price, end = "\t" )
                   if ws['M' + str(i)].value > float(target_price):
-                     print("-\n")
+                     print("-\t")
                      ws['M' + str(i)].fill = fill_cell1
                   elif ws['M' + str(i)].value < float(target_price):
-                     print ("+\n")
+                     print ("+\t")
                      ws['M' + str(i)].fill = fill_cell4
                   else:
                      print (" \t")
@@ -198,8 +201,59 @@ def update_Excel_Table(xcl):
                   ws['Q'+ str(i)] = float(target_price.strip(' "'))
                   break 
 
+            line_from_Stock_Analysis = Stock_Analysis.readline()   
+            while "("+stock+")" not in line_from_Stock_Analysis:
+               line_from_Stock_Analysis = Stock_Analysis.readline()
+               
+            while True:
+               line_from_Stock_Analysis = Stock_Analysis.readline()
+               if "1y Target Est" in line_from_Stock_Analysis:
+                  target_price = line_from_Stock_Analysis.split()[-1].replace(',', '')
+                  print("From Stock_Analysis    ", end="\t")
+                  print(ws['R' + str(i)].value, end="\t")
+                  print (target_price, end = "\t" )
+#                  print (type(ws['R' + str(i)].value), ws['R' + str(i)].value)
+                  if ws['R' + str(i)].value > float(target_price) and float(target_price) != 0:
+                     print("-\n")
+                     ws['R' + str(i)].fill = fill_cell1
 
+                  elif ws['R' + str(i)].value < float(target_price):
+                     print ("+\n")
+                     ws['R' + str(i)].fill = fill_cell4
+                  else:
+                     print (" \t")
+                     target_place = target_price.replace(',', '')
+                     if flag_equal_value_reset_to_default_color:
+                        ws['R' + str(i)].fill = fill_cell8
+                  ws['R'+ str(i)] = float(target_price.strip(' "'))
+                  break 
 
+            line_from_WallStreetZen = WallStreetZen.readline()   
+            while "("+stock+")" not in line_from_WallStreetZen:
+               line_from_WallStreetZen = WallStreetZen.readline()
+               
+            while True:
+               line_from_WallStreetZen = WallStreetZen.readline()
+               if "1y Target Est" in line_from_WallStreetZen:
+                  target_price = line_from_WallStreetZen.split()[-1].replace(',', '')
+                  print("From WallStreetZen    ", end="\t")
+                  print(ws['S' + str(i)].value, end="\t")
+                  print (target_price, end = "\t" )
+#                  print (type(ws['R' + str(i)].value), ws['R' + str(i)].value)
+                  if ws['S' + str(i)].value > float(target_price) and float(target_price) != 0:
+                     print("-\n")
+                     ws['S' + str(i)].fill = fill_cell1
+
+                  elif ws['S' + str(i)].value < float(target_price):
+                     print ("+\n")
+                     ws['S' + str(i)].fill = fill_cell4
+                  else:
+                     print (" \t")
+                     target_place = target_price.replace(',', '')
+                     if flag_equal_value_reset_to_default_color:
+                        ws['S' + str(i)].fill = fill_cell8
+                  ws['S'+ str(i)] = float(target_price.strip(' "'))
+                  break 
 
             line_from_Prediction = Prediction.readline()   
             while "[ "+stock+" ]" not in line_from_Prediction:
