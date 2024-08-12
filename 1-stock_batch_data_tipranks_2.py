@@ -209,7 +209,7 @@ def main():
     
     logging.basicConfig(level=logging.INFO)
     driver = init_webdriver().driver_init()
-    driver.minimize_window() 
+    #driver.minimize_window() 
     #driver = init_webdriver().driver
     driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
     time.sleep(3)

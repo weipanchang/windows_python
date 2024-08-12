@@ -207,11 +207,10 @@ def main():
             
             stock_Dictionary[stock].append(stock_or_fund)
             stock_Dictionary[stock].append(msft_ticket)
-    
-    
+      
     logging.basicConfig(level=logging.INFO)
     driver = init_webdriver().driver_init()
-    driver.minimize_window() 
+    #driver.minimize_window() 
     #driver = init_webdriver().driver
     driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
     time.sleep(3)
@@ -276,18 +275,20 @@ def main():
         driver.refresh()
 
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        time.sleep(2)
-        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        time.sleep(2)
-#        os.system("PAUSE")
+        time.sleep(6)
+ 
+        if check_exists_by_xpath('//div[@class="w12 p0   displayflex positionrelative grow1"]'):
 
-        try:
-#           driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
-#           /html/body/div[2]/div[2]/div[4]/div[3]/div[1]/div[1]/div[5]/div[2]/div[2]/div[3]/div[2]/div/div[1]/div[1]
-            frame = driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
-#            print("Found")
-        except NoSuchElementException:
-            print("Frame NOT Found")
+            try:
+    #           driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
+    #           /html/body/div[2]/div[2]/div[4]/div[3]/div[1]/div[1]/div[5]/div[2]/div[2]/div[3]/div[2]/div/div[1]/div[1]
+                frame = driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
+    #            print("Found")
+            except NoSuchElementException:
+                print("Frame NOT Found")
+                sys.exit()
+        else:
+            sys.exit() 
         time.sleep(3)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         #os.system("PAUSE")

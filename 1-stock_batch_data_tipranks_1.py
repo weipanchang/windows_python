@@ -204,10 +204,9 @@ def main():
             stock_Dictionary[stock].append(stock_or_fund)
             stock_Dictionary[stock].append(msft_ticket)
     
-    
     logging.basicConfig(level=logging.INFO)
     driver = init_webdriver().driver_init()
-    driver.minimize_window()
+    #driver.minimize_window()
     #driver = init_webdriver().driver
     driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
     time.sleep(3)
@@ -234,7 +233,6 @@ def main():
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     
     time.sleep(1)
-
     
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
@@ -244,7 +242,6 @@ def main():
     fetch_Stock_Name(stock_Dictionary:={})
     for stock in stock_Dictionary.keys():
     
-#        sys.stdout = Logger()
         print("\n")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print ("Processing " + stock_Dictionary[stock][0] +" data")
@@ -265,23 +262,11 @@ def main():
         time.sleep(3)
         stock_input_box.send_keys(Keys.ENTER)
         
-        # stock_input_box.click()
-        # time.sleep(1)
-        # stock_input_box.clear()
-        # time.sleep(1)
-        # stock_input_box.send_keys(stock)
-        # time.sleep(3)
-        # stock_input_box.send_keys(Keys.ENTER)
-
-        # stock_input_box = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-2-input']")))
-        # stock_input_box.click()
-
         time.sleep(1)
         driver.refresh()
 
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         time.sleep(6)
-
 
         try:
 #            driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
