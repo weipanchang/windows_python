@@ -87,7 +87,10 @@ def main():
 #            reading_line_list = list() 
         reading_line_list = WallStreetZen.readlines()
         for i in range(len(reading_line_list)):
-            reading_line_list[i] = reading_line_list[i][:-1]
+            if len(reading_line_list[i]) >1:
+                reading_line_list[i] = reading_line_list[i][:-1]
+            if  reading_line_list[i] == "GOOGL":
+                reading_line_list[i] = "GOOG"
 #        print (reading_line_list)               
 
 
