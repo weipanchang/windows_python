@@ -73,6 +73,7 @@ class init_webdriver():
         print ("")
 #        print ("Processing " + self.stock_name.upper() +" stock data")
 #        self.stock_or_fund = stock_or_fund
+        #self.my_proxy = "45.190.170.254:999"
         self.delay = 0
         self.currentDateTime = datetime.datetime.now()
         self.date = self.currentDateTime.date()
@@ -95,6 +96,7 @@ class init_webdriver():
         self.profile.set_preference("network.http.use-cache", False)
         self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
         self.desiredCapabilities['firefox_profile'] = self.profile.encoded
+        #self.desiredCapabilities['proxy'] = {"proxyType": "MANUAL", "httpProxy": self.my_proxy, "ftpProxy": self.my_proxy,"sslProxy": self.my_proxy}
         self.options = Options()
         
         #self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
@@ -103,7 +105,7 @@ class init_webdriver():
         #wait = WebDriverWait(self.driver, 200, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
         
         #run in headless mode
-        #self.options.add_argument("--headless")
+        self.options.add_argument("--headless")
         
         # disable the AutomationControlled feature of Blink rendering engine
         self.options.add_argument('--disable-blink-features=AutomationControlled')
@@ -112,7 +114,7 @@ class init_webdriver():
         self.options.add_argument('--disable-popup-blocking')
         #  
         # # start the browser window in maximized mode
-        #options.add_argument('--start-maximized')
+        # options.add_argument('--start-maximized')
         #  
         # disable extensions
         self.options.add_argument('--disable-extensions')
@@ -146,7 +148,7 @@ class init_webdriver():
     def driver_init(self):
         self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
         self.driver.set_page_load_timeout(50)
-        return(self.driver)        
+        return(self.driver)
         
 def main():
  #   sys.stdout = Logger()
@@ -205,8 +207,7 @@ def main():
             
             stock_Dictionary[stock].append(stock_or_fund)
             stock_Dictionary[stock].append(msft_ticket)
-    
-    
+      
     logging.basicConfig(level=logging.INFO)
     driver = init_webdriver().driver_init()
     #driver.minimize_window() 
@@ -217,7 +218,6 @@ def main():
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
     
-    #driver.find_element("xpath","//input[@name = 'email'").click()
     email_box = driver.find_element(By.XPATH,"//input[contains(@class, 'w12 py4 px3 radiimedium')]")
     email_box.click()
     email_box.send_keys("weipanchang@gmx.com")
@@ -225,8 +225,7 @@ def main():
     password_box = driver.find_element(By.XPATH,"//input[contains(@type, 'password')]")
     password_box.click()
     password_box.send_keys("Abcde12345")
-    
-    #signin_button = driver.find_element(By.XPATH,"colorwhite w12 radiiround displayflex bgorange-light hoverBgorange h_px1 flexrcc fontSize6 fontWeightsemibold aligncenter w_px6 mt4 mb3 mobile_fontSize6 mobile_py3 mobile_h_pxauto mobile_mt5')]")
+
     signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[5]/div[1]/div[2]/form/button")
     
     signin_button.click()
@@ -234,12 +233,10 @@ def main():
     time.sleep(10)   
     #actions = ActionChains(driver)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    
     time.sleep(1)
 
-    
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    time.sleep(3)
+    time.sleep(5)
 
     #stock_input_box =  driver.find_element(By.XPATH,"//input[@id='react-select-2-input']")
     sys.stdout = Logger()                                    
@@ -252,50 +249,25 @@ def main():
         print ("Processing " + stock_Dictionary[stock][0] +" data")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print("\n")
-        time.sleep(1)
-        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        time.sleep(15)
-        if check_exists_by_xpath('//div[@class="Card__CardHeader-sc-1s2p2gv-1 a__sc-3vtlsk-1 givWLU cVIXeq"]'):
-            driver.find_element(By.XPATH,'//button[@class="Button__StyledButton-a1qza5-0 fLZgds"]').click()
-        stock_input_box = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-2-input']")))
-        stock_input_box.click()
-        time.sleep(1)
-        stock_input_box.clear()
-        time.sleep(1)
-        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        time.sleep(1)
-
-        stock_input_box.send_keys(stock)
-        time.sleep(3)
-        stock_input_box.send_keys(Keys.ENTER)
-
-        # stock_input_box = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//input[@id='react-select-2-input']")))
-        # stock_input_box.click()
-
-        time.sleep(3)
         driver.refresh()
-        # stock_input_box.send_keys(stock)
-        # time.sleep(6)
-        # stock_input_box.send_keys(Keys.ENTER)
-
+        time.sleep(1)
+        stock_path = "https://www.tipranks.com/stocks/" + stock + "/forecast"
+        driver.get(stock_path)
+        time.sleep(3)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        time.sleep(2)
-        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        time.sleep(2)
-#        os.system("PAUSE")
+        time.sleep(3)
+ 
+        if check_exists_by_xpath('//div[@class="w12 p0   displayflex positionrelative grow1"]'):
 
-        try:
-#            driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
-            
-#           /html/body/div[2]/div[2]/div[4]/div[3]/div[1]/div[1]/div[5]/div[2]/div[2]/div[3]/div[2]/div/div[1]/div[1]
-            frame = driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
-            
-#            print("Found")
-        except NoSuchElementException:
-            print("Frame NOT Found")
-        # time.sleep(1)
-        # if check_exists_by_xpath("/html/body/div[2]/div[2]/div[4]/div[3]/div[1]/div[1]/div/picture/img"):
-        #     os.system("PAUSE")
+            try:
+    #           driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
+                frame = driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
+    #            print("Found")
+            except NoSuchElementException:
+                print("Frame NOT Found")
+                sys.exit()
+        else:
+            sys.exit() 
         time.sleep(3)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         #os.system("PAUSE")
@@ -307,6 +279,10 @@ def main():
         if check_exists_by_xpath('//div[@class="flexccc    mt3 displayflex colorpurple-dark shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]'):
             
             element = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpurple-dark shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
+        
+        if check_exists_by_xpath('//div[@class="colorgray-1  ml3 mobile_fontSize7 laptop_ml0"]'):
+            
+            element = frame.find_element(By.XPATH,'//div[@class="colorgray-1  ml3 mobile_fontSize7 laptop_ml0"]')         
         try:
             element.click()
         except:
@@ -317,6 +293,7 @@ def main():
 
     # Close browser
     driver.quit()
+
 
 if __name__ == "__main__":
     main()

@@ -246,75 +246,15 @@ def main():
 #        time.sleep(2)
 
         time.sleep(1)           
-        # if check_exists_by_xpath(driver, '//span'):
-        #     print("Found span")
-        # os.system("PAUSE")
-        # while True:
-        #     if check_exists_by_xpath(driver, '//span[@class = "e3b14781 f5a023e1"]'):
-        #        #print ('Current Price:   %s' % (driver.find_element(By.XPATH,'//span[@class = "e3b14781 f5a023e1"]').text))
-        #         info_list = driver.find_elements(By.XPATH,'//span[@class = "e3b14781 f5a023e1"]')
-        #         break
-        #     if check_exists_by_xpath(driver, '//span[@class = "e3b14781 e983cf79"]'):
-        #         #print ('Current Price:   %s' % (driver.find_element(By.XPATH,'//span[@class = "e3b14781 e983cf79"]').text))
-        #         info_list = driver.find_elements(By.XPATH,'//span[@class = "e3b14781 e983cf79"]')
-        #         break
-        #     if check_exists_by_xpath(driver, '//span[@class = "e3b14781 dde7f18a"]'):
-        #         #print ('Current Price:   %s' % (driver.find_element(By.XPATH,'//span[@class = "e3b14781 dde7f18a"]').text))
-        #         info_list = driver.find_elements(By.XPATH,'//span[@class = "e3b14781 dde7f18a"]')
-        #         break
-        # print(len(info_list))
-        # os.system("PAUSE")
-        #e3b14781 e983cf79     e3b14781 dde7f18a
-        #  /html/body/div[1]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/section/div[1]/fin-streamer[1]/span   e3b14781 f5a023e1   e3b14781 f5a023e1
-        # while True:
-        #     if check_exists_by_xpath(driver, '//div[@class= "mainPrice color_red-DS-EntryPoint1-1"]'):
-        #         print ('Current Price:   %s' % (driver.find_element(By.XPATH,'//div[@class= "mainPrice color_red-DS-EntryPoint1-1"]').text))
-        #         break
-        #     elif check_exists_by_xpath(driver,'//div[@class= "mainPrice color_green-DS-EntryPoint1-1"]'):
-        #         print ('Current Price:   %s' % (driver.find_element(By.XPATH,'//div[@class= "mainPrice color_green-DS-EntryPoint1-1"]').text))
-        #         break
-        #     elif check_exists_by_xpath(driver,'//div[@class= "mainPrice color_nochange-DS-EntryPoint1-1"]'):
-        #         print ('Current Price:   %s' % (driver.find_element(By.XPATH,'//div[@class= "mainPrice color_nochange-DS-EntryPoint1-1"]').text))
-        #         break
-        #     else:
-        #         pass
-            
-        # if check_exists_by_xpath(driver, '//div[@class = "price_PreAfter"]'):
-        #     print("After Hours:     %s\n" % (driver.find_element(By.XPATH,'//div[@class = "price_PreAfter"]').text))
-        # 
-        # time.sleep(1)    
-        
-        #svelte-tx3nkj   svelte-tx3nkj
-        # if check_exists_by_xpath(driver, '//img[contains(@class,"Mb(6px) Cur(p)")]'):
-        #     print ("OLD Yahoo Finance Page\n")
-        # 
-        # elif check_exists_by_xpath(driver, '//*[@class="rapid-noclick-resp opt-in-link"]'):
-        #     print ("New Yahoo Finance Page\n")
-        #     driver.find_element(By.XPATH,'//*[@class="rapid-noclick-resp opt-in-link"]').click()            
-        # else:
-        #     print ("Not Detected\n")
-        # print ("Display Summary Page... \n\n")
 
-        # while True:
-        # 
-        #     try:
-        #         print ('Current Price:   %s' % (driver.find_element(By.XPATH,'//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]').text))
-        #         break
-        #     except NoSuchElementException:
-        #         try:
-        #             print ('Current Price:   %s' % (driver.find_element(By.XPATH,'/html/body/div[1]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[1]/span').text))
-        #             break
-        #         except NoSuchElementException:
-        #             print ('Current Price:   %s' % (driver.find_element(By.XPATH,'//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]').text))
-        #             break
         print ('Current Price:   %s' % (driver.find_element(By.XPATH,'/html/body/div[1]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[1]/span').text))
+        
         if check_exists_by_xpath(driver, "//fin-streamer[contains(@data-field,'postMarketPrice')]"):
             print("After Hours:     %s\n" % (driver.find_element(By.XPATH,"//fin-streamer[contains(@data-field,'postMarketPrice')]").text))
         if check_exists_by_xpath(driver, "//td[@data-test='PREV_CLOSE-value']"):
             print("Previous   :     %s\n" % (driver.find_element(By.XPATH,"//td[@data-test='PREV_CLOSE-value']").text))
         if check_exists_by_xpath(driver, "//fin-streamer[@data-field='regularMarketPreviousClose']"):
             print("Previous   :     %s\n" % (driver.find_element(By.XPATH,"//fin-streamer[@data-field='regularMarketPreviousClose']").text))
-            
 
         try:
             elm = driver.find_element(By.XPATH,"/html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[3]/div[1]/div[2]/div[2]").text
@@ -382,15 +322,19 @@ def main():
         except NoSuchElementException:
             PE_Ratio = driver.find_element(By.XPATH,'/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[11]/span[2]/fin-streamer').text
         print ("PE_Ratio ( Smaller is better ) = %s" %PE_Ratio)
-                                     
-        if check_exists_by_xpath(driver, '/html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[1]/table/tbody/tr[7]/td[2]/fin-streamer'):
-            Volume =  driver.find_element(By.XPATH,'/html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[1]/table/tbody/tr[7]/td[2]/fin-streamer').text.replace(",","")
+#        os.system("PAUSE")                             
+#        if check_exists_by_xpath(driver, '/html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[1]/table/tbody/tr[7]/td[2]/fin-streamer'):
+        if check_exists_by_xpath(driver, '//*[@data-field="regularMarketVolume"]'):            
+#            Volume =  driver.find_element(By.XPATH,'/html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[1]/table/tbody/tr[7]/td[2]/fin-streamer').text.replace(",","")
+            Volume =  driver.find_element(By.XPATH, '//*[@data-field="regularMarketVolume"]').text.replace(",","")
         # except NoSuchElementException:
         #     EPS =  driver.find_element(By.XPATH,'/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[12]/span[2]/fin-streamer').text
 #        print(Volume)
         
-        if check_exists_by_xpath(driver, '/html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[1]/table/tbody/tr[8]/td[2]'):
-            Avg_Volume =  driver.find_element(By.XPATH,'/html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[1]/table/tbody/tr[8]/td[2]').text.replace(",","")
+#        if check_exists_by_xpath(driver, '/html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[1]/table/tbody/tr[8]/td[2]'):
+        if check_exists_by_xpath(driver, '//*[@data-field="averageVolume"]'):            
+#            Avg_Volume =  driver.find_element(By.XPATH,'/html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[1]/table/tbody/tr[8]/td[2]').text.replace(",","")
+            Avg_Volume =  driver.find_element(By.XPATH, '//*[@data-field="averageVolume"]').text.replace(",","")
         # except NoSuchElementException:
         #     EPS =  driver.find_element(By.XPATH,'/html/body/div[1]/main/section/section/section/article/div[2]/ul/li[12]/span[2]/fin-streamer').text
 #        print(Avg_Volume)
