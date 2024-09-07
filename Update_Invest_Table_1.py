@@ -19,7 +19,7 @@ from openpyxl.styles import PatternFill
 #eXCEL_File = "C:\\Users\\William Chang\\Documents\\Python Scripts\\Stock_2.xlsx"
 eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Watch_List.xlsx"
 delay = 1
-flag_equal_value_reset_to_default_color = True# True is default
+flag_equal_value_reset_to_default_color = False# True is default
 
 def update_Excel_Table(xcl):
 
@@ -34,7 +34,7 @@ def update_Excel_Table(xcl):
 
 #   print ("Updating Invest Table... \n\n")
 #   wb = load_workbook(xcl)
-   ws =  wb.active
+   # ws =  wb.active
    currentDateTime = datetime.datetime.now()
    weekno = datetime.datetime.today().weekday()
    north_america = holidays.US()
