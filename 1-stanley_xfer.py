@@ -9,6 +9,7 @@ import os
 import sys
 import shutil
 import re
+from pprint import pprint 
 import logging
 
 cHase_data_file = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stanley\\Morgan Stanley Online.txt"
@@ -77,7 +78,7 @@ def main():
     shutil.move(source, downloadPath)        
     fetch_Stock_Name(stock_Dictionary:={})
 
-#   print(stock_Dictionary)
+#    pprint(stock_Dictionary)
     print('\n\n')
     sys.stdout = Logger()
     with open(cHase_data_file) as Stanley:
@@ -89,7 +90,7 @@ def main():
             if len(Stanley_readline) < 3:
                 continue
 #            print(Stanley_readline.split()[0])
-            if Stanley_readline.split()[0] in stock_Dictionary[stock][0]:
+            if Stanley_readline.split()[0].upper() in stock_Dictionary[stock][0].upper():
                 print("\n")
                 print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
                 print ("Processing " + stock_Dictionary[stock][0] +" data")
