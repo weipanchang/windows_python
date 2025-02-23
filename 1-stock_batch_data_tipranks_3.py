@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
@@ -26,7 +27,9 @@ import logging
 from dateutil.relativedelta import relativedelta
 from datetime import date
 #from cachetools import cached
-
+####################################
+line =5
+####################################
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Tipranks"
 
@@ -105,7 +108,7 @@ class init_webdriver():
         #wait = WebDriverWait(self.driver, 200, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
         
         #run in headless mode
-        self.options.add_argument("--headless")
+        #self.options.add_argument("--headless")
         
         # disable the AutomationControlled feature of Blink rendering engine
         self.options.add_argument('--disable-blink-features=AutomationControlled')
@@ -152,7 +155,7 @@ class init_webdriver():
         
 def main():
  #   sys.stdout = Logger()
-    
+    global line    
     def check_exists_by_xpath(xpath):
         try:
             driver.find_element(By.XPATH,xpath)
@@ -182,7 +185,7 @@ def main():
         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
 #        stock_fund_names =  [line for line in open("STOCK-01.txt", "r")]
         
-        for stock_fund_name in stock_fund_names[10:15]:
+        for stock_fund_name in stock_fund_names[8:12]:
             if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
                 continue
 
@@ -213,29 +216,50 @@ def main():
     #driver.minimize_window() 
     #driver = init_webdriver().driver
     driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
-    time.sleep(3)
+    time.sleep(8)
     #actions = ActionChains(driver)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    time.sleep(3)
+    time.sleep(8)
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+    time.sleep(5)
+    with open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\UserName_Password.txt") as userpass:
+        while line != 1:
+            line_from_userpass =  userpass.readline()
+            line -= 1
+        line_from_userpass =  userpass.readline()
+            
+        username = line_from_userpass.split()[0]
+        password = line_from_userpass.split()[1]
+        print("User= %s Password= %s\n" % (username,password))
     
-    #driver.find_element("xpath","//input[@name = 'email'").click()
     email_box = driver.find_element(By.XPATH,"//input[contains(@class, 'w12 py4 px3 radiimedium')]")
+#    email_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[1]/div/div/div/div")
+                                              
     email_box.click()
-    email_box.send_keys("weipanchang@aol.com")
-    
+#    email_box.send_keys("weipanchang@aol.com")
+#    weipanchang@mail.com
+#    email_box.send_keys("wwchang007@mail.com")
+    email_box.send_keys(username)
     password_box = driver.find_element(By.XPATH,"//input[contains(@type, 'password')]")
+#    password_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[2]/div/div/div/div/div")
+    
     password_box.click()
-    password_box.send_keys("abcde12345")
-
-    signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[5]/div[1]/div[2]/form/button")
+    
+    password_box.send_keys(password)
+    driver.maximize_window()
+    time.sleep(5)   
+    try:
+        signin_button = driver.find_element(By.XPATH,"/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span")
+    except:
+        signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span")
     signin_button.click()
     
-    time.sleep(10)   
+    time.sleep(3)   
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(1)
 
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    time.sleep(5)
+    time.sleep(3)
 
     sys.stdout = Logger()                                    
     fetch_Stock_Name(stock_Dictionary:={})
@@ -279,7 +303,12 @@ def main():
             
         if check_exists_by_xpath('//div[@class="colorgray-1  ml3 mobile_fontSize7 laptop_ml0"]'):
             
-            element = frame.find_element(By.XPATH,'//div[@class="colorgray-1  ml3 mobile_fontSize7 laptop_ml0"]')            
+            element = frame.find_element(By.XPATH,'//div[@class="colorgray-1  ml3 mobile_fontSize7 laptop_ml0"]')
+
+        if check_exists_by_xpath('/html/body/div[1]/div[2]/div[4]/div[3]/div/div[1]/div[4]/div[2]/div[2]/div[3]/div[2]/div/div[1]/div[1]'):
+            
+            element = frame.find_element(By.XPATH,'/html/body/div[1]/div[2]/div[4]/div[3]/div/div[1]/div[4]/div[2]/div[2]/div[3]/div[2]/div/div[1]/div[1]')            
+                        
         try:
             element.click()
         except:

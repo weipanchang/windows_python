@@ -97,7 +97,7 @@ class init_webdriver():
         #wait = WebDriverWait(self.driver, 200, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
         
         #run in headless mode
-        self.options.add_argument("--headless")
+        #self.options.add_argument("--headless")
         
         # disable the AutomationControlled feature of Blink rendering engine
         self.options.add_argument('--disable-blink-features=AutomationControlled')
@@ -161,6 +161,7 @@ def main():
     driver = init_webdriver().driver_init()
     driver.get('https://finance.yahoo.com/')
     time.sleep(1)
+    driver.minimize_window()
     def check_exists_by_css_selector(driver, css_selector):
         try:
             driver.find_element(By.CSS_SELECTOR,css_selector)
@@ -225,8 +226,6 @@ def main():
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print("\n")
         
-#        print(stock)
-
         url_stock = "https://finance.yahoo.com/quote/"+ stock.upper()
         driver.get(url_stock)
  #       print(url_stock)
@@ -243,36 +242,22 @@ def main():
             except:
                 print ("Yahoo page slow, will reloop!", end=" ")
                 pass
-#        time.sleep(2)
-
-#        time.sleep(1)           
-
-#        print ('Current Price:   %s' % (driver.find_element(By.XPATH,"//fin-streamer[contains(@data-field,'regularMarketOpen')]").text))
-        print ('Current Price:   %s' % (driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[1]/span').text))
-#                                    /html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[1]/span
-
-#        os.system("PAUSE")
+        time.sleep(8)
+        try:
+            print ('Current Price:   %s' % (driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[1]/span').text))
+        except:
+            print ('Current Price:   %s' % (driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/div[1]/section/div[1]/div[1]/span').text))
+#                                                                          /html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/div[1]/section/div[1]/div[1]/span
         if check_exists_by_xpath(driver, "//fin-streamer[contains(@data-field,'postMarketPrice')]"):
             print("After Hours:     %s\n" % (driver.find_element(By.XPATH,"//fin-streamer[contains(@data-field,'postMarketPrice')]").text))
-        # if check_exists_by_xpath(driver, "//td[@data-test='PREV_CLOSE-value']"):
-        #     print("Previous   :     %s\n" % (driver.find_element(By.XPATH,"//td[@data-test='PREV_CLOSE-value']").text))
         if check_exists_by_xpath(driver, "//fin-streamer[@data-field='regularMarketPreviousClose']"):
             print("Previous   :     %s\n" % (driver.find_element(By.XPATH,"//fin-streamer[@data-field='regularMarketPreviousClose']").text))
 
-        # try:
-        #     elm = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[3]/div[1]/div[2]/div[2]").text
-        #     print (elm, end = '\n')
-        # except Exception:
-        #     pass
-
         try:
-            Open = driver.find_element(By.XPATH,"//fin-streamer[@data-field='regularMarketOpen']").text
-            
+             Open = driver.find_element(By.XPATH,"//fin-streamer[@data-field='regularMarketOpen']").text
+        
         except:
-        #    Open = driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/div[2]/ul/li[2]/span[2]/fin-streamer').text
-            Open = driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/div[3]/ul/li[2]/span[2]/fin-streamer').text
-                                                 
-
+              Open = driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/div[2]/ul/li[2]/span[2]/fin-streamer').text
         print("Open =  %.2f" %float(Open.replace(',','')))
         print()
 
@@ -283,64 +268,45 @@ def main():
         Low, High  = Range_elm.split(' - ')[0], Range_elm.split(' - ')[1]
         print ("LOW = %s, HIGH = %s\n" %(Low, High))
 
-        time.sleep(1)
+        try: 
+            Ex_Dividend = driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/div[2]/ul/li[15]/span[2]').text
+            print ("Ex-Dividend Date = %s\n" %Ex_Dividend)
+        except NoSuchElementException:
+            Ex_Dividend = driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/div[3]/ul/li[15]/span[2]').text
+            print ("Ex-Dividend Date = %s\n" %Ex_Dividend)
 
-#            try:
-        if check_exists_by_xpath(driver, '//*[@id="quote-summary"]/div[2]/table/tbody'):
-            table_elm = driver.find_element(By.XPATH,'//*[@id="quote-summary"]/div[2]/table/tbody')
-            list_elm = table_elm.find_elements(By.XPATH,'//*/tr[2]')
-            time.sleep(0.1)
-            for elm in list_elm:
-                if 'Beta (5Y Monthly)' in elm.text:
-                    print( elm.text)
-            time.sleep(0.1)
-            list_elm = table_elm.find_elements(By.XPATH,'//*/tr[8]')
-            for elm in list_elm:
-                if '1y Target Est' in elm.text:
-                    print ("\n=====> " + elm.text + "\n")
-            time.sleep(0.1)
-            if check_exists_by_classname(driver, 'span.Fw\(b\).D\(b\)\-\-mobp.C\(\$negativeColor\)'):
-                print("=====> BEARISH")
-            elif check_exists_by_classname(driver, 'span.Fw\(b\).D\(b\)\-\-mobp.C\(\$positiveColor\)'):
-                print("=====> BULLISH")
-            else:
-#                check_exists_by_classname('span.Fw\(b\).D\(b\)\-\-mobp.C\(\$cInDiv5-2\)')
-                print ("=====> NEUTRAL")
+        try:
+            beta = driver.find_element(By.XPATH,"/html/body/div[2]/main/section/section/section/article/div[2]/ul/li[10]/span[2]").text
+        except:
+            beta = driver.find_element(By.XPATH,"/html/body/div[2]/main/section/section/section/article/div[3]/ul/li[10]/span[2]").text
         
-        else:
-            # print("\n========New Yahoo Finance Page ==========\n")
-            try:
-                beta = driver.find_element(By.XPATH,"/html/body/div[2]/main/section/section/section/article/div[2]/ul/li[10]/span[2]").text
-            except:
-                beta = driver.find_element(By.XPATH,"/html/body/div[2]/main/section/section/section/article/div[3]/ul/li[10]/span[2]").text
-            
-            print( "Beta (5Y Monthly = ", beta)
-            try:
-                target = driver.find_element(By.XPATH,"/html/body/div[2]/main/section/section/section/article/div[2]/ul/li[16]/span[2]/fin-streamer").text
-            except:
-                target = driver.find_element(By.XPATH,"/html/body/div[2]/main/section/section/section/article/div[3]/ul/li[16]/span[2]/fin-streamer").text            
-            print( "\n1y Target Est =========> ", target)
-            print("")
+        print( "Beta (5Y Monthly) = ", beta)
+        try:
+            target = driver.find_element(By.XPATH,"/html/body/div[2]/main/section/section/section/article/div[2]/ul/li[16]/span[2]/fin-streamer").text
+        except:
+            target = driver.find_element(By.XPATH,"/html/body/div[2]/main/section/section/section/article/div[3]/ul/li[16]/span[2]/fin-streamer").text            
+        print( "\n1y Target Est =========> ", target)
+        print("")
 
-#         try:
-#             EPS =  driver.find_element(By.XPATH,'/html/body/div[2]/div/div/div[1]/div/div[3]/div[1]/div/div[1]/div/div/div/div[2]/div[2]/table/tbody/tr[4]/td[2]').text
-#         except NoSuchElementException:
-#             EPS =  driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/div[2]/ul/li[12]/span[2]/fin-streamer').text
-#         
-#         print ("EPS ( > 1 is better ) ====       %s" %EPS)
+        try:
+            EPS =  driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/div[2]/ul/li[12]/span[2]/fin-streamer').text
+        except NoSuchElementException:
+            EPS =  driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/div[3]/ul/li[12]/span[2]/fin-streamer').text
+        
+        print ("EPS ( > 1 is better ) ====       %s" %EPS)
 # 
-#         try:
-#             PE_Ratio = driver.find_element(By.XPATH,'//*[@id="quote-summary"]/div[2]/table/tbody/tr[3]/td[2]').text
-#         except NoSuchElementException:
-#             PE_Ratio = driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/div[2]/ul/li[11]/span[2]/fin-streamer').text
-#         print ("PE_Ratio ( Smaller is better ) = %s" %PE_Ratio)
-# #        os.system("PAUSE")                             
-        #if check_exists_by_xpath(driver, '//*[@data-field="regularMarketVolume"]'):            
+        try:
+            PE_Ratio = driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/div[2]/ul/li[11]/span[2]/fin-streamer').text
+        except NoSuchElementException:
+            PE_Ratio = driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/div[3]/ul/li[11]/span[2]/fin-streamer').text
+        print ("PE_Ratio ( Smaller is better ) = %s" %PE_Ratio)
+#         os.system("PAUSE")                             
+           
         try:
             Volume =  driver.find_element(By.XPATH, '/html/body/div[2]/main/section/section/section/article/div[3]/ul/li[7]/span[2]/fin-streamer').text.replace(",","")
         except:
             Volume =  driver.find_element(By.XPATH, '/html/body/div[2]/main/section/section/section/article/div[2]/ul/li[7]/span[2]/fin-streamer').text.replace(",","")
-        #if check_exists_by_xpath(driver, '//*[@data-field="averageVolume"]'):            
+          
         try:
             Avg_Volume =  driver.find_element(By.XPATH, '/html/body/div[2]/main/section/section/section/article/div[3]/ul/li[8]/span[2]/fin-streamer').text.replace(",","")
         except:

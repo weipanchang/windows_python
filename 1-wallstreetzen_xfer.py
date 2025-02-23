@@ -91,29 +91,47 @@ def main():
                 reading_line_list[i] = reading_line_list[i][:-1]
             if  reading_line_list[i] == "GOOGL":
                 reading_line_list[i] = "GOOG"
-#        print (reading_line_list)               
-
 
     for stock in stock_Dictionary.keys():
-#            os.system("PAUSE")
-   
-            # while True:
-            #     read_in = WallStreetZen.readline()
-            #     if read_in != None:
-            #         reading_line_list.append(read_in)
-            #     if len(reading_line_list) > 3:
-            #         del  reading_line_list[0]
-            #     print(reading_line_list)
+
         for i in range(len(reading_line_list)):
+            if stock in reading_line_list[i] and reading_line_list[i] == "V":
+                print("\n")
+                print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
+                print ("Processing " + stock_Dictionary[stock][0] +" data")
+                print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
+                line_list = reading_line_list[i-2].split()
+                if "Strong" in line_list:
+                    try:
+                        line_list.remove("Strong")
+                    except:
+                        pass
+                target_price = line_list[-4].replace("$","").replace(",","")
+                # while True:
+                #     line_from_WallStreetZen = WallStreetZen.readline()
+                #     if "Morgan price target" in line_from_WallStreetZen:
+                #         line_from_WallStreetZen = WallStreetZen.readline().replace("$","").replace(",","")
+                try: 
+                    float(target_price) 
+                    pass 
+                except ValueError: 
+                    target_price = "0.00"
             
-            if stock == reading_line_list[i]:
+                print ("\n1y Target Est = %s\n" % (target_price))
+            elif stock in reading_line_list[i] and (stock != "V"):
                     print("\n")
                     print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
                     print ("Processing " + stock_Dictionary[stock][0] +" data")
                     print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
                     # for i in range(8):
                     #     line_from_WallStreetZen = WallStreetZen.readline()
-                    target_price = reading_line_list[i-2].split()[-3].replace("$","").replace(",","")
+                    line_list = reading_line_list[i-2].split()
+                    if "Strong" in line_list:
+                        try:
+                            line_list.remove("Strong")
+                        except:
+                            pass
+                    target_price = line_list[-3].replace("$","").replace(",","")
                     # while True:
                     #     line_from_WallStreetZen = WallStreetZen.readline()
                     #     if "Morgan price target" in line_from_WallStreetZen:
