@@ -154,7 +154,7 @@ class init_webdriver():
     
 def read_in_line():
 #    stocks = input("Enter the stock symbol: (Ctr-C to Exit, RETURN for batch process from Stock.txt)  ")
-    parser = argparse.ArgumentParser(description='Process Stock Price Predication')
+    parser = argparse.ArgumentParser(description='Process Username Password')
 
     parser.add_argument(
         '-l ',   # either of this switches
@@ -164,8 +164,6 @@ def read_in_line():
         default=None,      # since we're not specifying required.
         help='Manual Input Stock Symbol List, or RETURN for batch process from Stock.txt'
     )
-#    args = parser.parse_args()
-
     return parser.parse_args()    
         
 def main():

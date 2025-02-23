@@ -20,6 +20,7 @@ import sys
 from datetime import date
 #from selenium_stealth import stealth
 import random
+import argparse
 import os
 import logging
 #from csv import DictReader
@@ -152,6 +153,20 @@ class init_webdriver():
         self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
         self.driver.set_page_load_timeout(50)
         return(self.driver)
+    
+def read_in_line():
+#    stocks = input("Enter the stock symbol: (Ctr-C to Exit, RETURN for batch process from Stock.txt)  ")
+    parser = argparse.ArgumentParser(description='Process Username Password')
+
+    parser.add_argument(
+        '-l ',   # either of this switches
+        nargs='*',       # one or more parameters to this switch
+        type=str,        # /parameters/ are str
+        dest='user_pass_pair',      # store in 'lst'.
+        default=None,      # since we're not specifying required.
+        help='Manual Input Stock Symbol List, or RETURN for batch process from Stock.txt'
+    )
+    return parser.parse_args()  
         
 def main():
  #   sys.stdout = Logger()
@@ -325,4 +340,18 @@ def main():
 
 
 if __name__ == "__main__":
+    user_pass_pair  = read_in_line().user_pass_pair
+    
+    if user_pass_pair == None:
+        with open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\UserName_Password.txt") as userpass:
+            while line != 1:
+                line_from_userpass =  userpass.readline()
+                line -= 1
+            line_from_userpass =  userpass.readline()
+            username = line_from_userpass.split()[0]
+            password = line_from_userpass.split()[1]
+            
+    else:
+        username,password = user_pass_pair
+    print("User= %s Password= %s\n" % (username,password)) 
     main()
