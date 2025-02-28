@@ -26,7 +26,7 @@ import logging
 #from csv import DictReader
 from dateutil.relativedelta import relativedelta
 from datetime import date
-#from cachetools import cached
+
 ####################################
 line = 4
 ####################################
@@ -74,8 +74,7 @@ class init_webdriver():
         global stock
 #        stock_name = stock
         print ("")
-#        print ("Processing " + self.stock_name.upper() +" stock data")
-#        self.stock_or_fund = stock_or_fund
+
         self.delay = 0
         self.currentDateTime = datetime.datetime.now()
         self.date = self.currentDateTime.date()
@@ -153,7 +152,7 @@ class init_webdriver():
         return(self.driver)
     
 def read_in_line():
-#    stocks = input("Enter the stock symbol: (Ctr-C to Exit, RETURN for batch process from Stock.txt)  ")
+
     parser = argparse.ArgumentParser(description='Process Username Password')
 
     parser.add_argument(
@@ -162,7 +161,7 @@ def read_in_line():
         type=str,        # /parameters/ are str
         dest='user_pass_pair',      # store in 'lst'.
         default=None,      # since we're not specifying required.
-        help='Manual Input Stock Symbol List, or RETURN for batch process from Stock.txt'
+        help='Manual Input Username and Password selection'
     )
     return parser.parse_args()    
         
@@ -226,28 +225,14 @@ def main():
     #driver.minimize_window()
     #driver = init_webdriver().driver
     driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
+#    os.system("PAUSE")
     time.sleep(8)
     #actions = ActionChains(driver)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
-    #driver.find_element("xpath","//input[@name = 'email'").click()
-    # user_pass_pair  = read_in_line().user_pass_pair
-    # 
-    # if user_pass_pair == None:
-    #     with open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\UserName_Password.txt") as userpass:
-    #         while line != 1:
-    #             line_from_userpass =  userpass.readline()
-    #             line -= 1
-    #         line_from_userpass =  userpass.readline()
-    #             
-    #         username = line_from_userpass.split()[0]
-    #         password = line_from_userpass.split()[1]
-    #         
-    # else:
-    #     username,passowrd = user_pass_pair.split()
-    # print("User= %s Password= %s\n" % (username,password)) 
+ 
     email_box = driver.find_element(By.XPATH,"//input[contains(@class, 'w12 py4 px3 radiimedium')]")
 #    email_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[1]/div/div/div/div")
                                               
@@ -265,7 +250,6 @@ def main():
         signin_button = driver.find_element(By.XPATH,"/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span")
     except:
         signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span")
-#    /html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span
 
     signin_button.click()
     
@@ -276,21 +260,19 @@ def main():
     
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
-
     #stock_input_box =  driver.find_element(By.XPATH,"//input[@id='react-select-2-input']")
     sys.stdout = Logger()                                    
     fetch_Stock_Name(stock_Dictionary:={})
+    pause_before = False
     for stock in stock_Dictionary.keys():
-    
+   
 #        sys.stdout = Logger()
         print("\n")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print ("Processing " + stock_Dictionary[stock][0] +" data")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print("\n")
-
         driver.refresh()
-
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         time.sleep(1)
         stock_path = "https://www.tipranks.com/stocks/" + stock + "/forecast"
@@ -298,8 +280,10 @@ def main():
         time.sleep(5)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         time.sleep(6)
+        if pause_before is False:
+            os.system("PAUSE")
+            pause_before = True
         if check_exists_by_xpath('//div[@class="w12 p0   displayflex positionrelative grow1"]'):
-
             try:
     #           driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
                 frame = driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')

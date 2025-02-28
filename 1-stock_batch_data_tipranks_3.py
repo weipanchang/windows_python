@@ -27,7 +27,7 @@ import logging
 
 from dateutil.relativedelta import relativedelta
 from datetime import date
-#from cachetools import cached
+
 ####################################
 line =5
 ####################################
@@ -155,7 +155,7 @@ class init_webdriver():
         return(self.driver)
     
 def read_in_line():
-#    stocks = input("Enter the stock symbol: (Ctr-C to Exit, RETURN for batch process from Stock.txt)  ")
+
     parser = argparse.ArgumentParser(description='Process Username Password')
 
     parser.add_argument(
@@ -164,7 +164,7 @@ def read_in_line():
         type=str,        # /parameters/ are str
         dest='user_pass_pair',      # store in 'lst'.
         default=None,      # since we're not specifying required.
-        help='Manual Input Stock Symbol List, or RETURN for batch process from Stock.txt'
+        help='Manual Input Username and Password selection'
     )
     return parser.parse_args()  
 def main():
@@ -277,7 +277,9 @@ def main():
 
     sys.stdout = Logger()                                    
     fetch_Stock_Name(stock_Dictionary:={})
+    pause_before = False
     for stock in stock_Dictionary.keys():
+
         print("\n")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print ("Processing " + stock_Dictionary[stock][0] +" data")
@@ -290,8 +292,10 @@ def main():
         driver.get(stock_path)
         time.sleep(3)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        time.sleep(3)
- 
+        time.sleep(6)
+        if pause_before is False:
+            os.system("PAUSE")
+            pause_before = True
         if check_exists_by_xpath('//div[@class="w12 p0   displayflex positionrelative grow1"]'):
 
             try:
