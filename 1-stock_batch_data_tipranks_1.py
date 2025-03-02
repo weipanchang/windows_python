@@ -32,7 +32,6 @@ line = 4
 ####################################
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Tipranks"
-
 print ("")
 
 class Logger(object):

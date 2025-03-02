@@ -19,7 +19,7 @@ from openpyxl.styles import PatternFill
 #eXCEL_File = "C:\\Users\\William Chang\\Documents\\Python Scripts\\Stock_2.xlsx"
 eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Watch_List.xlsx"
 delay = 1
-flag_equal_value_reset_to_default_color = False# True is default
+flag_equal_value_reset_to_default_color = True# True is default
 
 def update_Excel_Table(xcl):
 
@@ -63,7 +63,10 @@ def update_Excel_Table(xcl):
              open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stanley\\Summary_Report_From_Stanley_" + today.strftime("%m%d%Y")+".txt") as Stanley,\
              open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_Analysis\\Summary_Report_From_Stock_Analysis_" + today.strftime("%m%d%Y")+".txt") as Stock_Analysis,\
              open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen\\Summary_Report_From_WallStreetZen_" + today.strftime("%m%d%Y")+".txt") as WallStreetZen,\
-             open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Prediction\\Individual_Stock_Report__" + today.strftime("%m%d%Y")+".txt") as Prediction:
+             open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Barrons\\Summary_Report_From_Barrons_" + today.strftime("%m%d%Y")+".txt") as Barrons,\
+             open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\eTrade\\Summary_Report_From_eTrade_" + today.strftime("%m%d%Y")+".txt") as eTrade:
+#             open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Prediction\\Individual_Stock_Report__" + today.strftime("%m%d%Y")+".txt") as Prediction:
+
             n = 0
             line_from_Yahoo = Yahoo.readline()
             while "("+stock+")" not in line_from_Yahoo:
@@ -86,7 +89,7 @@ def update_Excel_Table(xcl):
                   else: 
                      print (" \t", end="\t")
                      if flag_equal_value_reset_to_default_color:
-                        ws['K' + str(i)].fill = fill_cell5
+                        ws['K' + str(i)].fill = fill_cell3
                   ws['K'+ str(i)] = float(target_price.strip(' "'))
 #                  print("\n")
                # else:
@@ -255,25 +258,81 @@ def update_Excel_Table(xcl):
                   ws['S'+ str(i)] = float(target_price.strip(' "'))
                   break 
 
-            line_from_Prediction = Prediction.readline()   
-            while "[ "+stock+" ]" not in line_from_Prediction:
-               line_from_Prediction = Prediction.readline()
-
+            line_from_Barrons = Barrons.readline()   
+            while "("+stock+")" not in line_from_Barrons:
+               line_from_Barrons = Barrons.readline()
+               
             while True:
-               line_from_Prediction = Prediction.readline()
-               if "Current trend" in line_from_Prediction:
-                  Current_trend = line_from_Prediction.split()[4]
-                  print("Prediction Trend", end="\t")
-                  print(ws['P' + str(i)].value, end="\t")
-                  print (Current_trend.replace(",",""), end="\t")
-                  if ws['P' + str(i)].value > float(Current_trend.replace(",","")):
+               line_from_Barrons = Barrons.readline()
+               if "1y Target Est" in line_from_Barrons:
+                  target_price = line_from_Barrons.split()[-1].replace(',', '')
+                  print("From Barrons    ", end="\t")
+                  print(ws['T' + str(i)].value, end="\t")
+                  print (target_price, end = "\t" )
+#                  print (type(ws['R' + str(i)].value), ws['R' + str(i)].value)
+                  if ws['T' + str(i)].value > float(target_price) and float(target_price) != 0:
                      print("-\n")
-                  elif ws['P' + str(i)].value < float(Current_trend.replace(",","")):
-                     print("+\n")
+                     ws['T' + str(i)].fill = fill_cell1
+
+                  elif ws['T' + str(i)].value < float(target_price):
+                     print ("+\n")
+                     ws['T' + str(i)].fill = fill_cell4
                   else:
-                     print (" \t", end="")
-                  ws['P'+ str(i)] = float(Current_trend.replace(",",""))
+                     print (" \t")
+                     target_place = target_price.replace(',', '')
+                     if flag_equal_value_reset_to_default_color:
+                        ws['T' + str(i)].fill = fill_cell8
+                  ws['T'+ str(i)] = float(target_price.strip(' "'))
                   break
+               
+            line_from_eTrade = eTrade.readline()   
+            while "("+stock+")" not in line_from_eTrade:
+               line_from_eTrade = eTrade.readline()
+               
+            while True:
+               line_from_eTrade = eTrade.readline()
+               if "1y Target Est" in line_from_eTrade:
+                  target_price = line_from_eTrade.split()[-1].replace(',', '')
+                  print("From eTrade    ", end="\t\t")
+                  print(ws['U' + str(i)].value, end="\t")
+                  print (target_price, end = "\t" )
+#                  print (type(ws['R' + str(i)].value), ws['R' + str(i)].value)
+                  if ws['U' + str(i)].value > float(target_price) and float(target_price) != 0:
+                     print("-\n")
+                     ws['U' + str(i)].fill = fill_cell1
+
+                  elif ws['U' + str(i)].value < float(target_price):
+                     print ("+\n")
+                     ws['U' + str(i)].fill = fill_cell4
+                  else:
+                     print (" \t")
+                     target_place = target_price.replace(',', '')
+                     if flag_equal_value_reset_to_default_color:
+                        ws['U' + str(i)].fill = fill_cell6
+                  ws['U'+ str(i)] = float(target_price.strip(' "'))
+                  break                
+
+
+
+            # line_from_Prediction = Prediction.readline()   
+            # while "[ "+stock+" ]" not in line_from_Prediction:
+            #    line_from_Prediction = Prediction.readline()
+            # 
+            # while True:
+            #    line_from_Prediction = Prediction.readline()
+            #    if "Current trend" in line_from_Prediction:
+            #       Current_trend = line_from_Prediction.split()[4]
+            #       print("Prediction Trend", end="\t")
+            #       print(ws['P' + str(i)].value, end="\t")
+            #       print (Current_trend.replace(",",""), end="\t")
+            #       if ws['P' + str(i)].value > float(Current_trend.replace(",","")):
+            #          print("-\n")
+            #       elif ws['P' + str(i)].value < float(Current_trend.replace(",","")):
+            #          print("+\n")
+            #       else:
+            #          print (" \t", end="")
+            #       ws['P'+ str(i)] = float(Current_trend.replace(",",""))
+            #       break
       print("")
       i += 1
 

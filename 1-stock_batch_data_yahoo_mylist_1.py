@@ -243,11 +243,19 @@ def main():
                 print ("Yahoo page slow, will reloop!", end=" ")
                 pass
         time.sleep(8)
-        try:
+#         try:
+#             print ('Current Price:   %s' % (driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[1]/span').text))
+#         except:
+#             print ('Current Price:   %s' % (driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/div[1]/section/div[1]/div[1]/span').text))
+# #                                                                         /html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/div[1]/span
+
+        if check_exists_by_xpath(driver, "/html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[1]/span"):
             print ('Current Price:   %s' % (driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[1]/span').text))
-        except:
+        if check_exists_by_xpath(driver, "/html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/div[1]/section/div[1]/div[1]/span"):
             print ('Current Price:   %s' % (driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/div[1]/section/div[1]/div[1]/span').text))
-#                                                                          /html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/div[1]/section/div[1]/div[1]/span
+        if check_exists_by_xpath(driver, "/html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/div[1]/span"):
+            print ('Current Price:   %s' % (driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/div[1]/span').text))            
+
         if check_exists_by_xpath(driver, "//fin-streamer[contains(@data-field,'postMarketPrice')]"):
             print("After Hours:     %s\n" % (driver.find_element(By.XPATH,"//fin-streamer[contains(@data-field,'postMarketPrice')]").text))
         if check_exists_by_xpath(driver, "//fin-streamer[@data-field='regularMarketPreviousClose']"):

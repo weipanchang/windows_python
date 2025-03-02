@@ -9,7 +9,14 @@ import os
 import sys
 import holidays
 import shutil
-from yahoo_fin import stock_info as si
+#from yahoo_fin import stock_info as si
+import feedparser
+import ftplib
+import io
+import json
+import pandas
+import requests
+import requests_html
 #from yahoo_fin import stock_info as si
 import yfinance as yf
 from openpyxl import load_workbook, Workbook
@@ -56,22 +63,28 @@ def update_Excel_Table(xcl):
 
 def get_Current_Stock_Price(stock, Stock_Fund):
    today = date.today()
-   currentDateTime = datetime.datetime.now()
-   open_time = currentDateTime.replace(hour=13, minute=00, second=0, microsecond=0)
-
+   print(today)
+   # currentDateTime = datetime.datetime.now()
+   # open_time = currentDateTime.replace(hour=13, minute=00, second=0, microsecond=0)
+   # 
+   # if Stock_Fund != 'Fund':
+   #     return(float(si.get_live_price(stock)))
+   # else:
+   #    if (currentDateTime < open_time):
+   #          today  = today - timedelta(days = 1)
+   #          print(today)
+   # #        print ("\nMutal Fund disaplayed with Previous Day's Quote")
+   # #       data = yf.download(stock, start=today)
+   # #       ticket = yf.Ticker(stock)
+   #    try:
+   #       return float(yf.download(stock, start=today).iloc[0,4])
+   # 
+   #    except:
+   #       return None
    if Stock_Fund != 'Fund':
-       return(float(si.get_live_price(stock)))
-   else:
-      if (currentDateTime < open_time):
-            today  = today - timedelta(days = 1)
-   #        print ("\nMutal Fund disaplayed with Previous Day's Quote")
-   #       data = yf.download(stock, start=today)
-   #       ticket = yf.Ticker(stock)
-      try:
-         return float(yf.download(stock, start=today).iloc[0,4])
-
-      except:
-         return None
+      tomorrow  = today + timedelta(days = 1)
+      df = yf.download(stock, start=today, end=tomorrow)
+      return((df.iloc[-1]['Close'])[0])
 
 def main():
     update_Excel_Table(eXCEL_File)
