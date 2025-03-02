@@ -19,6 +19,7 @@ from openpyxl import load_workbook, Workbook
 # from bs4 import BeautifulSoup
 # import unittest
 from selenium import webdriver
+from selenium.webdriver import Firefox
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
@@ -27,12 +28,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import *
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
 from selenium.common.exceptions import NoSuchElementException
 import time
 import datetime
 from datetime import date
 # import sys
-from selenium import webdriver
+#from selenium import webdriver
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\data"
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 #eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_2.xlsx"
@@ -70,7 +72,6 @@ class init_webdriver():
         self.delay = 0
         self.currentDateTime = datetime.datetime.now()
         self.date = self.currentDateTime.date()
-        
         self.profile = webdriver.FirefoxProfile()
         self.profile.set_preference("browser.download.folderList", 2)
         self.profile.set_preference("browser.download.manager.showWhenStarting", False)
@@ -88,7 +89,10 @@ class init_webdriver():
         self.profile.set_preference("browser.cache.offline.enable", False)
         self.profile.set_preference("network.http.use-cache", False)
         self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
-        self.desiredCapabilities['firefox_profile'] = self.profile.encoded
+        self.service = Service(r"'~'+'\.cache\selenium\geckodriver\win64\0.36.0'")
+#        self.service = Service(r'C:\Users\William Chang\.cache\selenium\geckodriver\win64\0.36.0')
+#        self.capabilities = DesiredCapabilities.FIREFOX.copy()
+#        self.desiredCapabilities['firefox_profile'] = self.profile.encoded
         self.options = Options()
         
 #        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
@@ -136,7 +140,8 @@ class init_webdriver():
         # pass in selected user agent as an argument
         self.options.add_argument(f'user-agent={user_agent}')
     def driver_init(self):
-        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
+        self.driver = Firefox(service=self.service, options=self.options)
+#        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
         self.driver.set_page_load_timeout(100)
         return(self.driver)
 
@@ -242,7 +247,7 @@ def main():
             except:
                 print ("Yahoo page slow, will reloop!", end=" ")
                 pass
-        time.sleep(8)
+        time.sleep(3)
 #         try:
 #             print ('Current Price:   %s' % (driver.find_element(By.XPATH,'/html/body/div[2]/main/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[1]/span').text))
 #         except:

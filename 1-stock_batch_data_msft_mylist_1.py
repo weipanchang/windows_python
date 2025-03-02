@@ -19,6 +19,7 @@ from openpyxl import load_workbook, Workbook
 # from bs4 import BeautifulSoup
 # import unittest
 from selenium import webdriver
+from selenium.webdriver import Firefox
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
@@ -27,6 +28,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import *
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
 from selenium.common.exceptions import NoSuchElementException
 import time
 import datetime
@@ -35,7 +37,7 @@ from datetime import date
 from selenium import webdriver
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\MSFT_Analysis"
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
-eXCEL_File = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_2.xlsx"
+#profile_path = r'C:\Users\Administrator\AppData\Roaming\Mozilla\Firefox\Profiles\y1uqp5mi.default'
         
 stock = ""
 
@@ -89,6 +91,7 @@ class init_webdriver():
         self.profile.set_preference("network.http.use-cache", False)
         self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
         self.desiredCapabilities['firefox_profile'] = self.profile.encoded
+        self.service = Service(r"'~'+'\.cache\selenium\geckodriver\win64\0.36.0'")
         self.options = Options()
         
 #        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
@@ -136,7 +139,8 @@ class init_webdriver():
         # pass in selected user agent as an argument
         self.options.add_argument(f'user-agent={user_agent}')
     def driver_init(self):
-        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
+        self.driver = Firefox(service=self.service, options=self.options)
+#        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
         self.driver.set_page_load_timeout(50)
         return(self.driver)
 
