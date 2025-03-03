@@ -1,25 +1,32 @@
-Microsoft Corp. (MSFT)
-NVIDIA Corporation (NVDA)
-Adobe Inc. (ADBE)
-Apple Inc. (AAPL)
-Alphabet Class C. (GOOG)
-Meta Platforms Inc. (META)
-Cadence Design Systems Inc. (CDNS)
-Tesla, Inc. (TSLA)
-Amazon.com, Inc. (AMZN)
-Palo Alto Networks, Inc. (PANW)
-IGNOR  Box, Inc. (BOX)
-Advanced Micro Devices, Inc. (AMD)
-Cloudflare, Inc. (NET)
-IGNOR PDD Holdings Inc. (PDD)
-Snowflake Inc. (SNOW)
-ServiceNow, Inc. (NOW)
-Autodesk, Inc. (ADSK)
+Microsoft Corp. (MSFT) [a1xzim]
+NVIDIA Corporation (NVDA) [a1yv52]
+Adobe Inc. (ADBE) [a1mv7w]
+Apple Inc. (AAPL) [a1mou2]
+Alphabet Class C. (GOOG) [a1u3p2]
+Meta Platforms Inc. (META) [a1slm7]
+Cadence Design Systems Inc. (CDNS) [a1pejc]
+Amazon.com, Inc. (AMZN) [a1nhlh]
+Salesforce, Inc. (CRM) [a1qc1h]
+Palo Alto Networks Inc. (PANW) [a1zgm7]
+Advanced Micro Devices, Inc. (AMD) [a1ndww]
+Broadcom Inc  (AVGO) [a1nz8m]
+Visa Inc. (V) [a256cw]
+Tesla Inc (TSLA) [a24kar]
+CROWDSTRIKE HOLDINGS, INC. (CRWD) [bq8rqh]
 
 
+
+IGNOR Netflix, Inc. (NFLX) [a1ygoc]
+IGNOR PDD Holdings Inc. (PDD) [bjojk2]
+IGNOR Tesla, Inc. (TSLA) [a24kar]
 IGNOR Lucid Group, Inc. (LCID)
-IGNOR Netflix, Inc. (NFLX)
 IGNOR Financial Select Sector SPDR Fund (XLF)
 IGNOR The Real Estate Select Sector SPDR Fund (XLRE)
 IGNOR Seagate Technology Holdings plc (STX)
-IGNOR Crocs, Inc. (CROX)
+IGNOR Snowflake Inc. (SNOW) [bvlqa2]
+IGNOR DELL TECHNOLOGIES INC. (DELL) [a1retc]
+IGNOR Marvell Technology, Inc. (MRVL) [a1xygh]
+IGNOR Box, Inc. (BOX) [a1orc7]
+IGNOR THE HOME DEPOT, INC. (HD) [a1uj52]
+IGNOR Micron Technology, Inc. (MU) [a1y4oc]
+IGNOR QUALCOMM INCORPORATED. (QCOM) [a21k2w]
