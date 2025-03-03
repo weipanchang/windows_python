@@ -76,7 +76,7 @@ for i in range(4):
 #    user,password = user_pass_pair
     print(user,password)
     k = i + 1
-    command = f'"1-stock_batch_data_tipranks_{k}.py" -l {user} {password}'
+    command = f'"2-stock_batch_data_tipranks_{k}.py" -l {user} {password}'
     os.system(command)
     # command = f'"1-stock_batch_data_tipranks_{k}.py" -l {user} {password}'
     # subprocess.run(command, shell=True, check=True)
