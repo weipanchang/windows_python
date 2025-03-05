@@ -20,18 +20,16 @@ import datetime
 import shutil
 import sys
 from datetime import date
-#from selenium_stealth import stealth
 import random
 import argparse
 import os
-import logging
-#from csv import DictReader
+#import logging
 
 from dateutil.relativedelta import relativedelta
 from datetime import date
 #from cachetools import cached
 ####################################
-line = 6
+user_pass_line = 6
 ####################################
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Tipranks"
@@ -103,8 +101,6 @@ class init_webdriver():
         self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
         self.service = Service(r"'~'+'\.cache\selenium\geckodriver\win64\0.36.0'")
         
-        #self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
-
         #self.driver.set_page_load_timeout(50)
         #wait = WebDriverWait(self.driver, 200, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
         
@@ -171,7 +167,7 @@ def read_in_line():
         
 def main():
  #   sys.stdout = Logger()
-    global line    
+    global user_pass_line    
     def check_exists_by_xpath(xpath):
         try:
             driver.find_element(By.XPATH,xpath)
@@ -227,7 +223,6 @@ def main():
             stock_Dictionary[stock].append(stock_or_fund)
             stock_Dictionary[stock].append(msft_ticket)
       
-    logging.basicConfig(level=logging.INFO)
     driver = init_webdriver().driver_init()
     #driver.minimize_window() 
     #driver = init_webdriver().driver
@@ -344,9 +339,9 @@ if __name__ == "__main__":
     
     if user_pass_pair == None:
         with open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\UserName_Password.txt") as userpass:
-            while line != 1:
+            while user_pass_line != 1:
                 line_from_userpass =  userpass.readline()
-                line -= 1
+                user_pass_line -= 1
             line_from_userpass =  userpass.readline()
             username = line_from_userpass.split()[0]
             password = line_from_userpass.split()[1]

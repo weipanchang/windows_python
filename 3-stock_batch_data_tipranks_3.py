@@ -20,18 +20,16 @@ import datetime
 import shutil
 import sys
 from datetime import date
-#from selenium_stealth import stealth
 import random
 import os
 import argparse
-import logging
-#from csv import DictReader
+#import logging
 
 from dateutil.relativedelta import relativedelta
 from datetime import date
 
 ####################################
-line =5
+user_pass_line =5
 ####################################
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Tipranks"
@@ -103,8 +101,6 @@ class init_webdriver():
         self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
         self.service = Service(r"'~'+'\.cache\selenium\geckodriver\win64\0.36.0'")
         
-        #self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
-
         #self.driver.set_page_load_timeout(50)
         #wait = WebDriverWait(self.driver, 200, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
         
@@ -170,7 +166,7 @@ def read_in_line():
     return parser.parse_args()  
 def main():
  #   sys.stdout = Logger()
-    global line    
+    global user_pass_line    
     def check_exists_by_xpath(xpath):
         try:
             driver.find_element(By.XPATH,xpath)
@@ -226,7 +222,6 @@ def main():
             stock_Dictionary[stock].append(stock_or_fund)
             stock_Dictionary[stock].append(msft_ticket)
       
-    logging.basicConfig(level=logging.INFO)
     driver = init_webdriver().driver_init()
     #driver.minimize_window() 
     #driver = init_webdriver().driver
@@ -251,9 +246,6 @@ def main():
 #    email_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[1]/div/div/div/div")
                                               
     email_box.click()
-#    email_box.send_keys("weipanchang@aol.com")
-#    weipanchang@mail.com
-#    email_box.send_keys("wwchang007@mail.com")
     email_box.send_keys(username)
     password_box = driver.find_element(By.XPATH,"//input[contains(@type, 'password')]")
 #    password_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[2]/div/div/div/div/div")
@@ -345,9 +337,9 @@ if __name__ == "__main__":
     
     if user_pass_pair == None:
         with open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\UserName_Password.txt") as userpass:
-            while line != 1:
+            while user_pass_line != 1:
                 line_from_userpass =  userpass.readline()
-                line -= 1
+                user_pass_line -= 1
             line_from_userpass =  userpass.readline()
             username = line_from_userpass.split()[0]
             password = line_from_userpass.split()[1]
