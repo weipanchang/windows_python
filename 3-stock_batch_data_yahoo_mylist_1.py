@@ -11,10 +11,10 @@ import os
 import holidays
 import shutil
 import random
-import logging
-from yahoo_fin import stock_info as si
-import yfinance as yf
-from openpyxl import load_workbook, Workbook
+#import logging
+#from yahoo_fin import stock_info as si
+#import yfinance as yf
+#from openpyxl import load_workbook, Workbook
 
 # from bs4 import BeautifulSoup
 # import unittest
@@ -161,7 +161,7 @@ def main():
     now_time = datetime.datetime.now().time()
     print("\nTime: ", now_time, "\n")
 
-    logging.basicConfig(level=logging.INFO)
+    #logging.basicConfig(level=logging.INFO)
     driver = init_webdriver().driver_init()
     driver.get('https://finance.yahoo.com/')
     time.sleep(1)

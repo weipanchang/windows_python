@@ -2,8 +2,7 @@
 """
 Firefox version: 73.0 (64-bit)
 """
-#import xml.etree.ElementTree as ET
-#import urllib2
+
 import requests, urllib3, sys
 import re
 from path import Path
@@ -11,13 +10,8 @@ import os
 import holidays
 import shutil
 import random
-import logging
-from yahoo_fin import stock_info as si
-import yfinance as yf
-from openpyxl import load_workbook, Workbook
-
-# from bs4 import BeautifulSoup
-# import unittest
+import time
+import datetime
 from selenium import webdriver
 from selenium.webdriver import Firefox
 from selenium.webdriver.common.by import By
@@ -30,15 +24,11 @@ from selenium.common.exceptions import *
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 from selenium.common.exceptions import NoSuchElementException
-import time
-import datetime
 from datetime import date
-# import sys
 from selenium import webdriver
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\MSFT_Analysis"
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 #profile_path = r'C:\Users\Administrator\AppData\Roaming\Mozilla\Firefox\Profiles\y1uqp5mi.default'
-        
 stock = ""
 
 class Logger(object):
@@ -63,12 +53,8 @@ class Logger(object):
 
 class init_webdriver():
     def __init__(self):
-#        global downloadPath
         global stock
-#        stock_name = stock
         print ("")
-#        print ("Processing " + self.stock_name.upper() +" stock data")
-#        self.stock_or_fund = stock_or_fund
         self.delay = 0
         self.currentDateTime = datetime.datetime.now()
         self.date = self.currentDateTime.date()
@@ -90,11 +76,6 @@ class init_webdriver():
         self.options.set_preference("network.http.use-cache", False)
         self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
         self.service = Service(r"'~'+'\.cache\selenium\geckodriver\win64\0.36.0'")
-        
-#        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
-
-        #self.driver.set_page_load_timeout(50)
-        #wait = WebDriverWait(self.driver, 200, poll_frequency=1, ignored_exceptions=[ElementNotVisibleException, ElementNotSelectableException])
         
         #run in headless mode
         self.options.add_argument("--headless")
@@ -140,10 +121,8 @@ class init_webdriver():
 #        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
         self.driver.set_page_load_timeout(50)
         return(self.driver)
-
         
 def main():
-#    global downloadPath
     global stock
     try:
         shutil.rmtree(downloadPath)
@@ -158,7 +137,6 @@ def main():
     now_time = datetime.datetime.now().time()
     print("\nTime: ", now_time, "\n")
 
-    logging.basicConfig(level=logging.INFO)
     driver = init_webdriver().driver_init()
     driver.get('https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M')
     time.sleep(1)
@@ -261,23 +239,13 @@ def main():
         if check_exists_by_xpath(driver, '//div[@class = "price_PreAfter"]'):
             print("After Hours:     %s\n" % (driver.find_element("xpath",'//div[@class = "price_PreAfter"]').text))
         
-        time.sleep(1)    
+#        time.sleep(1)    
         elm_list = driver.find_elements(By.XPATH,'//span[@class = "summaryValue-DS-EntryPoint1-2"]')
         target = elm_list[0].text.replace('USD','')
         print( "1y Target Est = %s\n" % (target))
         time.sleep(5)
         print("Recommedation:    %s\n" % (driver.find_element("xpath",'//h2[@class="suggestion-DS-EntryPoint1-1"]').text))
         print("Price Volatility: %s\n" % elm_list[1].text)
-        
-        # url_stock = "https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M&id="+ msft_ticket
-        # driver.get(url_stock)
-        # 
-        # print ("Display Summary Page... \n")
-        # time.sleep(1)
-        
-        # elm_list = driver.find_element(By.XPATH,'//div[@class = "factsRowValue-DS-EntryPoint1-1"]')
-        # previous = elm_list.text
-        # print( "Previous Close = %s\n" % (previous))
         
         time.sleep(1)
     driver.quit()

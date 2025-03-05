@@ -11,10 +11,10 @@ import os
 import holidays
 import shutil
 import random
-import logging
-from yahoo_fin import stock_info as si
-import yfinance as yf
-from openpyxl import load_workbook, Workbook
+# import logging
+# from yahoo_fin import stock_info as si
+# import yfinance as yf
+# from openpyxl import load_workbook, Workbook
 
 # from bs4 import BeautifulSoup
 # import unittest
@@ -72,27 +72,24 @@ class init_webdriver():
         self.delay = 0
         self.currentDateTime = datetime.datetime.now()
         self.date = self.currentDateTime.date()
-        
-        self.profile = webdriver.FirefoxProfile()
-        self.profile.set_preference("browser.download.folderList", 2)
-        self.profile.set_preference("browser.download.manager.showWhenStarting", False)
-        self.profile.set_preference("browser.download.dir", downloadPath)
-        self.profile.set_preference("browser.helperApps.neverAsk.openFile", "text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml")
-        self.profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml")
-        self.profile.set_preference("browser.helperApps.alwaysAsk.force", False)
-        self.profile.set_preference("browser.download.manager.alertOnEXEOpen", False)
-        self.profile.set_preference("browser.download.manager.focusWhenStarting", False)
-        self.profile.set_preference("browser.download.manager.useWindow", False)
-        self.profile.set_preference("browser.download.manager.showAlertOnComplete", False)
-        self.profile.set_preference("browser.download.manager.closeWhenDone", False)
-        self.profile.set_preference("browser.cache.disk.enable", False)
-        self.profile.set_preference("browser.cache.memory.enable", False)
-        self.profile.set_preference("browser.cache.offline.enable", False)
-        self.profile.set_preference("network.http.use-cache", False)
-        self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
-        self.desiredCapabilities['firefox_profile'] = self.profile.encoded
-        self.service = Service(r"'~'+'\.cache\selenium\geckodriver\win64\0.36.0'")
         self.options = Options()
+        self.options.set_preference("browser.download.folderList", 2)
+        self.options.set_preference("browser.download.manager.showWhenStarting", False)
+        self.options.set_preference("browser.download.dir", downloadPath)
+        self.options.set_preference("browser.helperApps.neverAsk.openFile", "text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml")
+        self.options.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml")
+        self.options.set_preference("browser.helperApps.alwaysAsk.force", False)
+        self.options.set_preference("browser.download.manager.alertOnEXEOpen", False)
+        self.options.set_preference("browser.download.manager.focusWhenStarting", False)
+        self.options.set_preference("browser.download.manager.useWindow", False)
+        self.options.set_preference("browser.download.manager.showAlertOnComplete", False)
+        self.options.set_preference("browser.download.manager.closeWhenDone", False)
+        self.options.set_preference("browser.cache.disk.enable", False)
+        self.options.set_preference("browser.cache.memory.enable", False)
+        self.options.set_preference("browser.cache.offline.enable", False)
+        self.options.set_preference("network.http.use-cache", False)
+        self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
+        self.service = Service(r"'~'+'\.cache\selenium\geckodriver\win64\0.36.0'")
         
 #        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
 
@@ -161,7 +158,7 @@ def main():
     now_time = datetime.datetime.now().time()
     print("\nTime: ", now_time, "\n")
 
-    logging.basicConfig(level=logging.INFO)
+#    logging.basicConfig(level=logging.INFO)
     driver = init_webdriver().driver_init()
     driver.get('https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M')
     time.sleep(1)

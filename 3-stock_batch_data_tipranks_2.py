@@ -236,15 +236,15 @@ def main():
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(5)
 
-    with open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\UserName_Password.txt") as userpass:
-        while line != 1:
-            line_from_userpass =  userpass.readline()
-            line -= 1
-        line_from_userpass =  userpass.readline()
-            
-        username = line_from_userpass.split()[0]
-        password = line_from_userpass.split()[1]
-        print("User= %s Password= %s\n" % (username,password))
+    # with open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\UserName_Password.txt") as userpass:
+    #     while line_from_userpass != 1:
+    #         line_from_userpass =  userpass.readline()
+    #         line_from_userpass -= 1
+    #     line_from_userpass =  userpass.readline()
+    #         
+    #     username = line_from_userpass.split()[0]
+    #     password = line_from_userpass.split()[1]
+    #     print("User= %s Password= %s\n" % (username,password))
     
     email_box = driver.find_element(By.XPATH,"//input[contains(@class, 'w12 py4 px3 radiimedium')]")
 #    email_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[1]/div/div/div/div")

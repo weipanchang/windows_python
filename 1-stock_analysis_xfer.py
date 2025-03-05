@@ -9,11 +9,11 @@ import os
 import sys
 import shutil
 import re
-import logging
-source = os.path.expanduser( '~' ) + "\\Downloads\\Stock Watchlist & Portfolio Tracker - Stock Analysis.txt"
+#import logging
+
+source = os.path.expanduser( '~' ) + "\Downloads\Stock Watchlist & Portfolio Tracker - Stock Analysis.txt"
 #source = "C:\\Users\\William Chang\\Downloads\\Stock Watchlist & Portfolio Tracker - Stock Analysis.txt"
 sTock_Analysis_data_file = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_Analysis\\Stock Watchlist & Portfolio Tracker - Stock Analysis.txt"
-#sTock_Analysis_data_file = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_Analysis\\Stock Watchlist & Portfolio Tracker - Stock Analysis.txt"
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_Analysis"
 
@@ -40,7 +40,7 @@ def main():
     
     def extract_data(data_list):
         line_from_Stock_Analysis =""
-        with open(sTock_Analysis_data_file) as Stock_Analysis:
+        with open(sTock_Analysis_data_file) as Stock_Analysis:            
             try:
                 line_from_Stock_Analysis = Stock_Analysis.readline()
             except:
@@ -108,8 +108,7 @@ def main():
         os.mkdir(downloadPath)
     except:
         pass            
-#    source = "C:\\Users\\William Chang\\Downloads\\Stock Watchlist & Portfolio Tracker - Stock Analysis.txt"
-#    destination = "D:\Pycharm projects\gfg\Test\A"
+
     shutil.move(source, downloadPath)            
     fetch_Stock_Name(stock_Dictionary:={})
 
