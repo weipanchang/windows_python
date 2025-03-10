@@ -14,7 +14,7 @@ import logging
 wallStreetZen_data_file = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen\\WallStreetZen.txt"
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen"
-
+source = "C:\\Users\\William Chang\\Downloads\\WallStreetZen.txt"
 class Logger(object):
 
     def __init__(self):
@@ -73,44 +73,41 @@ def main():
     except:
         pass
     
-    source = "C:\\Users\\William Chang\\Downloads\\WallStreetZen.txt"
+#    source = "C:\\Users\\William Chang\\Downloads\\WallStreetZen.txt"
 
     shutil.move(source, downloadPath)
     
     fetch_Stock_Name(stock_Dictionary:={})
 
 #    print(stock_Dictionary)
-    sys.stdout = Logger()
+
 #    os.system("pause")    
 
     with open(wallStreetZen_data_file) as WallStreetZen:
 #            reading_line_list = list() 
         reading_line_list = WallStreetZen.readlines()
-        for i in range(len(reading_line_list)):
-            if len(reading_line_list[i]) >1:
-                reading_line_list[i] = reading_line_list[i][:-1]
-            if  reading_line_list[i] == "GOOGL":
-                reading_line_list[i] = "GOOG"
+#    print(reading_line_list)        
+    sys.stdout = Logger()
+
 
     for stock in stock_Dictionary.keys():
+        for i in range(2,len(reading_line_list)):
+            if len(reading_line_list[i]) > 3:
+                line_element_list = reading_line_list[i].split()
+                if line_element_list[0] == "GOOGL":
+                    line_element_list[0] = "GOOG"
 
-        for i in range(len(reading_line_list)):
-            if stock in reading_line_list[i] and reading_line_list[i] == "V":
+            if stock == line_element_list[0]:
                 print("\n")
                 print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
                 print ("Processing " + stock_Dictionary[stock][0] +" data")
                 print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
-                line_list = reading_line_list[i-2].split()
-                if "Strong" in line_list:
-                    try:
-                        line_list.remove("Strong")
-                    except:
-                        pass
-                target_price = line_list[-4].replace("$","").replace(",","")
-                # while True:
-                #     line_from_WallStreetZen = WallStreetZen.readline()
-                #     if "Morgan price target" in line_from_WallStreetZen:
-                #         line_from_WallStreetZen = WallStreetZen.readline().replace("$","").replace(",","")
+
+                if "Strong" in line_element_list:
+                    line_element_list.remove("Strong")
+
+                target_price = line_element_list[-4].replace("$","").replace(",","")
+
                 try: 
                     float(target_price) 
                     pass 
@@ -118,39 +115,9 @@ def main():
                     target_price = "0.00"
             
                 print ("\n1y Target Est = %s\n" % (target_price))
-            elif stock in reading_line_list[i] and (stock != "V"):
-                    print("\n")
-                    print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
-                    print ("Processing " + stock_Dictionary[stock][0] +" data")
-                    print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
-                    # for i in range(8):
-                    #     line_from_WallStreetZen = WallStreetZen.readline()
-                    line_list = reading_line_list[i-2].split()
-                    if "Strong" in line_list:
-                        try:
-                            line_list.remove("Strong")
-                        except:
-                            pass
-                    target_price = line_list[-3].replace("$","").replace(",","")
-                    # while True:
-                    #     line_from_WallStreetZen = WallStreetZen.readline()
-                    #     if "Morgan price target" in line_from_WallStreetZen:
-                    #         line_from_WallStreetZen = WallStreetZen.readline().replace("$","").replace(",","")
-                    try: 
-                        float(target_price) 
-                        pass 
-                    except ValueError: 
-                        target_price = "0.00"
-            
-                    print ("\n1y Target Est = %s\n" % (target_price))
-                            
-                        # WallStreetZen.readline()
-                        # WallStreetZen.readline()
-                        # line_from_WallStreetZen = WallStreetZen.readline()
-                        # print ("\nUpside/downside %s\n" % (line_from_WallStreetZen))
-                            # break
+                break
 
-
+ 
 if __name__ == '__main__':
     
     main()
