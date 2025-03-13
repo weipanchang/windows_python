@@ -11,11 +11,10 @@ import shutil
 import re
 #import logging
 
-source = os.path.expanduser( '~' ) + "\Downloads\Stock Watchlist & Portfolio Tracker - Stock Analysis.txt"
-#source = "C:\\Users\\William Chang\\Downloads\\Stock Watchlist & Portfolio Tracker - Stock Analysis.txt"
-sTock_Analysis_data_file = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_Analysis\\Stock Watchlist & Portfolio Tracker - Stock Analysis.txt"
-Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
+#Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_Analysis"
+source = os.path.expanduser( '~' ) + "\Downloads\Stock Watchlist & Portfolio Tracker - StockAnalysis.txt"
+sTock_Analysis_data_file = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_Analysis\\Stock Watchlist & Portfolio Tracker - StockAnalysis.txt"
 
 class Logger(object):
 
@@ -49,18 +48,9 @@ def main():
 
                 line_from_Stock_Analysis = Stock_Analysis.readline()
 
-                # print(line_from_Stock_Analysis)
-                # os.system("pause")
-#                    continue
-            # os.system("pause")
-            
             while True:
-#                line_from_Stock_Analysis = Stock_Analysis.readline()
-#                if "Watchlist Averages" not in line_from_Stock_Analysis:
-                # try:
                 line_from_Stock_Analysis = Stock_Analysis.readline()
-                # except:
-                #     pass
+
                 if "Watchlist Averages" not in line_from_Stock_Analysis:
                     if len(line_from_Stock_Analysis)  != 0:
                         elements = line_from_Stock_Analysis.split()
@@ -83,7 +73,7 @@ def main():
                 msft_ticket = re.search('\[\w+\]', stock_fund_name)
     
             is_stock =  re.search("ETF|Fund",stock_fund_name)
-    #            print is_stock
+
             if is_stock:
                 if 'ETF' in stock_fund_name:
                     stock_or_fund =  'ETF'
@@ -112,13 +102,10 @@ def main():
     shutil.move(source, downloadPath)            
     fetch_Stock_Name(stock_Dictionary:={})
 
- #  print(stock_Dictionary)
     sys.stdout = Logger()
-#    os.system("pause")    
 
     extract_data(data_list:={})
-#   print (data_list)
-#    os.system("pause")
+
     for stock in stock_Dictionary.keys():
         
         print("\n")

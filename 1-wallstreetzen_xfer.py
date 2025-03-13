@@ -11,10 +11,11 @@ import shutil
 import re
 import logging
 
-wallStreetZen_data_file = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen\\WallStreetZen.txt"
-Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
+#Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen"
-source = "C:\\Users\\William Chang\\Downloads\\WallStreetZen.txt"
+source = os.path.expanduser( '~' ) + "\\Downloads\\Best Stock Screener App In 2025 - #1 Top Free Stock Scanner _ WallStreetZen.txt"
+wallStreetZen_data_file = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen\\Best Stock Screener App In 2025 - #1 Top Free Stock Scanner _ WallStreetZen.txt"
+
 class Logger(object):
 
     def __init__(self):
@@ -72,23 +73,15 @@ def main():
         os.mkdir(downloadPath)
     except:
         pass
-    
-#    source = "C:\\Users\\William Chang\\Downloads\\WallStreetZen.txt"
 
     shutil.move(source, downloadPath)
     
     fetch_Stock_Name(stock_Dictionary:={})
 
-#    print(stock_Dictionary)
-
-#    os.system("pause")    
-
     with open(wallStreetZen_data_file) as WallStreetZen:
-#            reading_line_list = list() 
         reading_line_list = WallStreetZen.readlines()
-#    print(reading_line_list)        
-    sys.stdout = Logger()
 
+    sys.stdout = Logger()
 
     for stock in stock_Dictionary.keys():
         for i in range(2,len(reading_line_list)):
