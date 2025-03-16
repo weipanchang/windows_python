@@ -234,16 +234,6 @@ def main():
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(5)
 
-    # with open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\UserName_Password.txt") as userpass:
-    #     while line != 1:
-    #         line_from_userpass =  userpass.readline()
-    #         line -= 1
-    #     line_from_userpass =  userpass.readline()
-    #         
-    #     username = line_from_userpass.split()[0]
-    #     password = line_from_userpass.split()[1]
-    #     print("User= %s Password= %s\n" % (username,password))
-    
     email_box = driver.find_element(By.XPATH,"//input[contains(@class, 'w12 py4 px3 radiimedium')]")
 #    email_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[1]/div/div/div/div")
                                               
@@ -257,10 +247,12 @@ def main():
     password_box.send_keys(password)
     driver.maximize_window()
     time.sleep(3)   
-    try:
+    if check_exists_by_xpath("/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span"):
         signin_button = driver.find_element(By.XPATH,"/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span")
-    except:
+        
+    if check_exists_by_xpath("/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span"):
         signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span")
+        
     signin_button.click()
 #    /html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span
     time.sleep(3)   
@@ -289,8 +281,9 @@ def main():
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         time.sleep(5)
         if pause_before is False:
-            os.system("PAUSE")
-            pause_before = True
+            time.sleep(7)
+            driver.refresh()
+            time.sleep(7)
         if check_exists_by_xpath('//div[@class="w12 p0   displayflex positionrelative grow1"]'):
 
             try:
@@ -302,9 +295,9 @@ def main():
                 sys.exit()
         else:
             sys.exit() 
-        time.sleep(3)
+        time.sleep(2)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        #os.system("PAUSE")
+        time.sleep(2)
         
         if check_exists_by_xpath('//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]'):
             

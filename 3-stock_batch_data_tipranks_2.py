@@ -172,7 +172,6 @@ def main():
     def check_exists_by_xpath(xpath):
         try:
             driver.find_element(By.XPATH,xpath)
-            #driver.find_element_by_xpath(driver, xpath)
         except NoSuchElementException:
             return False
         return True
@@ -188,15 +187,8 @@ def main():
         idx2 = s.index(sub2)
         return(s[idx1 + len(sub1): idx2])
     
-    
-    # def extract_price_2(s, sub1):
-    # 
-    #     idx1 = s.index(sub1)
-    #     return(s[idx1 + len(sub1):])
-    
     def fetch_Stock_Name(stock_Dictionary):
         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
-#        stock_fund_names =  [line for line in open("STOCK-01.txt", "r")]
         
         for stock_fund_name in stock_fund_names[4:8]:
             if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
@@ -236,16 +228,6 @@ def main():
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(5)
 
-    # with open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\UserName_Password.txt") as userpass:
-    #     while line_from_userpass != 1:
-    #         line_from_userpass =  userpass.readline()
-    #         line_from_userpass -= 1
-    #     line_from_userpass =  userpass.readline()
-    #         
-    #     username = line_from_userpass.split()[0]
-    #     password = line_from_userpass.split()[1]
-    #     print("User= %s Password= %s\n" % (username,password))
-    
     email_box = driver.find_element(By.XPATH,"//input[contains(@class, 'w12 py4 px3 radiimedium')]")
 #    email_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[1]/div/div/div/div")
                                               
@@ -259,12 +241,14 @@ def main():
     
     password_box.send_keys(password)
     driver.maximize_window()
-    time.sleep(4)   
-    try:
-        signin_button = driver.find_element(By.XPATH,"/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span")
-    except:
-        signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span")
+    time.sleep(4)
     
+    if check_exists_by_xpath("/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span"):
+        signin_button = driver.find_element(By.XPATH,"/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span")
+        
+    if check_exists_by_xpath("/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span"):
+        signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span")
+   
     signin_button.click()
     
     time.sleep(3)   
@@ -275,7 +259,6 @@ def main():
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
 
-    #stock_input_box =  driver.find_element(By.XPATH,"//input[@id='react-select-2-input']")
     sys.stdout = Logger()                                    
     fetch_Stock_Name(stock_Dictionary:={})
     pause_before = False
@@ -295,22 +278,21 @@ def main():
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         time.sleep(6)
         if pause_before is False:
-            os.system("PAUSE")
-            pause_before = True
-        if check_exists_by_xpath('//div[@class="w12 p0   displayflex positionrelative grow1"]'):
+            time.sleep(7)
+            driver.refresh()
+            time.sleep(7)
 
+        if check_exists_by_xpath('//div[@class="w12 p0   displayflex positionrelative grow1"]'):
             try:
-    #           driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
                 frame = driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
-    #            print("Found")
             except NoSuchElementException:
                 print("Frame NOT Found")
                 sys.exit()
         else:
             sys.exit() 
-        time.sleep(3)
+        time.sleep(2)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        #os.system("PAUSE")
+        time.sleep(2)
         
         if check_exists_by_xpath('//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]'):
             

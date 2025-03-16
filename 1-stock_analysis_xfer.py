@@ -13,8 +13,9 @@ import re
 
 #Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_Analysis"
-source = os.path.expanduser( '~' ) + "\Downloads\Stock Watchlist & Portfolio Tracker - StockAnalysis.txt"
-sTock_Analysis_data_file = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_Analysis\\Stock Watchlist & Portfolio Tracker - StockAnalysis.txt"
+data_file_name = ""\Downloads\Stock Watchlist & Portfolio Tracker - StockAnalysis.txt""
+source = os.path.expanduser( '~' ) + "\\Downloads\\" + data_file_name
+sTock_Analysis_data_file = os.path.expanduser( '~' ) + downloadPath + data_file_name
 
 class Logger(object):
 

@@ -24,8 +24,7 @@ from datetime import date
 #from selenium_stealth import stealth
 import random
 import os
-#import logging
-#from csv import DictReader
+
 from dateutil.relativedelta import relativedelta
 from datetime import date
 
@@ -190,7 +189,6 @@ def main():
     
     def fetch_Stock_Name(stock_Dictionary):
         stock_fund_names =  [stock_line for stock_line in open("STOCK.txt", "r")]
-#        stock_fund_names =  [line for line in open("STOCK-01.txt", "r")]
         
         for stock_fund_name in stock_fund_names[:4]:
             if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
@@ -225,7 +223,6 @@ def main():
     driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
 #    os.system("PAUSE")
     time.sleep(8)
-    #actions = ActionChains(driver)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
@@ -243,10 +240,12 @@ def main():
     
     password_box.send_keys(password)
     driver.maximize_window()
-    time.sleep(3) 
-    try:
+    time.sleep(3)
+    
+    if check_exists_by_xpath("/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span"):
         signin_button = driver.find_element(By.XPATH,"/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span")
-    except:
+        
+    if check_exists_by_xpath("/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span"):
         signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span")
 
     signin_button.click()
@@ -258,13 +257,11 @@ def main():
     
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
-    #stock_input_box =  driver.find_element(By.XPATH,"//input[@id='react-select-2-input']")
     sys.stdout = Logger()                                    
     fetch_Stock_Name(stock_Dictionary:={})
     pause_before = False
     for stock in stock_Dictionary.keys():
    
-#        sys.stdout = Logger()
         print("\n")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print ("Processing " + stock_Dictionary[stock][0] +" data")
@@ -279,21 +276,20 @@ def main():
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         time.sleep(6)
         if pause_before is False:
-            os.system("PAUSE")
-            pause_before = True
+            time.sleep(7)
+            driver.refresh()
+            time.sleep(7)
         if check_exists_by_xpath('//div[@class="w12 p0   displayflex positionrelative grow1"]'):
             try:
-    #           driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
                 frame = driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
-    #            print("Found")
             except NoSuchElementException:
                 print("Frame NOT Found")
                 sys.exit()
         else:
             sys.exit() 
-        time.sleep(3)
+        time.sleep(2)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        # os.system("PAUSE")
+        time.sleep(2)
         
         if check_exists_by_xpath('//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]'):
             
