@@ -12,10 +12,10 @@ import re
 #import logging
 
 #Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
-downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_Analysis"
-data_file_name = ""\Downloads\Stock Watchlist & Portfolio Tracker - StockAnalysis.txt""
-source = os.path.expanduser( '~' ) + "\\Downloads\\" + data_file_name
-sTock_Analysis_data_file = os.path.expanduser( '~' ) + downloadPath + data_file_name
+downloadPath = os.path.expanduser( '~' ) + '\Documents\Python Scripts\Stock_Analysis\\'
+data_file_name = "Stock Watchlist & Portfolio Tracker.txt"
+source = os.path.expanduser( '~' ) + '\Downloads\\' + data_file_name
+sTock_Analysis_data_file = downloadPath + data_file_name
 
 class Logger(object):
 
