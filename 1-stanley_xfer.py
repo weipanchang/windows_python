@@ -12,18 +12,23 @@ import re
 from pprint import pprint 
 import logging
 
-cHase_data_file = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stanley\\Morgan Stanley Online.txt"
-Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
-downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stanley"
+dataPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stanley\\"
+data_file_name = "Morgan Stanley Online.txt"
+source = os.path.expanduser( '~' ) + '\Downloads\\' + data_file_name
+sTanldy_data_file = dataPath + data_file_name
+
+#cHase_data_file = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stanley\\Morgan Stanley Online.txt"
+#Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
+
 
 class Logger(object):
 
     def __init__(self):
-        global downloadPath
+        global dataPath
         today = date.today()
 
         self.terminal = sys.stdout
-        self.log = open(downloadPath +"\\Summary_Report_From_Stanley_"+ today.strftime("%m%d%Y") + ".txt" , "w")
+        self.log = open(dataPath +"\\Summary_Report_From_Stanley_"+ today.strftime("%m%d%Y") + ".txt" , "w")
 
     def write(self, message):
         self.terminal.write(message)
@@ -65,23 +70,23 @@ def main():
             stock_Dictionary[stock].append(msft_ticket)
             
     try:
-        shutil.rmtree(downloadPath)
+        shutil.rmtree(dataPath)
     except:
          pass
     time.sleep(2)
     try:
-        os.mkdir(downloadPath)
+        os.mkdir(dataPath)
     except:
         pass            
     source = "C:\\Users\\William Chang\\Downloads\\Morgan Stanley Online.txt"
 #    destination = "D:\Pycharm projects\gfg\Test\A"
-    shutil.move(source, downloadPath)        
+    shutil.move(source, dataPath)        
     fetch_Stock_Name(stock_Dictionary:={})
 
 #    pprint(stock_Dictionary)
     print('\n\n')
     sys.stdout = Logger()
-    with open(cHase_data_file) as Stanley:
+    with open(sTanldy_data_file) as Stanley:
         Stanley_readlines = Stanley.readlines()
 #   print (Stanley_readlines)
 #    os.system("pause")

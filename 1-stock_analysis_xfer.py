@@ -12,19 +12,19 @@ import re
 #import logging
 
 #Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
-downloadPath = os.path.expanduser( '~' ) + '\Documents\Python Scripts\Stock_Analysis\\'
+dataPath = os.path.expanduser( '~' ) + '\Documents\Python Scripts\Stock_Analysis\\'
 data_file_name = "Stock Watchlist & Portfolio Tracker.txt"
 source = os.path.expanduser( '~' ) + '\Downloads\\' + data_file_name
-sTock_Analysis_data_file = downloadPath + data_file_name
+sTock_Analysis_data_file = dataPath + data_file_name
 
 class Logger(object):
 
     def __init__(self):
-        global downloadPath
+        global dataPath
         today = date.today()
 
         self.terminal = sys.stdout
-        self.log = open(downloadPath +"\\Summary_Report_From_Stock_Analysis_"+ today.strftime("%m%d%Y") + ".txt" , "w")
+        self.log = open(dataPath +"\\Summary_Report_From_Stock_Analysis_"+ today.strftime("%m%d%Y") + ".txt" , "w")
 
     def write(self, message):
         self.terminal.write(message)
@@ -91,16 +91,16 @@ def main():
             stock_Dictionary[stock].append(msft_ticket)
             
     try:
-        shutil.rmtree(downloadPath)
+        shutil.rmtree(dataPath)
     except:
          pass
     time.sleep(2)
     try:
-        os.mkdir(downloadPath)
+        os.mkdir(dataPath)
     except:
         pass            
 
-    shutil.move(source, downloadPath)            
+    shutil.move(source, dataPath)            
     fetch_Stock_Name(stock_Dictionary:={})
 
     sys.stdout = Logger()

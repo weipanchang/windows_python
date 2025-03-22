@@ -12,18 +12,19 @@ import re
 import logging
 
 #Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
-downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen"
-source = os.path.expanduser( '~' ) + "\\Downloads\\Best Stock Screener App In 2025 - #1 Top Free Stock Scanner _ WallStreetZen.txt"
-wallStreetZen_data_file = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen\\Best Stock Screener App In 2025 - #1 Top Free Stock Scanner _ WallStreetZen.txt"
+dataPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen\\"
+data_file_name = "Best Stock Screener App In 2025 - #1 Top Free Stock Scanner _ WallStreetZen.txt"
+source = os.path.expanduser( '~' ) + '\Downloads\\' + data_file_name
+wallStreetZen_data_file = dataPath + data_file_name
 
 class Logger(object):
 
     def __init__(self):
-        global downloadPath
+        global dataPath
         today = date.today()
 
         self.terminal = sys.stdout
-        self.log = open(downloadPath +"\\Summary_Report_From_WallStreetZen_"+ today.strftime("%m%d%Y") + ".txt" , "w")
+        self.log = open(dataPath +"\\Summary_Report_From_WallStreetZen_"+ today.strftime("%m%d%Y") + ".txt" , "w")
 
     def write(self, message):
         self.terminal.write(message)
@@ -65,16 +66,16 @@ def main():
             stock_Dictionary[stock].append(msft_ticket)
 
     try:
-        shutil.rmtree(downloadPath)
+        shutil.rmtree(dataPath)
     except:
          pass
     time.sleep(2)
     try:
-        os.mkdir(downloadPath)
+        os.mkdir(dataPath)
     except:
         pass
 
-    shutil.move(source, downloadPath)
+    shutil.move(source, dataPath)
     
     fetch_Stock_Name(stock_Dictionary:={})
 
@@ -107,7 +108,8 @@ def main():
                 except ValueError: 
                     target_price = "0.00"
             
-                print ("\n1y Target Est = %s\n" % (target_price))
+                print ("\n1y Target Est = %s\n" % (target_price))                
+                print ("\nPrice Target Upside Percent = %s\n" % (line_element_list[-3]))
                 break
 
  

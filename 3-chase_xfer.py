@@ -11,18 +11,19 @@ import shutil
 import re
 import logging
 
-cHase_data_file = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Chase\\Markets - Watchlists - chase.com.txt"
-Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
-downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Chase"
+dataPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Chase\\"
+data_file_name = "Markets - Watchlists - chase.com.txt"
+source = os.path.expanduser( '~' ) + '\Downloads\\' + data_file_name
+cHase_data_file = dataPath + data_file_name
 
 class Logger(object):
 
     def __init__(self):
-        global downloadPath
+        global dataPath
         today = date.today()
 
         self.terminal = sys.stdout
-        self.log = open(downloadPath +"\\Summary_Report_From_Chase_"+ today.strftime("%m%d%Y") + ".txt" , "w")
+        self.log = open(dataPath +"\\Summary_Report_From_Chase_"+ today.strftime("%m%d%Y") + ".txt" , "w")
 
     def write(self, message):
         self.terminal.write(message)
@@ -64,18 +65,16 @@ def main():
             stock_Dictionary[stock].append(msft_ticket)
 
     try:
-        shutil.rmtree(downloadPath)
+        shutil.rmtree(dataPath)
     except:
          pass
     time.sleep(2)
     try:
-        os.mkdir(downloadPath)
+        os.mkdir(dataPath)
     except:
         pass
     
-    source = "C:\\Users\\William Chang\\Downloads\\Markets - Watchlists - chase.com.txt"
-#    destination = "D:\Pycharm projects\gfg\Test\A"
-    shutil.move(source, downloadPath)
+    shutil.move(source, dataPath)
     
     fetch_Stock_Name(stock_Dictionary:={})
 
