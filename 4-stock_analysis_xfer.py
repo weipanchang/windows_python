@@ -13,7 +13,7 @@ import logging
 from tabula import read_pdf
 from tabula import convert_into
 
-dataPath = os.path.expanduser( '~' ) + '\Documents\Python Scripts\Stock_Analysis\\'                                      
+dataPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_Analysis\\"                                     
 downloadPath = os.path.expanduser( '~' ) + '\Downloads\\'
 Stock_Analysis_data_file_name = "Stock Watchlist & Portfolio Tracker"
 Stock_Analysis_pdf_file = Stock_Analysis_data_file_name + ".pdf"
@@ -54,7 +54,7 @@ def main():
         value_list = []
         Stock_Analysis_readlines =  [stock_line for stock_line in open(dataPath + Stock_Analysis_data_file, "r")]
         for stock_line in Stock_Analysis_readlines[5:]:
-            key_list.append(stock_line.split(",")[0])
+            key_list.append((stock_line.split(",")[0]).split()[0])
             value_list.append(stock_line.split(",")[2:])
         data_list = { k:v for (k,v) in zip(key_list, value_list)}
         return data_list    
@@ -100,7 +100,6 @@ def main():
     shutil.move(source, dataPath)            
     fetch_Stock_Name(stock_Dictionary:={})
     data_list = extract_data(data_list:={})
-
     sys.stdout = Logger()
     for stock in stock_Dictionary.keys():
         

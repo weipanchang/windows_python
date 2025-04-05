@@ -77,10 +77,8 @@ def main():
     shutil.move(source, dataPath)
     
     fetch_Stock_Name(stock_Dictionary:={})
-
-#    print(stock_Dictionary)
     sys.stdout = Logger()
-#    os.system("pause")    
+   
     for stock in stock_Dictionary.keys():
 
         print ("")
@@ -106,10 +104,10 @@ def main():
                     
                             print ("\n1y Target Est = %s\n" % (line_from_Chase))
                             
-                            Chase.readline()
-                            Chase.readline()
-                            line_from_Chase = Chase.readline()
-                            print ("\nUpside/downside %s\n" % (line_from_Chase))
+                            # Chase.readline()
+                            # Chase.readline()
+                            # line_from_Chase = Chase.readline()
+                            # print ("\nUpside/downside %s\n" % (line_from_Chase))
                             break
                     break
 

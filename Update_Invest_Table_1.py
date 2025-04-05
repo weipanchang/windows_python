@@ -66,7 +66,7 @@ def update_Excel_Table(xcl):
              open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Barrons\\Summary_Report_From_Barrons_" + today.strftime("%m%d%Y")+".txt") as Barrons,\
              open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\eTrade\\Summary_Report_From_eTrade_" + today.strftime("%m%d%Y")+".txt") as eTrade:
 #             open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Prediction\\Individual_Stock_Report__" + today.strftime("%m%d%Y")+".txt") as Prediction:
-
+#             open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen\\Summary_Report_From_WallStreetZen_" + today.strftime("%m%d%Y")+".txt") as WallStreetZen,\
             n = 0
             line_from_Yahoo = Yahoo.readline()
             while "("+stock+")" not in line_from_Yahoo:

@@ -14,7 +14,7 @@ import pymupdf
 
 dataPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stanley\\"
 downloadPath = os.path.expanduser( '~' ) + '\Downloads\\'
-sTanley_file_name = "Morgan Stanley Online"
+sTanley_file_name = "Watchlist"
 sTanley_pdf_file = sTanley_file_name + ".pdf"
 sTanley_data_file = sTanley_file_name + ".txt"
 source = downloadPath + sTanley_data_file

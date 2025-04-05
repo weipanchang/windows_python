@@ -24,21 +24,6 @@ user_pass_pairs =  [line for line in open("UserName_Password.txt", "r")]
 user_pass_pairs=  random.sample(user_pass_pairs, 4)
 print (user_pass_pairs)
 
-# def read_in_line():
-# #    stocks = input("Enter the stock symbol: (Ctr-C to Exit, RETURN for batch process from Stock.txt)  ")
-#     parser = argparse.ArgumentParser(description='Select Username Password Pair')
-# 
-#     parser.add_argument(
-#         '-l ',   # either of this switches
-#         nargs='*',       # one or more parameters to this switch
-#         type=str,        # /parameters/ are str
-#         dest=user_pass_pairs,      # store in 'lst'.
-#         default=None,      # since we're not specifying required.
-#         help='Manual Input Username Password, or batch process from random select Username Password Pair'
-#     )
-# #    args = parser.parse_args()
-# 
-#     return parser.parse_args()
 
 def connect_pia_vpn(region):
     try:
@@ -76,19 +61,19 @@ for i in range(4):
 #    user,password = user_pass_pair
     print(user,password)
     k = i + 1
-    command = f'"2-stock_batch_data_tipranks_{k}.py" -l {user} {password}'
+    command = f'"3-stock_batch_data_tipranks_{k}.py" -l {user} {password}'
     os.system(command)
     # command = f'"1-stock_batch_data_tipranks_{k}.py" -l {user} {password}'
     # subprocess.run(command, shell=True, check=True)
 #    os.system("pause")
     
 dis_connect_pia_vpn()
-
-command = f'"1-stock_batch_data_msft_mylist_1.py"'
+# 
+command = f'"5-stock_batch_data_msft_mylist_1.py"'
 os.system(command)
 #subprocess.run(command, shell=True, check=True)
 
-command = f'"1-stock_batch_data_yahoo_mylist_1.py"'
+command = f'"3-stock_batch_data_yahoo_mylist_1.py"'
 os.system(command)
 #subprocess.run(command, shell=True, check=True)
 
