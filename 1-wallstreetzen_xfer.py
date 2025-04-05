@@ -11,16 +11,21 @@ import shutil
 import re
 import logging
 
-#Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
-dataPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen\\"
-data_file_name = "Best Stock Screener App In 2025 - #1 Top Free Stock Scanner _ WallStreetZen.txt"
-source = os.path.expanduser( '~' ) + '\Downloads\\' + data_file_name
-wallStreetZen_data_file = dataPath + data_file_name
+# wallStreetZen_data_file = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen\\Best Stock Screener App In 2025 - #1 Top Free Stock Scanner _ WallStreetZen.txt"
+# Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
+# downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen"
+
+dataPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen\\"                                     
+downloadPath = os.path.expanduser( '~' ) + '\Downloads\\'
+WallStreetZen_data_file_name = "Best Stock Screener App In 2025 - #1 Top Free Stock Scanner _ WallStreetZen"
+#WallStreetZen_pdf_file = WallStreetZen_data_file_name + ".pdf"
+WallStreetZen_data_file = WallStreetZen_data_file_name + ".txt"
+source = downloadPath + WallStreetZen_data_file
 
 class Logger(object):
 
     def __init__(self):
-        global dataPath
+        global downloadPath
         today = date.today()
 
         self.terminal = sys.stdout
@@ -37,6 +42,21 @@ class Logger(object):
         pass
      
 def main():
+    
+    def extract_data(data_list):
+        key_list = []
+        value_list = []
+        WallStreetZen_readlines =  [stock_line for stock_line in open(dataPath + WallStreetZen_data_file, "r")]
+#        print(WallStreetZen_readlines[2::2])
+        for line in WallStreetZen_readlines[2::2]:
+            stock_line= line
+            if "Strong" in stock_line:
+                stock_line = stock_line.replace("Strong","")
+            key_list.append(stock_line.split()[0])
+            value_list.append(stock_line.split()[1:])
+        data_list = { k:v for (k,v) in zip(key_list, value_list)}
+        return data_list
+    
     def fetch_Stock_Name(stock_Dictionary):
         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
         for stock_fund_name in stock_fund_names:
@@ -74,45 +94,36 @@ def main():
         os.mkdir(dataPath)
     except:
         pass
+    
+    #source = "C:\\Users\\William Chang\\Downloads\\Best Stock Screener App In 2025 - #1 Top Free Stock Scanner _ WallStreetZen.txt"
 
     shutil.move(source, dataPath)
     
     fetch_Stock_Name(stock_Dictionary:={})
-
-    with open(wallStreetZen_data_file) as WallStreetZen:
-        reading_line_list = WallStreetZen.readlines()
-
+    data_list = extract_data(data_list:={})
+    data_list["GOOG"] = data_list.pop("GOOGL")
     sys.stdout = Logger()
+#    os.system("pause")    
 
     for stock in stock_Dictionary.keys():
-        for i in range(2,len(reading_line_list)):
-            if len(reading_line_list[i]) > 3:
-                line_element_list = reading_line_list[i].split()
-                if line_element_list[0] == "GOOGL":
-                    line_element_list[0] = "GOOG"
 
-            if stock == line_element_list[0]:
-                print("\n")
-                print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
-                print ("Processing " + stock_Dictionary[stock][0] +" data")
-                print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
+        print("\n")
+        print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
+        print ("Processing " + stock_Dictionary[stock][0] +" data")
+        print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
 
-                if "Strong" in line_element_list:
-                    line_element_list.remove("Strong")
+        target_price = data_list[stock][-4].replace("$","").replace(",","")
 
-                target_price = line_element_list[-4].replace("$","").replace(",","")
+        try: 
+            float(target_price) 
+            pass 
+        except ValueError: 
+            target_price = "0.00"
+    
+        print ("\n1y Target Est = %s\n" % (target_price))                
+        print ("\nPrice Target Upside Percent = %s\n" % (data_list[stock][-3]))
 
-                try: 
-                    float(target_price) 
-                    pass 
-                except ValueError: 
-                    target_price = "0.00"
-            
-                print ("\n1y Target Est = %s\n" % (target_price))                
-                print ("\nPrice Target Upside Percent = %s\n" % (line_element_list[-3]))
-                break
 
- 
 if __name__ == '__main__':
     
     main()
