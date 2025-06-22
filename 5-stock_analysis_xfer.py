@@ -66,7 +66,6 @@ def main():
                     if len(line_from_Stock_Analysis)  != 0:
                         elements = line_from_Stock_Analysis.split()
                         if len(elements)  > 5:
-#                            print(elements)
                             data_list[elements[0]] = [elements[3].replace(",", "")]
                             data_list[elements[0]].append(elements[4])
                 else:
@@ -109,8 +108,7 @@ def main():
         os.mkdir(dataPath)
     except:
         pass            
-#    source = "C:\\Users\\William Chang\\Downloads\\Stock Watchlist & Portfolio Tracker.txt"
-#    destination = "D:\Pycharm projects\gfg\Test\A"
+
     shutil.move(source, dataPath)            
     fetch_Stock_Name(stock_Dictionary:={})
 

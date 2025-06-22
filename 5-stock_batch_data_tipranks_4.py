@@ -29,7 +29,7 @@ from dateutil.relativedelta import relativedelta
 from datetime import date
 #from cachetools import cached
 ####################################
-user_pass_line = 6
+user_pass_line = 4
 ####################################
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Tipranks"
@@ -148,7 +148,7 @@ class init_webdriver():
     def driver_init(self):
         self.driver = Firefox(service=self.service, options=self.options)
 #        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
-        self.driver.set_page_load_timeout(50)
+        self.driver.set_page_load_timeout(100)
         return(self.driver)
 
 def read_in_line():
@@ -265,8 +265,10 @@ def main():
     sys.stdout = Logger()                                    
     fetch_Stock_Name(stock_Dictionary:={})
     pause_before = False
+    stock_sequence = 13
     for stock in stock_Dictionary.keys():
-        print("\n")
+        print(stock_sequence, "\n")
+        stock_sequence = stock_sequence + 1
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print ("Processing " + stock_Dictionary[stock][0] +" data")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
@@ -316,8 +318,12 @@ def main():
             
         if check_exists_by_xpath('/html/body/div[1]/div[2]/div[4]/div[3]/div/div[1]/div[4]/div[2]/div[2]/div[3]/div[2]/div/div[1]/div[1]'):
             
-            element = frame.find_element(By.XPATH,'/html/body/div[1]/div[2]/div[4]/div[3]/div/div[1]/div[4]/div[2]/div[2]/div[3]/div[2]/div/div[1]/div[1]')            
-                        
+            element = frame.find_element(By.XPATH,'/html/body/div[1]/div[2]/div[4]/div[3]/div/div[1]/div[4]/div[2]/div[2]/div[3]/div[2]/div/div[1]/div[1]')
+            
+        if check_exists_by_xpath('/html/body/div[2]/div[2]/div[4]/div[3]/div/div[1]/div[4]/div[2]/div[2]/div[3]/div/table/tbody/tr/td[3]/span[2]'):
+            
+            element = frame.find_element(By.XPATH,'/html/body/div[2]/div[2]/div[4]/div[3]/div/div[1]/div[4]/div[2]/div[2]/div[3]/div/table/tbody/tr/td[3]/span[2]')
+                                                   
         try:
             element.click()
         except:

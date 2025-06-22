@@ -29,7 +29,7 @@ from dateutil.relativedelta import relativedelta
 from datetime import date
 
 ####################################
-user_pass_line = 8
+user_pass_line = 1
 ####################################
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Tipranks"
@@ -144,7 +144,7 @@ class init_webdriver():
         
     def driver_init(self):
         self.driver = Firefox(service=self.service, options=self.options)
-        self.driver.set_page_load_timeout(50)
+        self.driver.set_page_load_timeout(100)
         return(self.driver)
     
 def read_in_line():
@@ -257,9 +257,11 @@ def main():
     sys.stdout = Logger()                                    
     fetch_Stock_Name(stock_Dictionary:={})
     pause_before = False
+    stock_sequence = 1
     for stock in stock_Dictionary.keys():
    
-        print("\n")
+        print(stock_sequence, "\n")
+        stock_sequence = stock_sequence + 1
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print ("Processing " + stock_Dictionary[stock][0] +" data")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
@@ -271,7 +273,7 @@ def main():
         driver.get(stock_path)
         time.sleep(5)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        time.sleep(5)
+        time.sleep(2)
         if pause_before is False:
             time.sleep(5)
             driver.refresh()

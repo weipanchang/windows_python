@@ -136,8 +136,7 @@ class init_webdriver():
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
-
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
         ]
         
         # select random user agent
@@ -149,7 +148,7 @@ class init_webdriver():
     def driver_init(self):
         self.driver = Firefox(service=self.service, options=self.options)
 #        self.driver = webdriver.Firefox(capabilities=self.desiredCapabilities, options=self.options)
-        self.driver.set_page_load_timeout(50)
+        self.driver.set_page_load_timeout(100)
         return(self.driver)
     
 def read_in_line():
@@ -262,10 +261,10 @@ def main():
     sys.stdout = Logger()                                    
     fetch_Stock_Name(stock_Dictionary:={})
     pause_before = False
+    stock_sequence =5
     for stock in stock_Dictionary.keys():
-  
-#        sys.stdout = Logger()
-        print("\n")
+        print(stock_sequence, "\n")
+        stock_sequence = stock_sequence + 1
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print ("Processing " + stock_Dictionary[stock][0] +" data")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
@@ -274,11 +273,11 @@ def main():
         time.sleep(1)
         stock_path = "https://www.tipranks.com/stocks/" + stock + "/forecast"
         driver.get(stock_path)
-        time.sleep(3)
+        time.sleep(5)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        time.sleep(6)
+        time.sleep(2)
         if pause_before is False:
-            time.sleep(7)
+            time.sleep(5)
             driver.refresh()
             time.sleep(7)
         if check_exists_by_xpath('//div[@class="w12 p0   displayflex positionrelative grow1"]'):

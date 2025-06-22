@@ -58,6 +58,17 @@ def dis_connect_pia_vpn():
     
 # Replace 'US' with your desired region
 
+dis_connect_pia_vpn()
+# 
+command = f'"3-stock_batch_data_msft_mylist_1.py"'
+os.system(command)
+#subprocess.run(command, shell=True, check=True)
+
+command = f'"3-stock_batch_data_yahoo_mylist_1.py"'
+os.system(command)
+#subprocess.run(command, shell=True, check=True)
+
+
 for i in range(4):
     
     region = random_server_list[i]
@@ -67,21 +78,13 @@ for i in range(4):
 #    user,password = user_pass_pair
     print(user,password)
     k = i + 1
-    command = f'"5-stock_batch_data_tipranks_{k}.exe" -l {user} {password}'
+    command = f'"5-stock_batch_data_tipranks_{k}.py" -l {user} {password}'
     os.system(command)
     # command = f'"1-stock_batch_data_tipranks_{k}.py" -l {user} {password}'
     # subprocess.run(command, shell=True, check=True)
 #    os.system("pause")
     
-dis_connect_pia_vpn()
-# 
-command = f'"3-stock_batch_data_msft_mylist_1.exe"'
-os.system(command)
-#subprocess.run(command, shell=True, check=True)
 
-command = f'"3-stock_batch_data_yahoo_mylist_1.exe"'
-os.system(command)
-#subprocess.run(command, shell=True, check=True)
 
     
     
