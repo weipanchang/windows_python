@@ -196,6 +196,7 @@ def main():
 
     fetch_Stock_Name(stock_Dictionary:={})
     sys.stdout = Logger()
+    
     for stock in stock_Dictionary.keys():
 
 #        sys.stdout = Logger()
@@ -205,7 +206,6 @@ def main():
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
 
         msft_ticket = stock_Dictionary[stock][2]
-
         url_stock = "https://www.msn.com/en-us/money/watchlist?ocid=winp1taskbar&duration=1M&id="+ msft_ticket+"&l3=L3_Earnings"
         driver.get(url_stock)
         driver.implicitly_wait(1)
@@ -239,11 +239,12 @@ def main():
         if check_exists_by_xpath(driver, '//div[@class = "price_PreAfter"]'):
             print("After Hours:     %s\n" % (driver.find_element("xpath",'//div[@class = "price_PreAfter"]').text))
         
-#        time.sleep(1)    
         elm_list = driver.find_elements(By.XPATH,'//span[@class = "summaryValue-DS-EntryPoint1-2"]')
         target = elm_list[0].text.replace('USD','')
         print( "1y Target Est = %s\n" % (target))
-        time.sleep(5)
+        
+        time.sleep(2)
+        
         print("Recommedation:    %s\n" % (driver.find_element("xpath",'//h2[@class="suggestion-DS-EntryPoint1-1"]').text))
         print("Price Volatility: %s\n" % elm_list[1].text)
         
