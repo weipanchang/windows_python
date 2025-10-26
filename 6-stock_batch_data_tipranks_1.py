@@ -220,7 +220,11 @@ def main():
     #driver = init_webdriver().driver
     driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
 #    os.system("PAUSE")
-    time.sleep(8)
+    time.sleep(3)
+    if check_exists_by_xpath("//*[@data-110n-id='dnsNotFound-title']"):
+        driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
+        time.sleep(3)
+    
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
