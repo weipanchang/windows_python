@@ -74,7 +74,8 @@ def main():
                  #     data_list[elements[0]] = element_data[1]
                  # else:
                  #     data_list[elements[0]] = element_data[0]
-                data_list[elements[0]] = element_data[3]   
+                data_list[elements[0].split()[0]] = element_data[3]
+#                data_list[elements[0] = element_data[4]   
         return(data_list)
     
     def fetch_Stock_Name(stock_Dictionary):

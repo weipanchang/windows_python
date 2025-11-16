@@ -29,7 +29,7 @@ from dateutil.relativedelta import relativedelta
 from datetime import date
 #from cachetools import cached
 ####################################
-user_pass_line = 2
+user_pass_line = 3
 ####################################
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Tipranks"
@@ -187,19 +187,12 @@ def main():
         idx2 = s.index(sub2)
         return(s[idx1 + len(sub1): idx2])
 
-            
-    
-    
-    # def extract_price_2(s, sub1):
-    # 
-    #     idx1 = s.index(sub1)
-    #     return(s[idx1 + len(sub1):])
     
     def fetch_Stock_Name(stock_Dictionary):
         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
 #        stock_fund_names =  [line for line in open("STOCK-01.txt", "r")]
         
-        for stock_fund_name in (stock_fund_names[13],stock_fund_names[13]):
+        for stock_fund_name in (stock_fund_names[11],stock_fund_names[11]):
             if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
                 continue
 
