@@ -67,13 +67,8 @@ def main():
                 elements = line_from_Stock_Analysis.split(",")
                 print(elements)
                 element_data = elements
-                # element_data = elements[2].split(",")
-                # print(element_data)
-                 #    if len(elements)  > 5:
-                 # if float(element_data[0]) == 0  or str(element_data[0])[0]== "+" or str(element_data[0])[0]== "-":
-                 #     data_list[elements[0]] = element_data[1]
-                 # else:
-                 #     data_list[elements[0]] = element_data[0]
+                if element_data[3][0] == '"':
+                    element_data[3] = element_data[3] + element_data[4]
                 data_list[elements[0].split()[0]] = element_data[3]
 #                data_list[elements[0] = element_data[4]   
         return(data_list)
@@ -130,8 +125,7 @@ def main():
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print ("Processing " + stock_Dictionary[stock][0] +" data")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
-        
-        print ("\n1y Target Est = %s\n" % (data_list[stock]))
+        print ("\n1y Target Est = %s\n" % (data_list[stock].replace('"','')))
 #        print ("\nPrice Target Upside Percent = %s%%\n" % (data_list[stock][1]))
  
 if __name__ == '__main__':
