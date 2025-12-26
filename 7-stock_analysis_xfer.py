@@ -67,9 +67,10 @@ def main():
                 elements = line_from_Stock_Analysis.split(",")
                 print(elements)
                 element_data = elements
-                if element_data[3][0] == '"':
-                    element_data[3] = element_data[3] + element_data[4]
-                data_list[elements[0].split()[0]] = element_data[3]
+                if element_data[4][0] == '"':
+                    print (element_data[4], element_data[5] )
+                    element_data[4] = element_data[4] + element_data[5]
+                data_list[elements[0].split()[0]] = element_data[4]
 #                data_list[elements[0] = element_data[4]   
         return(data_list)
     
