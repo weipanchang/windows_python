@@ -1,21 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Extract 'Ticker' and 'Price Target' from a PDF region defined by two marker lines,
-remove "Strong Buy" and "Buy", split the Price Target cell and keep the third-from-end
-token, then save results to CSV with every field double-quoted.
 
-Adjust PDF_PATH if needed.
+# Extract 'Ticker' and 'Price Target' from a PDF region defined by two marker lines,
+# remove "Strong Buy" and "Buy", split the Price Target cell and keep the third-from-end
+# token, then save results to CSV with every field double-quoted.
+# 
+# Adjust PDF_PATH if needed.
+# 
+# As a Python developer, develope a python script to read the file
+# C:\Users\William Chang\Downloads\Best Stock Screener App In 2026 - #1 Top Free Stock Scanner _ WallStreetZen.pdf
+# Return_Records.pdf , after line  containing  "Overview Zen Rating Price Value Growth",
+# find the table, grab data in column "Ticker" and "Price Target", stop the line containing "How to Use a Stock Screener",
+# remove the string "Strong Buy", remove the string "Buy". remove the string "Unlock", Split string under column" Price Target",
+# remove all elements except the third from the end. output to csv with double quote format
 
-As a Python developer, develope a python script to read the file
-C:\Users\William Chang\Downloads\Best Stock Screener App In 2026 - #1 Top Free Stock Scanner _ WallStreetZen.pdf
-Return_Records.pdf , after line  containing  "Overview Zen Rating Price Value Growth",
-find the table, grab data in column "Ticker" and "Price Target", stop the line containing "How to Use a Stock Screener",
-remove the string "Strong Buy", remove the string "Buy". remove the string "Unlock", Split string under column" Price Target",
-remove all elements except the third from the end. output to csv with double quote format
 
-
-"""
 
 from pathlib import Path
 import re
