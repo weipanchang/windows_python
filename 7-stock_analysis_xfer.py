@@ -21,7 +21,7 @@ sTock_Analysis_data_file = sTock_Analysis_data_file_name + ".txt"
 source = downloadPath + sTock_Analysis_data_file
 
 def pdf_table_to_text(pdf_file_name, text_file_name):
-    # # extract all the tables in the PDF file
+    # # extract all the tables in the cHase_file_namefile
 #    abc = camelot.read_pdf(pdf_file_name)   #address of file location
     df = read_pdf(pdf_file_name, pages='all') 
     # print the first table as Pandas DataFrame
@@ -127,7 +127,7 @@ def main():
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print ("Processing " + stock_Dictionary[stock][0] +" data")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
-        print ("\n1y Target Est = %s\n" % (data_list[stock].replace('"','')))
+        print ("\n1y Target Est = %s\n" % (data_list[stock].replace('"','').replace(',','')))
 #        print ("\nPrice Target Upside Percent = %s%%\n" % (data_list[stock][1]))
  
 if __name__ == '__main__':

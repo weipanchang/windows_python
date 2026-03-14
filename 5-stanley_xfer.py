@@ -16,7 +16,7 @@ from PyPDF2 import PdfReader
 """
 As a Python developer, develope a python script to read the file
 os.path.expanduser( '~' ) + '\Downloads\\'+ \\Watchlist.pdf  by lines,  start from "Watchlist",
-output  to list, 
+output  to list,
 remove first two elements from the list,
 remove last twenty four elements from the list,
 
@@ -164,35 +164,35 @@ if __name__ == "__main__":
     # 7) Print results
     # print("Trimmed list:")
     # print(trimmed)
-    # 
+    #
     # print("\nNew list (last two tokens as strings):")
     # print(new_list_strings)
-    # 
+    #
     # print("\nNew list split into sublists:")
     # print(new_list_sublists)
-    # 
+    #
     # print("\nkey_list:")
     # print(key_list)
-    # 
+    #
     # print("\nvalue_list:")
     # print(value_list)
 
     # print("\ndata_list (dictionary):")
     # print(data_list)
-    
+
     def fetch_Stock_Name(stock_Dictionary):
         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
         for stock_fund_name in stock_fund_names:
             if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
                 continue
-    
+
             stock = re.search(r'(\(\^\w+\))', stock_fund_name)
             if stock is None:
                 stock = re.search('\(\w+\)', stock_fund_name)
                 msft_ticket = re.search('\[\w+\]', stock_fund_name)
-    
+
             is_stock =  re.search("ETF|Fund",stock_fund_name)
-    
+
             if is_stock:
                 if 'ETF' in stock_fund_name:
                     stock_or_fund =  'ETF'
@@ -200,14 +200,14 @@ if __name__ == "__main__":
                     stock_or_fund = 'Fund'
             else:
                 stock_or_fund ='STOCK'
-    
+
             stock = stock.group().rstrip().rstrip(')').lstrip('(')
             msft_ticket = msft_ticket.group().rstrip().rstrip(']').lstrip('[')
             stock_Dictionary[stock] = [stock_fund_name.rstrip()[:-9]]
-            
+
             stock_Dictionary[stock].append(stock_or_fund)
             stock_Dictionary[stock].append(msft_ticket)
-            
+
     try:
         shutil.rmtree(dataPath)
     except:
@@ -216,13 +216,13 @@ if __name__ == "__main__":
     try:
         os.mkdir(dataPath)
     except:
-        pass            
-      
+        pass
+
     fetch_Stock_Name(stock_Dictionary:={})
 
     print('\n\n')
     sys.stdout = Logger()
-    
+
     for stock in stock_Dictionary.keys():
         print("\n")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
@@ -230,11 +230,11 @@ if __name__ == "__main__":
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
         target_price = data_list[stock].replace(",","")
 
-        try: 
-            float(target_price) 
-            pass 
-        except ValueError: 
+        try:
+            float(target_price)
+            pass
+        except ValueError:
             target_price = "0.00"
 
         print ("\n1y Target Est = %s\n" % (target_price))
-        
+
