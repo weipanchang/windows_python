@@ -3,7 +3,8 @@
 
 """
 As a Python developer, develope a python script to read the file
-os.path.expanduser( '~' ) + '\Downloads\\'+ \\Best Stock Screener App In 2026 - #1 Top Free Stock Scanner _ WallStreetZen.pdf  by lines,  start from "Watchlist"
+os.path.expanduser( '~' ) + '\\Downloads\\'+ \\Best Stock Screener App In 2026 - #1 Top Free Stock Scanner_WallStreetZen.pdf
+by lines,  start from "Watchlist"
 
 after line  containing  "Overview Zen Rating Price Value Growth",
 Find the table, grab data in column "Ticker" and "Price Target", stop the line containing "How to Use a Stock Screener",
