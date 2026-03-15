@@ -239,7 +239,7 @@ class Logger(object):
         today = date.today()
 
         self.terminal = sys.stdout
-        self.log = open(dataPath +"\\Summary_Report_From_Stanley_"+ today.strftime("%m%d%Y") + ".txt" , "w")
+        self.log = open(dataPath +"\\Summary_Report_From_WallStreetZen_"+ today.strftime("%m%d%Y") + ".txt" , "w")
 
     def write(self, message):
         self.terminal.write(message)
