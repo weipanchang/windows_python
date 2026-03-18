@@ -271,6 +271,7 @@ def extract_ticker_price(pdf_path: str) -> pd.DataFrame:
 if __name__ == "__main__":
     try:
         result = extract_ticker_price(PDF_PATH)
+        print (result)
         if result.empty:
             print("No Ticker / Price Target pairs found in the specified region.")
             sys.exit(1)

@@ -24,7 +24,7 @@ import sys
 from pprint import pprint
 from typing import Dict, Any
 
-dataPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen\\"                                     
+dataPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\WallStreetZen\\"
 downloadPath = os.path.expanduser( '~' ) + '\Downloads\\'
 WallStreetZen_data_file_name = "Best Stock Screener App In 2026 - #1 Top Free Stock Scanner _ WallStreetZen"
 WallStreetZen_csv_file = WallStreetZen_data_file_name + ".csv"
@@ -49,7 +49,7 @@ class Logger(object):
         #this handles the flush command by doing nothing.
         #you might want to specify some extra behavior here.
         pass
-     
+
 
 
 def build_data_list(path: str) -> Dict[str, str]:
@@ -78,7 +78,7 @@ def build_data_list(path: str) -> Dict[str, str]:
 
 def main():
     downloadPath = os.path.expanduser( '~' ) + '\Downloads\\'
-    #PDF_PATH = Path(downloadPath + r"Best Stock Screener App In 2026 - #1 Top Free Stock Scanner _ WallStreetZen.pdf")
+    #cHase_pdf_file = Path(downloadPath + r"Best Stock Screener App In 2026 - #1 Top Free Stock Scanner _ WallStreetZen.pdf")
     parser = argparse.ArgumentParser(description="Build dict Ticker -> Price Target from CSV")
     parser = argparse.ArgumentParser(description="Map first CSV column to second column after skipping 4 lines")
     parser.add_argument(
@@ -92,13 +92,9 @@ def main():
 
     data_list = build_data_list(args.csvfile)
 
-    # Print the resulting dictionary variable
-    #print("data_list =")
-    #pprint(data_list, width=120)
-
     def fetch_Stock_Name(stock_Dictionary):
         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
-        
+
         for stock_fund_name in stock_fund_names:
             if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
                 continue
@@ -107,9 +103,9 @@ def main():
             if stock is None:
                 stock = re.search('\(\w+\)', stock_fund_name)
                 msft_ticket = re.search('\[\w+\]', stock_fund_name)
-    
+
             is_stock =  re.search("ETF|Fund",stock_fund_name)
-    
+
             if is_stock:
                 if 'ETF' in stock_fund_name:
                     stock_or_fund =  'ETF'
@@ -117,7 +113,7 @@ def main():
                     stock_or_fund = 'Fund'
             else:
                 stock_or_fund ='STOCK'
-    
+
             stock = stock.group().rstrip().rstrip(')').lstrip('(')
             msft_ticket = msft_ticket.group().rstrip().rstrip(']').lstrip('[')
             stock_Dictionary[stock] = [stock_fund_name.rstrip()[:-9]]
@@ -138,9 +134,8 @@ def main():
 
     shutil.move(source, dataPath)
     fetch_Stock_Name(stock_Dictionary:={})
-    #data_list = extract_data(data_list:={})
     sys.stdout = Logger()
-    
+
     for stock in stock_Dictionary.keys():
 
         print("\n")
@@ -148,8 +143,6 @@ def main():
         print ("Processing " + stock_Dictionary[stock][0] +" data")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
         target = data_list[stock].replace("$","").replace(",","")
-        # if (data_list[stock])[-1] == 'k':
-        #         target = str(float(target.replace("k", "")) * 1000)
         print ("\n1y Target Est = %s\n" % (str(target)))
 
 
