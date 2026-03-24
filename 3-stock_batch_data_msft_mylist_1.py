@@ -245,7 +245,7 @@ def main():
         
         time.sleep(2)
         
-        print("Recommedation:    %s\n" % (driver.find_element("xpath",'//h2[@class="suggestion-DS-EntryPoint1-1"]').text))
+        print("Recommedation:    %s\n" % (driver.find_element("xpath",'//p[@class="suggestion-DS-EntryPoint1-1"]').text))
         print("Price Volatility: %s\n" % elm_list[1].text)
         
         time.sleep(1)
