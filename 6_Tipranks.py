@@ -10,6 +10,7 @@ from datetime import date
 #from selenium_stealth import stealth
 import random
 import os
+import json
 
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 
@@ -58,35 +59,42 @@ def dis_connect_pia_vpn():
     
 # Replace 'US' with your desired region
 
-for i in range(14):
+for i in range(16):
 #for i in [0,1]:
     
     region = random_server_list[i]
     connect_pia_vpn(region)
+       
+    userpass = (user_pass_pairs[i].split()[0], user_pass_pairs[i].split()[1], i)
+#
     
-    user,password = user_pass_pairs[i].split()
+    
 #    user,password = user_pass_pair
-    print(user,password)
-    #k = i 
+    #print(user,password)
+    #k = i
+    # subprocess.run(["python", "script2.py", "my_variable_value"])
     if i == 0:
-        command = f'"6-stock_batch_data_tipranks_1.py" -l {user} {password} {i}'
-        os.system(command)
+        #command = f'6-stock_batch_data_tipranks_1.py" -{user} {password} {i}'
+        subprocess.run(["python", os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\" + "S-stock_batch_data_tipranks_1.py", json.dumps(userpass)])
+        
     else:
-        command = f'"6-stock_batch_data_tipranks_2.py" -l {user} {password} {i}'
-        os.system(command)
+        #command = f'6-stock_batch_data_tipranks_1.py" -l {user} {password} {i}'
+        subprocess.run(["python", os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\" + "S-stock_batch_data_tipranks_1.py", json.dumps(userpass)])
     # command = f'"1-stock_batch_data_tipranks_{k}.py" -l {user} {password}'
     # subprocess.run(command, shell=True, check=True)
+    delay = random.uniform(3, 10)
+    time.sleep(delay)
 #    os.system("pause")
     
 dis_connect_pia_vpn()
 
-command = f'"3-stock_batch_data_msft_mylist_1.py"'
-os.system(command)
-#subprocess.run(command, shell=True, check=True)
-
-command = f'"3-stock_batch_data_yahoo_mylist_1.py"'
-os.system(command)
-#subprocess.run(command, shell=True, check=True)
+# command = f'"3-stock_batch_data_msft_mylist_1.py"'
+# os.system(command)
+# #subprocess.run(command, shell=True, check=True)
+# 
+# command = f'"3-stock_batch_data_yahoo_mylist_1.py"'
+# os.system(command)
+# #subprocess.run(command, shell=True, check=True)
 
     
     

@@ -1,0 +1,358 @@
+#!/usr/bin/env python
+from seleniumbase import Driver
+from selenium import webdriver
+from selenium.webdriver import Firefox
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import *
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
+from path import Path
+import time
+import re
+import argparse
+import datetime
+import shutil
+import sys
+from datetime import date
+#from selenium_stealth import stealth
+import random
+import os
+import json
+
+from dateutil.relativedelta import relativedelta
+from datetime import date
+
+####################################
+user_pass_line = 1
+####################################
+Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
+downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Tipranks"
+print ("")
+
+class Logger(object):
+
+    def __init__(self):
+        global downloadPath
+        today = date.today()
+
+        try:
+            shutil.rmtree(downloadPath)
+            # shutil.rmtree(downloadPath_pickle)
+        except:
+#            print("failed to remove")
+            pass
+        time.sleep(1)
+        
+        try:
+            os.mkdir(downloadPath)
+            # os.mkdir(downloadPath_pickle)
+        except:
+            pass
+        # time.sleep(2)
+        self.terminal = sys.stdout
+        self.log = open(downloadPath +"\\Summary_Report_From_Tipranks_"+ today.strftime("%m%d%Y") + ".txt" , "a+")
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)
+
+    def flush(self):
+        #this flush method is needed for python 3 compatibility.
+        #this handles the flush command by doing nothing.
+        #you might want to specify some extra behavior here.
+        pass
+
+class init_webdriver():
+    def __init__(self):
+#        global downloadPath
+        global stock
+#        stock_name = stock
+        print ("")
+
+        self.delay = 0
+        self.currentDateTime = datetime.datetime.now()
+        self.date = self.currentDateTime.date()
+        
+#        self.profile = webdriver.FirefoxProfile()
+        self.options = Options()
+        self.options.set_preference("browser.download.folderList", 2)
+        self.options.set_preference("browser.download.manager.showWhenStarting", False)
+        self.options.set_preference("browser.download.dir", downloadPath)
+        self.options.set_preference("browser.helperApps.neverAsk.openFile", "text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml")
+        self.options.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml")
+        self.options.set_preference("browser.helperApps.alwaysAsk.force", False)
+        self.options.set_preference("browser.download.manager.alertOnEXEOpen", False)
+        self.options.set_preference("browser.download.manager.focusWhenStarting", False)
+        self.options.set_preference("browser.download.manager.useWindow", False)
+        self.options.set_preference("browser.download.manager.showAlertOnComplete", False)
+        self.options.set_preference("browser.download.manager.closeWhenDone", False)
+        self.options.set_preference("browser.cache.disk.enable", False)
+        self.options.set_preference("browser.cache.memory.enable", False)
+        self.options.set_preference("browser.cache.offline.enable", False)
+        self.options.set_preference("network.http.use-cache", False)
+        self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
+        self.service = Service(os.path.expanduser( '~' ) +'\.cache\selenium\geckodriver\win64\0.36.0')
+#        self.desiredCapabilities['firefox_profile'] = self.profile.encoded
+        
+        #run in headless mode
+        #self.options.add_argument("--headless")
+        
+        # disable the AutomationControlled feature of Blink rendering engine
+        self.options.add_argument('--disable-blink-features=AutomationControlled')
+        #  
+        # disable pop-up blocking
+        self.options.add_argument('--disable-popup-blocking')
+        #  
+        # # start the browser window in maximized mode
+        # options.add_argument('--start-maximized')
+        #  
+        # disable extensions
+        self.options.add_argument('--disable-extensions')
+        #  
+        # disable sandbox mode
+        self.options.add_argument('--no-sandbox')
+        #  
+        # disable shared memory usage
+        self.options.add_argument('--disable-dev-shm-usage')
+        
+        # Step 3: Rotate user agents 
+        user_agents = [
+            # Add your list of user agents here
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0"
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 13_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+
+        ]
+        
+        # select random user agent
+        user_agent = random.choice(user_agents)
+        #self.driver.set_page_load_timeout(50)
+#        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0"
+        # pass in selected user agent as an argument
+        self.options.add_argument(f'user-agent={user_agent}')
+        
+    def driver_init(self):
+        self.driver = Driver(uc=True)
+        self.driver.set_page_load_timeout(100)
+        return(self.driver)
+    
+# def read_in_line():
+# 
+#     parser = argparse.ArgumentParser(description='Process Username Password')
+# 
+#     parser.add_argument(
+#         '-l ',   # either of this switches
+#         nargs='*',       # one or more parameters to this switch
+#         type=str,        # /parameters/ are str
+#         dest='user_pass_pair',      # store in 'lst'.
+#         default=None,      # since we're not specifying required.
+#         help='Manual Input Username and Password selection'
+#     )
+#     return parser.parse_args()    
+        
+def main():
+ #   sys.stdout = Logger()
+    global user_pass_line
+    global stock_seq
+    def check_exists_by_xpath(xpath):
+        try:
+            driver.find_element(By.XPATH,xpath)
+        except NoSuchElementException:
+            return False
+        return True
+    
+    def extract_price(s, n, sub2):
+        idx2 = s.index(sub2)
+        return(s[3: idx2])
+    
+    def extract_price_3(s, sub1, sub2):
+        idx1 = s.index(sub1)
+        idx2 = s.index(sub2)
+        return(s[idx1 + len(sub1): idx2])
+    
+    # def extract_price_2(s, sub1):
+    # 
+    #     idx1 = s.index(sub1)
+    #     return(s[idx1 + len(sub1):])
+
+    def fetch_Stock_Name(stock_Dictionary):
+        stock_fund_names =  [stock_line for stock_line in open("STOCK.txt", "r")]
+        
+        for stock_fund_name in stock_fund_names:
+            if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
+                continue
+
+            stock = re.search(r'(\(\^\w+\))', stock_fund_name)
+            if stock is None:
+                stock = re.search('\(\w+\)', stock_fund_name)
+                msft_ticket = re.search('\[\w+\]', stock_fund_name)
+
+            is_stock =  re.search("ETF|Fund",stock_fund_name)
+#            print is_stock
+            if is_stock:
+                if 'ETF' in stock_fund_name:
+                    stock_or_fund =  'ETF'
+                else:
+                    stock_or_fund = 'Fund'
+            else:
+                stock_or_fund ='STOCK'
+            # print(stock_or_fund)
+            stock = stock.group().rstrip().rstrip(')').lstrip('(')
+            msft_ticket = msft_ticket.group().rstrip().rstrip(']').lstrip('[')
+            stock_Dictionary[stock] = [stock_fund_name.rstrip()[:-9]]
+            
+            stock_Dictionary[stock].append(stock_or_fund)
+            stock_Dictionary[stock].append(msft_ticket)
+    
+    driver = init_webdriver().driver_init()
+    #driver.minimize_window()
+    #driver = init_webdriver().driver
+    driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
+#    os.system("PAUSE")
+    time.sleep(3)
+    if check_exists_by_xpath("//*[@data-110n-id='dnsNotFound-title']"):
+        driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
+        time.sleep(3)
+    
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+    time.sleep(3)
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+    time.sleep(3)
+ 
+    email_box = driver.find_element(By.XPATH,"//input[contains(@class, 'w12 py4 px3 radiimedium')]")
+#    email_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[1]/div/div/div/div")
+                                              
+    email_box.click()
+    email_box.send_keys(username)
+    password_box = driver.find_element(By.XPATH,"//input[contains(@type, 'password')]")
+#    password_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[2]/div/div/div/div/div")
+    
+    password_box.click()
+    
+    password_box.send_keys(password)
+    driver.maximize_window()
+    time.sleep(3)
+    
+    if check_exists_by_xpath("/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span"):
+        signin_button = driver.find_element(By.XPATH,"/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span")
+        
+    if check_exists_by_xpath("/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span"):
+        signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span")
+
+    signin_button.click()
+    
+    time.sleep(3)   
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+    
+    time.sleep(1)
+    
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+    time.sleep(3)
+    sys.stdout = Logger()                                    
+    fetch_Stock_Name(stock_Dictionary:={})
+    stock_List = list(stock_Dictionary)
+#    print(stock_List)
+#    sys.exit()
+    stock = stock_List[int(stock_seq)]
+    pause_before = False
+   
+    print(stock_seq, "\n")
+    #stock_seq = int(stock_seq) + 1
+    print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
+    print ("Processing " + stock_Dictionary[stock][0] +" data")
+    print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
+    print("\n")
+    driver.refresh()
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+    time.sleep(1)
+    stock_path = "https://www.tipranks.com/stocks/" + stock + "/forecast"
+    driver.get(stock_path)
+    time.sleep(5)
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+    time.sleep(2)
+    if pause_before is False:
+        time.sleep(5)
+        driver.refresh()
+        time.sleep(7)
+
+#    if check_exists_by_xpath('//div[@class="w12 p0   displayflex positionrelative grow1"]'):
+    for i in range(3):
+        try:
+            frame = driver.find_element(By.XPATH,'//*[@id="tr-stock-page-content"]')
+            break
+        except NoSuchElementException:
+            driver.refresh()
+            time.sleep(2)
+        if i == 3:
+            # print("Element NOT Found")
+            # quit()
+            driver.quit()
+            sys.exit("Element NOT Found")
+#     else:
+#         print("Frame NOT Found")
+#         quit()
+# #        sys.exit() 
+    time.sleep(2)
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+    time.sleep(2)
+    
+    if check_exists_by_xpath('//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]'):
+        
+        element = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpale shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
+    
+    if check_exists_by_xpath('//div[@class="flexccc    mt3 displayflex colorpurple-dark shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]'):
+        
+        element = frame.find_element(By.XPATH,'//div[@class="flexccc    mt3 displayflex colorpurple-dark shrink0 lineHeight2 fontSize2 ml2 ipad_fontSize3"]')
+        
+    if check_exists_by_xpath('//div[@class="colorgray-1  ml3 mobile_fontSize7 laptop_ml0"]'):
+        
+        element = frame.find_element(By.XPATH,'//div[@class="colorgray-1  ml3 mobile_fontSize7 laptop_ml0"]')
+        
+    if check_exists_by_xpath('/html/body/div[1]/div[2]/div[4]/div[3]/div/div[1]/div[4]/div[2]/div[2]/div[3]/div[2]/div/div[1]/div[1]'):
+        
+        element = frame.find_element(By.XPATH,'/html/body/div[1]/div[2]/div[4]/div[3]/div/div[1]/div[4]/div[2]/div[2]/div[3]/div[2]/div/div[1]/div[1]')            
+                    
+    try:
+        element.click()
+    except:
+        quit()
+#        sys.exit()
+    value = str((element.text).encode('utf8'))
+    target  = extract_price_3(value, "$","\\n\\xe2")
+
+    print( "1y Target Est = %s\n" %(target))
+#      sys.stdout = None
+# Close browser
+    driver.quit()
+
+if __name__ == "__main__":
+#    user_pass_pair  = read_in_line().user_pass_pair
+    user_pass_pair = tuple(json.loads(sys.argv[1]))
+    if user_pass_pair == None:
+        with open(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\UserName_Password.txt") as userpass:
+            while user_pass_line != 1:
+                line_from_userpass =  userpass.readline()
+                user_pass_line -= 1
+            line_from_userpass =  userpass.readline()
+            print(line_from_userpass)    
+            username = line_from_userpass.split()[0]
+            password = line_from_userpass.split()[1]
+            
+    else:
+        username,password = user_pass_pair[0],user_pass_pair[1]
+        stock_seq = int(user_pass_pair[2])
+    print("User= %s Password= %s\n" % (username,password)) 
+    main()
