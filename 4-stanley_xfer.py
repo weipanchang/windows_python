@@ -1,32 +1,178 @@
 #!/usr/bin/env python
-import requests
+
+
+# As a Python developer, develope a python script to
+# remove first two elements from the list,
+# remove last twenty four elements from the list,
+#
+# copy last two strings of each element from the list to a new list,
+# from new list, split each element to a sublist
+# print new list
+# output the first element of the sublist from new list to key_list
+# remove "$" from the second element of the sublist in new list, and copy to value_list
+# print key_list
+# print value_list
+# zap key_list as key and value_list as value to a dictionary variable data_list
+
+# copy  the string in the parentheses of each element in line_list to a list key_list
+# copy the string from begining to the ninth character from the end to a list value1_list
+# copy the string in the  square brackets of each element in line_list to a list value2_list
+#
+# copy element  from value1_list, "stock", element from value2_list to value_list
+#
+# create a dictionary type variable stock_Dictionary
+# zap key_list, value_list to stock_Dictionary
+
+import os
 import time
 import datetime
 from datetime import date
-from datetime import timedelta
 from path import Path
 import os
 import sys
 import shutil
 import re
 import logging
-import pymupdf
+from PyPDF2 import PdfReader
 
 dataPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stanley\\"
-downloadPath = os.path.expanduser( '~' ) + '\Downloads\\'
+downloadPath = os.path.expanduser( '~' ) + '\\Downloads\\'
 sTanley_file_name = "Watchlist"
 sTanley_pdf_file = sTanley_file_name + ".pdf"
-sTanley_data_file = sTanley_file_name + ".txt"
-source = downloadPath + sTanley_data_file
+stock_txt_path = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\" + "STOCK.txt"
+source = downloadPath + sTanley_pdf_file
+stock_txt_path = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\" + "STOCK.txt"
+text_path = stock_txt_path
+pdf_path = source
 
-def pdf_to_text(pdf_file_name, text_file_name):
-    doc = pymupdf.open(pdf_file_name) # open a document
-    out = open(text_file_name, "wb") # create a text output
-    for page in doc: # iterate the document pages
-        text = page.get_text().encode("utf8") # get plain text (is in UTF-8)
-        out.write(text) # write text of page
-        out.write(bytes((12,))) # write page delimiter (form feed 0x0C)
-    out.close()
+logger = logging.getLogger("")
+
+logging.basicConfig(level=logging.CRITICAL, format="%(levelname)s: %(message)s")
+
+def read_pdf_lines(pdf_path: str) -> list:
+    """Return all text lines extracted from the PDF in reading order."""
+    try:
+        reader = PdfReader(pdf_path)
+    except FileNotFoundError:
+        print(f"File not found: {pdf_path}")
+        return []
+    except Exception as e:
+        print(f"Error opening PDF: {e}")
+        return []
+
+    lines = []
+    for page in reader.pages:
+        text = page.extract_text()
+        if text:
+            lines.extend(text.splitlines())
+    return lines
+
+def slice_from_keyword(lines: list, keyword: str = "Watchlist") -> list:
+    """Return the slice of lines starting at the first line that contains keyword (case-insensitive)."""
+    kw = keyword.lower()
+    for i, line in enumerate(lines):
+        if kw in line.lower():
+            return lines[i:]
+    return []
+
+def safe_trim(lines: list, remove_first: int = 2, remove_last: int = 24) -> list:
+    """Remove the first `remove_first` and last `remove_last` elements safely."""
+    if not lines:
+        return []
+    if remove_first >= len(lines):
+        return []
+    trimmed = lines[remove_first:]
+    if remove_last >= len(trimmed):
+        return []
+    if remove_last > 0:
+        trimmed = trimmed[:-remove_last]
+    return trimmed
+
+def last_two_tokens_per_line(lines: list) -> tuple:
+    """
+    For each line, take the last two whitespace-separated tokens.
+    Returns:
+      new_list_strings: list of strings where each string is the last two tokens joined by a space
+      new_list_sublists: list of lists where each inner list contains the tokens
+    """
+    new_list_strings = []
+    new_list_sublists = []
+    for line in lines:
+        tokens = line.split()
+        if not tokens:
+            new_list_strings.append("")
+            new_list_sublists.append([])
+            continue
+        last_two = tokens[-2:] if len(tokens) >= 2 else tokens[:]
+        new_list_strings.append(" ".join(last_two))
+        new_list_sublists.append(last_two)
+    return new_list_strings, new_list_sublists
+
+def build_key_value_lists(split_list: list) -> tuple:
+    """
+    From split_list (list of sublists), build:
+      key_list: first element of each sublist (or empty string if missing)
+      value_list: second element of each sublist with '$' removed (or empty string if missing)
+    """
+    key_list = []
+    value_list = []
+    for sub in split_list:
+        if not sub:
+            key_list.append("")
+            value_list.append("")
+            continue
+        key = sub[0]
+        val = sub[1] if len(sub) > 1 else ""
+        val = val.replace("$", "")
+        key_list.append(key)
+        value_list.append(val)
+    return key_list, value_list
+
+def build_data_dict(keys: list, values: list) -> dict:
+    """Create a dictionary mapping each key to its corresponding value. If duplicate keys exist, later values overwrite earlier ones."""
+    return {k: v for k, v in zip(keys, values)}
+
+def read_stock_txt(txt_path):
+    line = []
+    with open(txt_path, "r", encoding="utf-8", errors="ignore") as f:
+        for raw in f:
+            ln = raw.rstrip("\n\r")
+            if ln.startswith("IGNOR"):
+                continue
+            if len(ln) < 2:
+                continue
+            line.append(ln)
+    return line
+
+def build_stock_dictionary(text_path):
+    stock_key_list = []
+    stock_value_list = []
+
+    with open(text_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("IGNOR"):
+                continue
+            parens = re.search(r'\((.*?)\)', line)
+
+            k = parens.group(1) if parens else "Unknown"
+
+            stock_key_list.append(k)
+
+            # Extract string from beginning to 9th character from the end
+            # (Calculation: line[:-9])
+            v1 = line[:-9].strip()
+
+            # Extract string in square brackets: [VALUE]
+            brackets = re.search(r'\[(.*?)\]', line)
+            v2 = brackets.group(1) if brackets else ""
+
+            # Combine: [element from v1, "stock", element from v2]
+            stock_value_list.append([v1, "stock", v2])
+
+    stock_Dictionary = dict(zip(stock_key_list, stock_value_list))
+
+    return stock_Dictionary
 
 class Logger(object):
 
@@ -46,37 +192,29 @@ class Logger(object):
         #this handles the flush command by doing nothing.
         #you might want to specify some extra behavior here.
         pass
-     
-def main():
-    pdf_to_text(downloadPath + sTanley_pdf_file, downloadPath + sTanley_data_file)
-    def fetch_Stock_Name(stock_Dictionary):
-        stock_fund_names =  [line for line in open("STOCK.txt", "r")]
-        for stock_fund_name in stock_fund_names:
-            if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
-                continue
-    
-            stock = re.search(r'(\(\^\w+\))', stock_fund_name)
-            if stock is None:
-                stock = re.search('\(\w+\)', stock_fund_name)
-                msft_ticket = re.search('\[\w+\]', stock_fund_name)
-    
-            is_stock =  re.search("ETF|Fund",stock_fund_name)
-    
-            if is_stock:
-                if 'ETF' in stock_fund_name:
-                    stock_or_fund =  'ETF'
-                else:
-                    stock_or_fund = 'Fund'
-            else:
-                stock_or_fund ='STOCK'
-    
-            stock = stock.group().rstrip().rstrip(')').lstrip('(')
-            msft_ticket = msft_ticket.group().rstrip().rstrip(']').lstrip('[')
-            stock_Dictionary[stock] = [stock_fund_name.rstrip()[:-9]]
-            
-            stock_Dictionary[stock].append(stock_or_fund)
-            stock_Dictionary[stock].append(msft_ticket)
-            
+
+if __name__ == "__main__":
+
+    # 1) Read all lines from the PDF
+    all_lines = read_pdf_lines(pdf_path)
+
+    # 2) Slice from the first occurrence of "Watchlist"
+    sliced = slice_from_keyword(all_lines, keyword="Watchlist")
+
+    # 3) Remove first 2 and last 24 elements safely
+    trimmed = safe_trim(sliced, remove_first=2, remove_last=24)
+
+    # 4) Copy last two tokens of each element into a new list and split into sublists
+    new_list_strings, new_list_sublists = last_two_tokens_per_line(trimmed)
+
+    # 5) Build key_list and value_list
+    key_list, value_list = build_key_value_lists(new_list_sublists)
+
+    # 6) Build dictionary data_list mapping key -> value
+    data_list = build_data_dict(key_list, value_list)
+
+    stock_Dictionary = build_stock_dictionary(text_path)
+
     try:
         shutil.rmtree(dataPath)
     except:
@@ -85,34 +223,23 @@ def main():
     try:
         os.mkdir(dataPath)
     except:
-        pass            
-
-    shutil.move(source, dataPath)        
-    fetch_Stock_Name(stock_Dictionary:={})
+        pass
 
     print('\n\n')
     sys.stdout = Logger()
-    with open(dataPath + sTanley_data_file) as Stanley:
-        Stanley_readlines = Stanley.readlines()
 
     for stock in stock_Dictionary.keys():
-        for i in range(len(Stanley_readlines)):
-            if Stanley_readlines[i][:-1] == stock:
-                print("\n")
-                print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
-                print ("Processing " + stock_Dictionary[stock][0] +" data")
-                print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
-                target_price = (Stanley_readlines[i+1])
-                target_price = target_price.replace("$","").replace(",","")
-    
-                try: 
-                    float(target_price) 
-                    pass 
-                except ValueError: 
-                    target_price = "0.00"
-    
-                print ("\n1y Target Est = %s\n" % (target_price))
-                break
-if __name__ == '__main__':
-    
-    main()
+        print("\n")
+        print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
+        print ("Processing " + stock_Dictionary[stock][0] +" data")
+        print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
+        target_price = data_list[stock].replace(",","")
+
+        try:
+            float(target_price)
+            pass
+        except ValueError:
+            target_price = "0.00"
+
+        print ("\n1y Target Est = %s\n" % (target_price))
+

@@ -1,36 +1,153 @@
-#!/usr/bin/env python
-import requests
+#!/usr/bin/env python3
+
+from typing import List, Tuple, Dict
 import time
 import datetime
 from datetime import date
-from datetime import timedelta
 from path import Path
 import os
 import sys
 import shutil
 import re
 import logging
-from tabula import read_pdf
-from tabula import convert_into
 
-dataPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_Analysis\\"                                     
-downloadPath = os.path.expanduser( '~' ) + '\Downloads\\'
-Stock_Analysis_data_file_name = "Stock Watchlist & Portfolio Tracker"
-Stock_Analysis_pdf_file = Stock_Analysis_data_file_name + ".pdf"
-Stock_Analysis_data_file = Stock_Analysis_data_file_name + ".txt"
-source = downloadPath + Stock_Analysis_data_file
+logger = logging.getLogger("")
+logging.basicConfig(level=logging.CRITICAL, format="%(levelname)s: %(message)s")
 
-def pdf_table_to_text(pdf_file_name, text_file_name):
-    # # extract all the tables in the PDF file
-#    abc = camelot.read_pdf(pdf_file_name)   #address of file location
-    df = read_pdf(pdf_file_name, pages='all') 
-    # print the first table as Pandas DataFrame
-    convert_into(pdf_file_name, text_file_name, output_format="csv", pages='all')
+# read the file
+# os.path.expanduser( '~' ) + '\\Downloads\\'+ \\Watchlist.pdf  by lines,  starting after the line that contains "Next Year".
+# Removes commas from each line
+# output  to list,
+#
+# Default PDF path:
+# os.path.join(os.path.expanduser("~"), "Downloads", "Stock Watchlist & Portfolio Tracker.pdf")
+# copy the first string in each element in the list to a list key_list
+# copy the forth string in each element in the list to a list value_list
+#
+# create a dictionary type variable data_list
+# zap key_list, value_list to data_list
+
+# read
+# os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\" + "STOCK.txt" to line_list
+
+# copy  the string in the parentheses of each element in line_list to a list key_list
+# copy the string from begining to the ninth character from the end to a list value1_list
+# copy the string in the  square brackets of each element in line_list to a list value2_list
+#
+# copy element  from value1_list, "stock", element from value2_list to value_list
+#
+# create a dictionary type variable stock_Dictionary
+# zip key_list, value_list to stock_Dictionary
+
+dataPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Stock_Analysis\\"
+downloadPath = os.path.expanduser( '~' ) + r'\\Downloads\\'
+sTock_Analysis_data_file_name = "Stock Watchlist & Portfolio Tracker"
+sTock_Analysis_pdf_file = sTock_Analysis_data_file_name + ".pdf"
+sTock_Analysis_data_file = sTock_Analysis_data_file_name + ".csv"
+source = downloadPath + sTock_Analysis_pdf_file
+stock_txt_path = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\" + "STOCK.txt"
+text_path = stock_txt_path
+pdf_path = source
+
+def extract_text_lines(pdf_path):
+    """
+    Extract text lines from a PDF. Try pdfplumber first, then PyPDF2.
+    Returns a list of lines (strings).
+    """
+    # pdfplumber preferred
+    try:
+        import pdfplumber
+        lines = []
+        with pdfplumber.open(pdf_path) as pdf:
+            for page in pdf.pages:
+                text = page.extract_text() or ""
+                lines.extend(text.splitlines())
+        return lines
+    except Exception:
+        pass
+
+    # fallback to PyPDF2
+    try:
+        import PyPDF2
+        lines = []
+        with open(pdf_path, "rb") as f:
+            reader = PyPDF2.PdfReader(f)
+            for page in reader.pages:
+                text = page.extract_text() or ""
+                lines.extend(text.splitlines())
+        return lines
+    except Exception:
+        pass
+
+    raise RuntimeError("No PDF text extractor available. Install pdfplumber or PyPDF2.")
+
+def parse_watchlist(pdf_path=None):
+    """
+    Parse the watchlist PDF per the user's rules and return:
+      rows: list of token lists (each line -> tokens after comma removal)
+      key_list: list of first tokens
+      value_list: list of values per rule
+      data_list: dict mapping key -> value
+    """
+    if pdf_path is None:
+        pdf_path = source
+
+    if not os.path.isfile(pdf_path):
+        raise FileNotFoundError(f"PDF not found: {pdf_path}")
+
+    lines = extract_text_lines(pdf_path)
+
+    # find first line containing "Next Year" and start after it
+    start_idx = None
+    for i, ln in enumerate(lines):
+        if "Next Year" in ln:
+            start_idx = i + 1
+            break
+    if start_idx is None:
+        raise ValueError('Could not find a line containing "Next Year" in the PDF text.')
+
+    rows = []
+    for ln in lines[start_idx:]:
+        cleaned = ln.replace(",", "")
+        if not cleaned.strip():
+            continue
+        parts = cleaned.split()
+        if parts:
+            rows.append(parts)
+
+    key_list = []
+    value_list = []
+    for parts in rows:
+        # key: first token (guaranteed by rows construction)
+        key = parts[0] if len(parts) >= 1 else ""
+        key_list.append(key)
+
+        # value selection rule:
+        # if third token exists and its last character is '%', use fourth token (if present)
+        # else use third token (if present). If missing, use empty string.
+        val = ""
+        if len(parts) >= 3:
+            third = parts[2]
+            if third.endswith("%"):
+                val = parts[3] if len(parts) >= 4 else ""
+            else:
+                val = third
+        elif len(parts) == 2:
+            # fallback: only two tokens, use second as value
+            val = parts[1]
+        else:
+            val = ""
+        value_list.append(val)
+
+    # create dictionary mapping keys to values
+    data_list = dict(zip(key_list, value_list))
+
+    return key_list, value_list, data_list
 
 class Logger(object):
 
     def __init__(self):
-        global dataPath
+        global downloadPath
         today = date.today()
 
         self.terminal = sys.stdout
@@ -38,55 +155,51 @@ class Logger(object):
 
     def write(self, message):
         self.terminal.write(message)
-        self.log.write(message)
+        self.log.write(str(message))
 
     def flush(self):
+
         #this flush method is needed for python 3 compatibility.
         #this handles the flush command by doing nothing.
         #you might want to specify some extra behavior here.
         pass
-     
-def main():
-    pdf_table_to_text(downloadPath + Stock_Analysis_pdf_file, downloadPath + Stock_Analysis_data_file)
-    
-    def extract_data(data_list):
-        key_list = []
-        value_list = []
-        Stock_Analysis_readlines =  [stock_line for stock_line in open(dataPath + Stock_Analysis_data_file, "r")]
-        for stock_line in Stock_Analysis_readlines[5:]:
-            key_list.append((stock_line.split(",")[0]).split()[0])
-            value_list.append(stock_line.split(",")[2:])
-        data_list = { k:v for (k,v) in zip(key_list, value_list)}
-        return data_list    
 
-    def fetch_Stock_Name(stock_Dictionary):
-        stock_fund_names =  [line for line in open("STOCK.txt", "r")]
-        for stock_fund_name in stock_fund_names:
-            if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
+def build_stock_dictionary(text_path):
+    stock_key_list = []
+    stock_value_list = []
+
+    with open(text_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("IGNOR"):
                 continue
-    
-            stock = re.search(r'(\(\^\w+\))', stock_fund_name)
-            if stock is None:
-                stock = re.search('\(\w+\)', stock_fund_name)
-                msft_ticket = re.search('\[\w+\]', stock_fund_name)
-    
-            is_stock =  re.search("ETF|Fund",stock_fund_name)
+            parens = re.search(r'\((.*?)\)', line)
 
-            if is_stock:
-                if 'ETF' in stock_fund_name:
-                    stock_or_fund =  'ETF'
-                else:
-                    stock_or_fund = 'Fund'
-            else:
-                stock_or_fund ='STOCK'
-    
-            stock = stock.group().rstrip().rstrip(')').lstrip('(')
-            msft_ticket = msft_ticket.group().rstrip().rstrip(']').lstrip('[')
-            stock_Dictionary[stock] = [stock_fund_name.rstrip()[:-9]]
-            
-            stock_Dictionary[stock].append(stock_or_fund)
-            stock_Dictionary[stock].append(msft_ticket)
-            
+            k = parens.group(1) if parens else "Unknown"
+
+            stock_key_list.append(k)
+
+            # Extract string from beginning to 9th character from the end
+            # (Calculation: line[:-9])
+            v1 = line[:-9].strip()
+
+            # Extract string in square brackets: [VALUE]
+            brackets = re.search(r'\[(.*?)\]', line)
+            v2 = brackets.group(1) if brackets else ""
+
+            # Combine: [element from v1, "stock", element from v2]
+            stock_value_list.append([v1, "stock", v2])
+
+    stock_Dictionary = dict(zip(stock_key_list, stock_value_list))
+
+    return stock_Dictionary
+
+
+if __name__ == "__main__":
+    key_list, value_list, data_list = parse_watchlist()
+
+    build_stock_dictionary
+
     try:
         shutil.rmtree(dataPath)
     except:
@@ -95,22 +208,16 @@ def main():
     try:
         os.mkdir(dataPath)
     except:
-        pass            
+        pass
 
-    shutil.move(source, dataPath)            
-    fetch_Stock_Name(stock_Dictionary:={})
-    data_list = extract_data(data_list:={})
+    stock_Dictionary = build_stock_dictionary(text_path)
+
     sys.stdout = Logger()
+
     for stock in stock_Dictionary.keys():
-        
+
         print("\n")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
         print ("Processing " + stock_Dictionary[stock][0] +" data")
         print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"), end="\n")
-        
-        print ("\n1y Target Est = %s\n" % (data_list[stock][0].split()[2]))
-        print ("\nPrice Target Upside Percent = %s\n" % (data_list[stock][1]))
- 
-if __name__ == '__main__':
-    
-    main()
+        print ("\n1y Target Est = %s\n" % (data_list[stock]))
