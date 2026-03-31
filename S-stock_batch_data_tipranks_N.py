@@ -25,13 +25,14 @@ from datetime import date
 import random
 import argparse
 import os
+import json
 #import logging
 
 #from dateutil.relativedelta import relativedelta
 from datetime import date
 #from cachetools import cached
 ####################################
-user_pass_line = 1
+user_pass_line = 3
 ####################################
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Tipranks"
@@ -102,7 +103,7 @@ class init_webdriver():
         self.options.set_preference("browser.cache.offline.enable", False)
         self.options.set_preference("network.http.use-cache", False)
         self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
-        self.service = Service(r"'~'+'\.cache\seleniumbase\geckodriver\win64\0.36.0'")
+        self.service = Service(os.path.expanduser( '~' ) +'\.cache\selenium\geckodriver\win64\0.36.0')
         # self.proxy = Proxy({
         #     'proxyType': ProxyType.MANUAL,
         #     'httpProxy': myProxy,
@@ -202,7 +203,7 @@ def main():
         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
 #        stock_fund_names =  [line for line in open("STOCK-01.txt", "r")]
         
-        for stock_fund_name in (stock_fund_names[3],stock_fund_names[9]):
+        for stock_fund_name in (stock_fund_names[8],stock_fund_names[11], stock_fund_names[14]):
             if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
                 continue
 
