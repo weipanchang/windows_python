@@ -32,7 +32,7 @@ import json
 from datetime import date
 #from cachetools import cached
 ####################################
-user_pass_line = 3
+user_pass_line = 2
 ####################################
 Path(os.path.expanduser( '~' ) + "\\Documents\\Python Scripts").chdir()
 downloadPath = os.path.expanduser( '~' ) + "\\Documents\\Python Scripts\\Tipranks"
@@ -46,20 +46,6 @@ class Logger(object):
         global downloadPath
         today = date.today()
 
-#         try:
-#             shutil.rmtree(downloadPath)
-#             # shutil.rmtree(downloadPath_pickle)
-#         except:
-# #            print("failed to remove")
-#             pass
-#         time.sleep(1)
-#         
-#         try:
-#             os.mkdir(downloadPath)
-#             # os.mkdir(downloadPath_pickle)
-#         except:
-#             pass
-#         # time.sleep(2)
         self.terminal = sys.stdout
         self.log = open(downloadPath +"\\Summary_Report_From_Tipranks_"+ today.strftime("%m%d%Y") + ".txt" , "a+")
 
@@ -103,7 +89,7 @@ class init_webdriver():
         self.options.set_preference("browser.cache.offline.enable", False)
         self.options.set_preference("network.http.use-cache", False)
         self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
-        self.service = Service(os.path.expanduser( '~' ) +'\.cache\selenium\geckodriver\win64\0.36.0')
+        self.service = Service(os.path.expanduser( '~' ) +'\\.cache\\selenium\\geckodriver\\win64\\0.36.0')
         # self.proxy = Proxy({
         #     'proxyType': ProxyType.MANUAL,
         #     'httpProxy': myProxy,
@@ -203,14 +189,14 @@ def main():
         stock_fund_names =  [line for line in open("STOCK.txt", "r")]
 #        stock_fund_names =  [line for line in open("STOCK-01.txt", "r")]
         
-        for stock_fund_name in (stock_fund_names[8],stock_fund_names[11], stock_fund_names[14]):
+        for stock_fund_name in (stock_fund_names[5],stock_fund_names[11]):
             if len(stock_fund_name) < 2 or "IGNOR" in stock_fund_name :
                 continue
 
             stock = re.search(r'(\(\^\w+\))', stock_fund_name)
             if stock is None:
-                stock = re.search('\(\w+\)', stock_fund_name)
-                msft_ticket = re.search('\[\w+\]', stock_fund_name)
+                stock = re.search(r'\(\w+\)', stock_fund_name)
+                msft_ticket = re.search(r'\[\w+\]', stock_fund_name)
 
             is_stock =  re.search("ETF|Fund",stock_fund_name)
 #            print is_stock
@@ -230,39 +216,50 @@ def main():
             stock_Dictionary[stock].append(msft_ticket)
       
     driver = init_webdriver().driver_init()
-    #driver.minimize_window() 
-    #driver = init_webdriver().driver
-#    driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
+
     url= r"https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome"
-    time.sleep(8)
+#    time.sleep(2)
     driver.uc_open_with_reconnect(url,10)
     driver.uc_gui_click_captcha()
-    email_box = driver.find_element(By.XPATH,"//input[contains(@class, 'w12 py4 px3 radiimedium')]")
-#    os.system('pause')
-#    email_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[1]/div/div/div/div")
+    try:
+        driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
+    except:
+        time.sleep(3)
+        driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
+    time.sleep(2)
+   
+   try:
+        email_box = driver.find_element(By.XPATH,"//input[contains(@name, 'email')]")
+    except:
+        email_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[1]/div/div/div/div/div/input")
                                               
     email_box.click()
     email_box.send_keys(username)
-    password_box = driver.find_element(By.XPATH,"//input[contains(@type, 'password')]")
-#    password_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[2]/div/div/div/div/div")
+    
+    try:
+        password_box = driver.find_element(By.XPATH,"//input[contains(@type, 'password')]")
+    except:    
+        password_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[2]/div/div/div/div/div/input")
     
     password_box.click()
-    
     password_box.send_keys(password)
-    # driver.maximize_window()
+    
+    driver.maximize_window()
     time.sleep(3)   
-    if check_exists_by_xpath("/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span"):
-        signin_button = driver.find_element(By.XPATH,"/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span")
-        
-    if check_exists_by_xpath("/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span"):
-        signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span")
+    if check_exists_by_xpath("/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button "):
+        signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button ")
         
     signin_button.click()
 #    /html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span
     time.sleep(3)   
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    time.sleep(1)
-
+    time.sleep(2)
+    if len(main_window) > 1:
+        for handle in driver.window_handles:
+            if handle != main_window:
+                driver.switch_to.window(handle)
+                driver.close()
+        driver.switch_to.window(main_window)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
 
@@ -281,14 +278,24 @@ def main():
         time.sleep(1)
         stock_path = "https://www.tipranks.com/stocks/" + stock + "/forecast"
         driver.get(stock_path)
-        time.sleep(5)
-        main_page = driver.current_window_handle
+        time.sleep(2)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-        time.sleep(5)
+        time.sleep(1)
+        
+        if len(main_window) > 1:
+            for handle in driver.window_handles:
+                if handle != main_window:
+                    driver.switch_to.window(handle)
+                    driver.close()
+            driver.switch_to.window(main_window)
+        
+        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+        time.sleep(3)
         if pause_before is False:
-            time.sleep(7)
+#            time.sleep(5)
             driver.refresh()
-            time.sleep(7)
+            time.sleep(2)
+
         if check_exists_by_xpath('//div[@class="w12 p0   displayflex positionrelative grow1"]'):
             for i in range(3):
                 try:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from seleniumbase import Driver
 from selenium import webdriver
-from selenium.webdriver import Firefox
+from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
@@ -27,6 +27,10 @@ import random
 import os
 import json
 from datetime import date
+import chromedriver_autoinstaller as chromedriver
+chromedriver.install()
+logger = logging.getLogger("")
+logging.basicConfig(level=logging.CRITICAL, format="%(levelname)s: %(message)s")
 
 ####################################
 user_pass_line = 1
@@ -143,7 +147,7 @@ class init_webdriver():
         #self.options.add_argument(f'user-agent={user_agent}')
         
     def driver_init(self):
-        self.driver = Driver(uc=True)
+        self.driver = Driver(uc=True, block_images=True)
         self.driver.set_page_load_timeout(100)
         return(self.driver)
     
@@ -216,16 +220,9 @@ def main():
             stock_Dictionary[stock].append(msft_ticket)
     
     driver = init_webdriver().driver_init()
-    url= r"https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome"
-#    time.sleep(2)
-    driver.uc_open_with_reconnect(url,10)
-    driver.uc_gui_click_captcha()
-    try:
-        driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
-    except:
-        time.sleep(3)
-        driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
-
+    #driver.minimize_window()
+    #driver = init_webdriver().driver
+    driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
 #    os.system("PAUSE")
     time.sleep(3)
     if check_exists_by_xpath("//*[@data-110n-id='dnsNotFound-title']"):
@@ -233,23 +230,19 @@ def main():
         time.sleep(3)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
-    # webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    # time.sleep(3)
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+    time.sleep(3)
  
-    try:
-        email_box = driver.find_element(By.XPATH,"//input[contains(@name, 'email')]")
-    except:
-        email_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[1]/div/div/div/div/div/input")
+    email_box = driver.find_element(By.XPATH,"//input[contains(@class, 'w12 py4 px3 radiimedium')]")
+#    email_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[1]/div/div/div/div")
                                               
     email_box.click()
     email_box.send_keys(username)
-
-    try:
-        password_box = driver.find_element(By.XPATH,"//input[contains(@type, 'password')]")
-    except:    
-        password_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[2]/div/div/div/div/div/input")
+    password_box = driver.find_element(By.XPATH,"//input[contains(@type, 'password')]")
+#    password_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[2]/div/div/div/div/div")
     
     password_box.click()
+    
     password_box.send_keys(password)
     driver.maximize_window()
     time.sleep(3)
@@ -257,23 +250,15 @@ def main():
     if check_exists_by_xpath("/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span"):
         signin_button = driver.find_element(By.XPATH,"/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span")
         
-    if check_exists_by_xpath("/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button "):
-        signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button ")
-        
+    if check_exists_by_xpath("/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span"):
+        signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span")
+
     signin_button.click()
     
     time.sleep(3)   
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     
     time.sleep(1)
-    
-    main_window = driver.current_window_handle
-    if len(main_window) > 1:
-        for handle in driver.window_handles:
-            if handle != main_window:
-                driver.switch_to.window(handle)
-                driver.close()
-        driver.switch_to.window(main_window)
     
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
@@ -298,9 +283,9 @@ def main():
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(2)
     if pause_before is False:
-#        time.sleep(5)
+        time.sleep(5)
         driver.refresh()
-        time.sleep(3)
+        time.sleep(7)
 
 #    if check_exists_by_xpath('//div[@class="w12 p0   displayflex positionrelative grow1"]'):
     for i in range(3):

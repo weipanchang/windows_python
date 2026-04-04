@@ -26,8 +26,6 @@ from datetime import date
 import random
 import os
 import json
-
-from dateutil.relativedelta import relativedelta
 from datetime import date
 
 ####################################
@@ -99,7 +97,7 @@ class init_webdriver():
         self.options.set_preference("browser.cache.offline.enable", False)
         self.options.set_preference("network.http.use-cache", False)
         self.desiredCapabilities = DesiredCapabilities.FIREFOX.copy()
-        self.service = Service(os.path.expanduser( '~' ) +'\.cache\selenium\geckodriver\win64\0.36.0')
+        self.service = Service(os.path.expanduser( '~' ) +'\\.cache\\selenium\\geckodriver\\win64\\0.36.0')
 #        self.desiredCapabilities['firefox_profile'] = self.profile.encoded
         
         #run in headless mode
@@ -197,8 +195,8 @@ def main():
 
             stock = re.search(r'(\(\^\w+\))', stock_fund_name)
             if stock is None:
-                stock = re.search('\(\w+\)', stock_fund_name)
-                msft_ticket = re.search('\[\w+\]', stock_fund_name)
+                stock = re.search(r'\(\w+\)', stock_fund_name)
+                msft_ticket = re.search(r'\[\w+\]', stock_fund_name)
 
             is_stock =  re.search("ETF|Fund",stock_fund_name)
 #            print is_stock
@@ -220,38 +218,52 @@ def main():
     driver = init_webdriver().driver_init()
     #driver.minimize_window()
     #driver = init_webdriver().driver
-    driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
+    url= r"https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome"
+#    time.sleep(2)
+    driver.uc_open_with_reconnect(url,10)
+    driver.uc_gui_click_captcha()
+    try:
+        driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
+    except:
+        time.sleep(3)
+        driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
 #    os.system("PAUSE")
     time.sleep(3)
+    
     if check_exists_by_xpath("//*[@data-110n-id='dnsNotFound-title']"):
         driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
         time.sleep(3)
     
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
-    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    time.sleep(3)
+    # webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
  
-    email_box = driver.find_element(By.XPATH,"//input[contains(@class, 'w12 py4 px3 radiimedium')]")
-#    email_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[1]/div/div/div/div")
+    # time.sleep(3)
+ 
+    try:
+        email_box = driver.find_element(By.XPATH,"//input[contains(@name, 'email')]")
+    except:
+        email_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[1]/div/div/div/div/div/input")
                                               
     email_box.click()
     email_box.send_keys(username)
-    password_box = driver.find_element(By.XPATH,"//input[contains(@type, 'password')]")
-#    password_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[2]/div/div/div/div/div")
+    
+    try:
+        password_box = driver.find_element(By.XPATH,"//input[contains(@type, 'password')]")
+    except:    
+        password_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[2]/div/div/div/div/div/input")
     
     password_box.click()
-    
     password_box.send_keys(password)
+    
     driver.maximize_window()
     time.sleep(3)
-    
-    if check_exists_by_xpath("/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span"):
-        signin_button = driver.find_element(By.XPATH,"/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span")
-        
-    if check_exists_by_xpath("/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span"):
-        signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span")
-
+    #class="colorwhite w12 radiiround displayflex bgorange-light hoverBgorange h_px1 flexrcc fontSize6 fontWeightsemibold aligncenter w_px6 mt4 mb3 mobile_fontSize6 mobile_py3 mobile_h_pxauto mobile_mt5"
+    # if check_exists_by_xpath("/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span"):
+    #     signin_button = driver.find_element(By.XPATH,"/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span")
+    if check_exists_by_xpath("/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button "):
+        signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button ")
+  
     signin_button.click()
     
     time.sleep(3)   
@@ -259,6 +271,14 @@ def main():
     
     time.sleep(1)
     
+    main_window = driver.current_window_handle
+    if len(main_window) > 1:
+        for handle in driver.window_handles:
+            if handle != main_window:
+                driver.switch_to.window(handle)
+                driver.close()
+        driver.switch_to.window(main_window)
+        
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
     sys.stdout = Logger()                                    
@@ -284,9 +304,9 @@ def main():
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(2)
     if pause_before is False:
-        time.sleep(5)
+#        time.sleep(2)
         driver.refresh()
-        time.sleep(7)
+        time.sleep(3)
 
 #    if check_exists_by_xpath('//div[@class="w12 p0   displayflex positionrelative grow1"]'):
     for i in range(3):

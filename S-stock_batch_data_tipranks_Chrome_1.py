@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from seleniumbase import Driver
 from selenium import webdriver
-from selenium.webdriver import Firefox
+from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
@@ -27,6 +27,10 @@ import random
 import os
 import json
 from datetime import date
+import chromedriver_autoinstaller as chromedriver
+chromedriver.install()
+logger = logging.getLogger("")
+logging.basicConfig(level=logging.CRITICAL, format="%(levelname)s: %(message)s")   
 
 ####################################
 user_pass_line = 1
@@ -41,20 +45,20 @@ class Logger(object):
         global downloadPath
         today = date.today()
 
-#         try:
-#             shutil.rmtree(downloadPath)
-#             # shutil.rmtree(downloadPath_pickle)
-#         except:
-# #            print("failed to remove")
-#             pass
-#         time.sleep(1)
-#         
-#         try:
-#             os.mkdir(downloadPath)
-#             # os.mkdir(downloadPath_pickle)
-#         except:
-#             pass
-#         # time.sleep(2)
+        try:
+            shutil.rmtree(downloadPath)
+            # shutil.rmtree(downloadPath_pickle)
+        except:
+#            print("failed to remove")
+            pass
+        time.sleep(1)
+        
+        try:
+            os.mkdir(downloadPath)
+            # os.mkdir(downloadPath_pickle)
+        except:
+            pass
+        # time.sleep(2)
         self.terminal = sys.stdout
         self.log = open(downloadPath +"\\Summary_Report_From_Tipranks_"+ today.strftime("%m%d%Y") + ".txt" , "a+")
 
@@ -103,23 +107,23 @@ class init_webdriver():
         #run in headless mode
         #self.options.add_argument("--headless")
         
-        # # disable the AutomationControlled feature of Blink rendering engine
-        # self.options.add_argument('--disable-blink-features=AutomationControlled')
-        # #  
-        # # disable pop-up blocking
-        # self.options.add_argument('--disable-popup-blocking')
-        # #  
-        # # # start the browser window in maximized mode
-        # # options.add_argument('--start-maximized')
-        # #  
-        # # disable extensions
-        # self.options.add_argument('--disable-extensions')
-        # #  
-        # # disable sandbox mode
-        # self.options.add_argument('--no-sandbox')
-        # #  
-        # # disable shared memory usage
-        # self.options.add_argument('--disable-dev-shm-usage')
+        # disable the AutomationControlled feature of Blink rendering engine
+        self.options.add_argument('--disable-blink-features=AutomationControlled')
+        #  
+        # disable pop-up blocking
+        self.options.add_argument('--disable-popup-blocking')
+        #  
+        # # start the browser window in maximized mode
+        # options.add_argument('--start-maximized')
+        #  
+        # disable extensions
+        self.options.add_argument('--disable-extensions')
+        #  
+        # disable sandbox mode
+        self.options.add_argument('--no-sandbox')
+        #  
+        # disable shared memory usage
+        self.options.add_argument('--disable-dev-shm-usage')
         
         # Step 3: Rotate user agents 
         user_agents = [
@@ -136,14 +140,14 @@ class init_webdriver():
         ]
         
         # select random user agent
-        self.user_agent = random.choice(user_agents)
+        user_agent = random.choice(user_agents)
         #self.driver.set_page_load_timeout(50)
 #        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0"
         # pass in selected user agent as an argument
-        #self.options.add_argument(f'user-agent={user_agent}')
+        self.options.add_argument(f'user-agent={user_agent}')
         
     def driver_init(self):
-        self.driver = Driver(uc=True)
+        self.driver = Driver(uc=True, block_images=True)
         self.driver.set_page_load_timeout(100)
         return(self.driver)
     
@@ -160,7 +164,7 @@ class init_webdriver():
 #         help='Manual Input Username and Password selection'
 #     )
 #     return parser.parse_args()    
-#         
+        
 def main():
  #   sys.stdout = Logger()
     global user_pass_line
@@ -216,40 +220,30 @@ def main():
             stock_Dictionary[stock].append(msft_ticket)
     
     driver = init_webdriver().driver_init()
-    url= r"https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome"
-#    time.sleep(2)
-    driver.uc_open_with_reconnect(url,10)
-    driver.uc_gui_click_captcha()
-    try:
-        driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
-    except:
-        time.sleep(3)
-        driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
-
+    #driver.minimize_window()
+    #driver = init_webdriver().driver
+    driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
 #    os.system("PAUSE")
     time.sleep(3)
     if check_exists_by_xpath("//*[@data-110n-id='dnsNotFound-title']"):
         driver.get("https://www.tipranks.com/sign-in?redirectTo=%2Fsmart-portfolio%2Fwelcome")
         time.sleep(3)
+    
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
-    # webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    # time.sleep(3)
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+    time.sleep(3)
  
-    try:
-        email_box = driver.find_element(By.XPATH,"//input[contains(@name, 'email')]")
-    except:
-        email_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[1]/div/div/div/div/div/input")
+    email_box = driver.find_element(By.XPATH,"//input[contains(@class, 'w12 py4 px3 radiimedium')]")
+#    email_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[1]/div/div/div/div")
                                               
     email_box.click()
     email_box.send_keys(username)
-
-    try:
-        password_box = driver.find_element(By.XPATH,"//input[contains(@type, 'password')]")
-    except:    
-        password_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[2]/div/div/div/div/div/input")
+    password_box = driver.find_element(By.XPATH,"//input[contains(@type, 'password')]")
+#    password_box = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/div/div[2]/div/div/div/div/div")
     
     password_box.click()
+    
     password_box.send_keys(password)
     driver.maximize_window()
     time.sleep(3)
@@ -257,9 +251,9 @@ def main():
     if check_exists_by_xpath("/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span"):
         signin_button = driver.find_element(By.XPATH,"/html/body/div[2]/div[2]/div[4]/div/div[2]/form/button/span")
         
-    if check_exists_by_xpath("/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button "):
-        signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button ")
-        
+    if check_exists_by_xpath("/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span"):
+        signin_button = driver.find_element(By.XPATH,"/html/body/div[1]/div[2]/div[4]/div/div[2]/form/button/span")
+
     signin_button.click()
     
     time.sleep(3)   
@@ -267,22 +261,16 @@ def main():
     
     time.sleep(1)
     
-    main_window = driver.current_window_handle
-    if len(main_window) > 1:
-        for handle in driver.window_handles:
-            if handle != main_window:
-                driver.switch_to.window(handle)
-                driver.close()
-        driver.switch_to.window(main_window)
-    
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(3)
     sys.stdout = Logger()                                    
     fetch_Stock_Name(stock_Dictionary:={})
     stock_List = list(stock_Dictionary)
 #    print(stock_List)
+#    sys.exit()
     stock = stock_List[int(stock_seq)]
     pause_before = False
+   
     print(stock_seq, "\n")
     #stock_seq = int(stock_seq) + 1
     print (("=") * len("Processing " + stock_Dictionary[stock][0] +" data"))
@@ -298,9 +286,9 @@ def main():
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(2)
     if pause_before is False:
-#        time.sleep(5)
+        time.sleep(5)
         driver.refresh()
-        time.sleep(3)
+        time.sleep(7)
 
 #    if check_exists_by_xpath('//div[@class="w12 p0   displayflex positionrelative grow1"]'):
     for i in range(3):
@@ -315,11 +303,10 @@ def main():
             # quit()
             driver.quit()
             sys.exit("Element NOT Found")
-
-    # else:
-    #     print("Frame NOT Found")
-    #     quit()
-#        sys.exit() 
+#     else:
+#         print("Frame NOT Found")
+#         quit()
+# #        sys.exit() 
     time.sleep(2)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(2)
@@ -365,7 +352,7 @@ if __name__ == "__main__":
             print(line_from_userpass)    
             username = line_from_userpass.split()[0]
             password = line_from_userpass.split()[1]
-                   
+            
     else:
         username,password = user_pass_pair[0],user_pass_pair[1]
         stock_seq = int(user_pass_pair[2])
